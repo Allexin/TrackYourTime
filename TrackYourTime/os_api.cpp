@@ -126,12 +126,12 @@ char * GetActiveWindowClass()
         Window *active_window = (Window *)prop_data;
         Atom wm_state = XInternAtom(display, "WM_CLASS", False);
         XGetTextProperty(display, *active_window, &text, wm_state);
-        Xutf8TextPropertyToTextList(display, &text, &name, &param);
-        if (name==NULL)
-            return NULL;
-        return *name;
+        Xutf8TextPropertyToTextList(display, &text, &name, &param);        
     };
-    return NULL;
+    XCloseDisplay(display);
+    if (name==NULL)
+        return NULL;
+    return *name;
 }
 
 sAppFileName getCurrentApplication()
