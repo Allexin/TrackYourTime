@@ -28,9 +28,9 @@ void cTrayIcon::rebuildMenu()
         QAction* profile = m_ProfilesMenu.addAction(m_DataManager->profiles(i)->name);
         if (m_DataManager->getCurrentProfileIndex()==i){
             profile->setCheckable(true);
-            profile->setChecked(true);
-            profile->setData(i);
+            profile->setChecked(true);            
         }
+        profile->setData(i);
     }
 }
 
@@ -40,6 +40,7 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     rebuildMenu();
 
     connect(&m_ProfilesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
+    m_ProfilesMenu.setTitle(tr("Profiles"));
 
     connect(&m_Menu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
     setContextMenu(&m_Menu);
@@ -48,7 +49,11 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_Menu.addSeparator();
     m_Menu.addAction(tr("Settings..."))->setData("SETTINGS");
     m_Menu.addSeparator();
-    m_Menu.addAction(tr("Profiles ►"))->setData("PROFILES");
+#ifdef Q_OS_WIN
+    m_Menu.addMenu(&m_ProfilesMenu);
+#else
+    m_Menu.addAction(m_ProfilesMenu.title()+" ►"))->setData("PROFILES");
+#endif
     m_Menu.addSeparator();
     m_Menu.addAction(tr("About..."))->setData("ABOUT");
     m_Menu.addSeparator();
@@ -76,7 +81,8 @@ void cTrayIcon::showHint(QString text)
 
 void cTrayIcon::onProfilesChange()
 {
-    rebuildMenu();
+    //never rebuild menu directly from method, because method may be inside menu event and we can delete menu item while we is insede this item handler which can cause problems.
+    QTimer::singleShot(1, this, SLOT(rebuildMenu()));
 }
 
 void cTrayIcon::onMenuSelection(QAction *menuAction)

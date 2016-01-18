@@ -98,9 +98,18 @@ sAppFileName getCurrentApplication()
     return fileName;
 }
 
-bool isKeyPressed(unsigned char KeyCode)
+static bool KeyboardState[256];
+
+bool isKeyboardChanged()
 {
-    return (GetAsyncKeyState(KeyCode) & 0x8000)!=0;
+    bool stateChanged = false;
+    for (int i = 0; i<256; i++)
+        if (KeyboardState[i]!=(GetAsyncKeyState(i) & 0x8000)){
+            stateChanged = true;
+            KeyboardState[i] = !KeyboardState[i];
+        }
+
+    return stateChanged;
 }
 
 QString getAutoRunLink()

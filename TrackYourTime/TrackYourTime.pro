@@ -58,5 +58,4 @@ FORMS    += \
     profileswindow.ui \
     aboutwindow.ui
 
-DISTFILES += \
-    todo.txt
+DISTFILES +=

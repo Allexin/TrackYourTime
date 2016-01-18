@@ -107,7 +107,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="applicationswindow.cpp" line="170"/>
+        <location filename="applicationswindow.cpp" line="177"/>
         <source>New Category</source>
         <translation type="unfinished"></translation>
     </message>
@@ -135,38 +135,38 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="87"/>
+        <location filename="profileswindow.cpp" line="89"/>
         <source>New Profile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="94"/>
-        <location filename="profileswindow.cpp" line="105"/>
+        <location filename="profileswindow.cpp" line="96"/>
+        <location filename="profileswindow.cpp" line="107"/>
         <source>Incorrect arguments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="94"/>
+        <location filename="profileswindow.cpp" line="96"/>
         <source>Please select one and only one profile for cloning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="98"/>
+        <location filename="profileswindow.cpp" line="100"/>
         <source>copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="105"/>
+        <location filename="profileswindow.cpp" line="107"/>
         <source>Please select at least two profiles for merging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="108"/>
+        <location filename="profileswindow.cpp" line="110"/>
         <source>Data will be lost</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="108"/>
+        <location filename="profileswindow.cpp" line="110"/>
         <source>Warning! After the merging uniqe difference between profiles will be lost. This operation can&apos;t be undone. Proceed?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -224,12 +224,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingswindow.cpp" line="116"/>
+        <location filename="settingswindow.ui" line="269"/>
+        <source>Show baloon when category changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="settingswindow.cpp" line="135"/>
         <source>Select DB location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingswindow.cpp" line="118"/>
+        <location filename="settingswindow.cpp" line="137"/>
         <source>Default DB (db.bin);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -300,7 +305,7 @@
 <context>
     <name>cDataManager</name>
     <message>
-        <location filename="cdatamanager.cpp" line="67"/>
+        <location filename="cdatamanager.cpp" line="69"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
@@ -326,27 +331,32 @@
 <context>
     <name>cTrayIcon</name>
     <message>
-        <location filename="ctrayicon.cpp" line="27"/>
+        <location filename="ctrayicon.cpp" line="43"/>
+        <source>Profiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ctrayicon.cpp" line="47"/>
         <source>Applications...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="28"/>
+        <location filename="ctrayicon.cpp" line="48"/>
         <source>Statistic...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="30"/>
+        <location filename="ctrayicon.cpp" line="50"/>
         <source>Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="41"/>
+        <location filename="ctrayicon.cpp" line="58"/>
         <source>About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="43"/>
+        <location filename="ctrayicon.cpp" line="60"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>

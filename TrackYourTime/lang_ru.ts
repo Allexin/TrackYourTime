@@ -52,7 +52,7 @@
     <message>
         <location filename="aboutwindow.ui" line="167"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;License: &lt;a href=&quot;https://github.com/Allexin/TrackYourTime/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License, version 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Лицензия: &lt;a href=&quot;https://github.com/Allexin/TrackYourTime/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License, версия 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Эта программа распространяется в надежде принести полезной, но БЕЗ ЛЮБЫХ ГАРАНТИЙ; даже без подразумеваемой гарантии КОММЕРЧЕСКОЙ ЦЕННОСТИ или пригодности ДЛЯ ЛЮБЫХ ЦЕЛЕЙ. Для изучения подробностей смотрите лицензию GNU General Public License.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Лицензия: &lt;a href=&quot;https://github.com/Allexin/TrackYourTime/blob/master/LICENSE&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GNU General Public License, версия 3&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Эта программа распространяется в надежде принести пользу, но БЕЗ КАКИХ ЛИБО ГАРАНТИЙ; даже без подразумеваемой гарантии КОММЕРЧЕСКОЙ ЦЕННОСТИ или пригодности ДЛЯ ЛЮБЫХ ЦЕЛЕЙ. Для изучения подробностей смотрите лицензию GNU General Public License.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="aboutwindow.ui" line="180"/>
@@ -108,7 +108,7 @@
         <translation>Установить цвет категории</translation>
     </message>
     <message>
-        <location filename="applicationswindow.cpp" line="170"/>
+        <location filename="applicationswindow.cpp" line="177"/>
         <source>New Category</source>
         <translation>Новая категория</translation>
     </message>
@@ -136,38 +136,38 @@
         <translation>Объединить профили</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="87"/>
+        <location filename="profileswindow.cpp" line="89"/>
         <source>New Profile</source>
         <translation>Новый профиль</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="94"/>
-        <location filename="profileswindow.cpp" line="105"/>
+        <location filename="profileswindow.cpp" line="96"/>
+        <location filename="profileswindow.cpp" line="107"/>
         <source>Incorrect arguments</source>
         <translation>Не корректные аргументы</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="94"/>
+        <location filename="profileswindow.cpp" line="96"/>
         <source>Please select one and only one profile for cloning</source>
         <translation>Пожалуйста выберите один и только один профиль для клонирования</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="98"/>
+        <location filename="profileswindow.cpp" line="100"/>
         <source>copy</source>
         <translation>копия</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="105"/>
+        <location filename="profileswindow.cpp" line="107"/>
         <source>Please select at least two profiles for merging</source>
         <translation>Пожалуйста выберите как минимум два профиля для объединения</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="108"/>
+        <location filename="profileswindow.cpp" line="110"/>
         <source>Data will be lost</source>
         <translation>Данные будут потеряны</translation>
     </message>
     <message>
-        <location filename="profileswindow.cpp" line="108"/>
+        <location filename="profileswindow.cpp" line="110"/>
         <source>Warning! After the merging uniqe difference between profiles will be lost. This operation can&apos;t be undone. Proceed?</source>
         <translation>Внимание! После объединения уникальные различия между профилями будут потеряны. Эту операцию невозможно отменить. Продолжить?</translation>
     </message>
@@ -225,12 +225,17 @@
         <translation>Запускать при старте системы</translation>
     </message>
     <message>
-        <location filename="settingswindow.cpp" line="116"/>
+        <location filename="settingswindow.ui" line="269"/>
+        <source>Show baloon when category changed</source>
+        <translation>Показывать сообщение в трее, когда меняется категория</translation>
+    </message>
+    <message>
+        <location filename="settingswindow.cpp" line="135"/>
         <source>Select DB location</source>
         <translation>Выберите местоположение БД</translation>
     </message>
     <message>
-        <location filename="settingswindow.cpp" line="118"/>
+        <location filename="settingswindow.cpp" line="137"/>
         <source>Default DB (db.bin);;All files (*.*)</source>
         <translation>Стандартая БД (db.bin);;Все файлы(*.*)</translation>
     </message>
@@ -301,7 +306,7 @@
 <context>
     <name>cDataManager</name>
     <message>
-        <location filename="cdatamanager.cpp" line="67"/>
+        <location filename="cdatamanager.cpp" line="69"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
@@ -327,27 +332,32 @@
 <context>
     <name>cTrayIcon</name>
     <message>
-        <location filename="ctrayicon.cpp" line="27"/>
+        <location filename="ctrayicon.cpp" line="43"/>
+        <source>Profiles</source>
+        <translation>Профили</translation>
+    </message>
+    <message>
+        <location filename="ctrayicon.cpp" line="47"/>
         <source>Applications...</source>
         <translation>Приложения...</translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="28"/>
+        <location filename="ctrayicon.cpp" line="48"/>
         <source>Statistic...</source>
         <translation>Статистика...</translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="30"/>
+        <location filename="ctrayicon.cpp" line="50"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="41"/>
+        <location filename="ctrayicon.cpp" line="58"/>
         <source>About...</source>
         <translation>О приложении...</translation>
     </message>
     <message>
-        <location filename="ctrayicon.cpp" line="43"/>
+        <location filename="ctrayicon.cpp" line="60"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>

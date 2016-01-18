@@ -41,7 +41,7 @@ protected:
     cDataManager*       m_DataManager;
     QMenu               m_Menu;
     QMenu               m_ProfilesMenu;
-
+protected slots:
     void rebuildMenu();
 public:
     cTrayIcon(cDataManager* DataManager);
