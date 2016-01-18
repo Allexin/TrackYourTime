@@ -26,12 +26,21 @@
 #include <QAction>
 #include "cdatamanager.h"
 
+/*
+    Tray menu is very specified thing.
+    Under Linux/Max OS X any tray menu rebuild may cause troubles.
+    I found only one acceptable solution - make tray menu fixed and remove dynamic part(profiles) into separate menu.
+    I mean not submenu, i mean totally separate menu without any connection witn main tray menu.
+    It's work fine, but looks sucks. :(
+*/
+
 class cTrayIcon : public QSystemTrayIcon
 {
     Q_OBJECT
 protected:
     cDataManager*       m_DataManager;
     QMenu               m_Menu;
+    QMenu               m_ProfilesMenu;
 
     void rebuildMenu();
 public:
@@ -48,7 +57,6 @@ public slots:
     void showHint(QString text);
     void onProfilesChange();
     void onMenuSelection(QAction* menuAction);
-    void onTrayTriggered(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // CTRAYICON_H

@@ -8,6 +8,9 @@ Remember! App will work from folder where you first launch it. If you want chang
 ## Windows
 Extract archive with windows app in any folder and launch TrackYourTime.exe.
 
+## Max OS X
+Extract archive with Mac OS X app, move TrackYourTime.app to Applications and launch
+
 ## Linux
 prerequests:
 
@@ -17,7 +20,7 @@ udev input system
 
 application access to /dev/input/by-id/*
 
-Extract archive with windows app in any folder and launch checksystem from app folder
+Extract archive with linux app in any folder and launch checksystem from app folder
 Follow checksystem instructions to resolve problems. After that launch TrackYourTime app.
 
 Sometimes app autorun may not working in your environment. In this case manually add application link to autorun. Do not forget set working dir to app dir. Application can run without it, but icons and localizations will not work properly.

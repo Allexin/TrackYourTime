@@ -23,10 +23,41 @@
 #include <QStandardPaths>
 #include <QCoreApplication>
 #include <QDir>
+#include <QThread>
 
 QPoint getMousePos()
 {
     return QCursor::pos();
+}
+
+QStringList readFileToStringList(const QString& FileName){
+    QStringList stringList;
+    QFile textFile(FileName);
+    if (!textFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        return stringList;
+
+    QTextStream textStream(&textFile);
+    while (true)
+    {
+        QString line = textStream.readLine();
+        if (line.isNull())
+            break;
+        else
+            stringList.append(line);
+    }
+    return stringList;
+}
+
+void writeStringListToFile(QStringList& lines, const QString& FileName, const QString& lineEnging){
+    QFile textFile(FileName);
+    if (!textFile.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream textStream(&textFile);
+
+    for (int i = 0; i<lines.size(); i++)
+        textStream << lines[i] << lineEnging;
+    textFile.close();
 }
 
 
@@ -202,36 +233,6 @@ bool isKeyboardChanged()
 
 }
 
-QStringList readFileToStringList(const QString& FileName){
-    QStringList stringList;
-    QFile textFile(FileName);
-    if (!textFile.open(QIODevice::ReadOnly | QIODevice::Text))
-        return stringList;
-
-    QTextStream textStream(&textFile);
-    while (true)
-    {
-        QString line = textStream.readLine();
-        if (line.isNull())
-            break;
-        else
-            stringList.append(line);
-    }
-    return stringList;
-}
-
-void writeStringListToFile(QStringList& lines, const QString& FileName){
-    QFile textFile(FileName);
-    if (!textFile.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
-
-    QTextStream textStream(&textFile);
-
-    for (int i = 0; i<lines.size(); i++)
-        textStream << lines[i] << '\n';
-    textFile.close();
-}
-
 QString getAutoRunLink()
 {
     QString startupFolder = QDir::homePath()+"/.config/autostart";
@@ -258,7 +259,177 @@ void setAutorun()
     desktopLink.push_back("GenericName=Cross-platform time tracker");
     desktopLink.push_back("Categories=Office");
     desktopLink.push_back("InitialPreference=9");
-    writeStringListToFile(desktopLink,getAutoRunLink());
+    writeStringListToFile(desktopLink,getAutoRunLink(),'\n');
+}
+
+void removeAutorun()
+{
+    QFile::remove(getAutoRunLink());
+}
+
+#endif
+
+
+#ifdef Q_OS_MAC
+
+//#include </System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreGraphics.framework/Headers/CGWindow.h>
+#include <ApplicationServices/ApplicationServices.h>
+#include <CoreFoundation/CoreFoundation.h>
+
+QString uniCFStrToQStr(const CFStringRef cfString)
+{
+    QChar qchar;
+    QString qString("");
+    int lenCF=(int)CFStringGetLength(cfString);  // возвращает длину строки
+    for (int i=0;i<lenCF;i++)
+    {
+        qchar=((ushort)CFStringGetCharacterAtIndex(cfString,(CFIndex)i));  // получает символ из строки
+        qString=qString+qchar;
+    }
+    return qString;
+}
+
+
+sAppFileName getCurrentApplication()
+{
+    QString appOwner;
+
+    //get visible windows from front to back. first window with layer 0 - current window
+    CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+    CFIndex cfiLen = CFArrayGetCount(windowList);
+    CFDictionaryRef dictionary;
+    for (CFIndex cfiI = 0; cfiI < cfiLen; cfiI++){
+        /*
+         * item sample
+        kCGWindowAlpha = 1;
+        kCGWindowBounds =         {
+            Height = 22;
+            Width = 212;
+            X = 1662;
+            Y = 0;
+        };
+        kCGWindowIsOnscreen = 1;
+        kCGWindowLayer = 25;
+        kCGWindowMemoryUsage = 30104;
+        kCGWindowName = "";
+        kCGWindowNumber = 14;
+        kCGWindowOwnerName = SystemUIServer;
+        kCGWindowOwnerPID = 99;
+        kCGWindowSharingState = 1;
+        kCGWindowStoreType = 2;
+         */
+        dictionary = (CFDictionaryRef) CFArrayGetValueAtIndex(windowList, cfiI);
+        CFStringRef owner = reinterpret_cast<CFStringRef>(CFDictionaryGetValue(dictionary,kCGWindowOwnerName));
+        CFNumberRef window_layer = reinterpret_cast<CFNumberRef>(CFDictionaryGetValue(dictionary, kCGWindowLayer));
+        int layer;
+        CFNumberGetValue(window_layer, kCFNumberIntType, &layer);
+        if (layer==0){
+            appOwner = uniCFStrToQStr(owner);
+            break;
+        }
+    }
+
+    sAppFileName fileName;
+    fileName.fileName = appOwner;
+    fileName.path = "";
+
+    return fileName;
+}
+
+//i know, this is wrong way. but it's simple, and i do not need slot/signals functionaloty in this part of code.
+//also i do not want add synchronization to read/write bool isKeyboardChanged() because any collisions can't break anything
+class cMacOSXKeyboardThread : public QThread
+{
+private:
+    static bool m_KeyboardChanged;
+
+    // The following callback method is invoked on every keypress.
+    static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+        if (type != kCGEventKeyDown && type != kCGEventFlagsChanged && type != kCGEventKeyUp) {
+            return event;
+        }
+
+        m_KeyboardChanged = true;
+
+        return event;
+    }
+
+    virtual void run() override
+    {
+        m_KeyboardChanged = false;
+
+        CGEventMask eventMask = (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged));
+        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, 0, eventMask, CGEventCallback, NULL );
+
+        if(!eventTap) {
+            qCritical() << "ERROR: Unable to create event tap.\n";
+            return;
+        }
+
+        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+        CGEventTapEnable(eventTap, true);
+
+        CFRunLoopRun();
+    }
+public:
+    bool isKeyboardChanged(){
+        bool keyboardChanged = m_KeyboardChanged;
+        m_KeyboardChanged = false;
+        return keyboardChanged;
+    }
+};
+bool cMacOSXKeyboardThread::m_KeyboardChanged;
+
+static cMacOSXKeyboardThread loopThread;
+
+bool isKeyboardChanged()
+{
+    if (!loopThread.isRunning())
+        loopThread.start();
+
+    return loopThread.isFinished() || loopThread.isKeyboardChanged(); //if thread finished - something goes wrong, but application can work even without sleep functionality
+}
+
+QString getAutoRunLink()
+{
+    QString appPath = QCoreApplication::applicationFilePath();
+    QFileInfo appInfo(appPath);
+    return QDir::homePath()+"/Library/LaunchAgents/org.sol-online."+appInfo.baseName()+".plist";
+}
+
+void setAutorun()
+{
+    QString appPath = QCoreApplication::applicationFilePath();
+    QFileInfo appInfo(appPath);
+
+    QStringList agentLink;
+    agentLink.push_back("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+    agentLink.push_back("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
+    agentLink.push_back("<plist version=\"1.0\">");
+    agentLink.push_back("<dict>");
+    agentLink.push_back("   <key>Label</key>");
+    agentLink.push_back("   <string>org.sol-online.TrackYourTime</string>");
+    agentLink.push_back("   <key>LimitLoadToSessionType</key>");
+    agentLink.push_back("   <string>Aqua</string>");
+    agentLink.push_back("   <key>ProgramArguments</key>");
+    agentLink.push_back("   <array>");
+    agentLink.push_back("       <string>"+appPath+"</string>");
+    agentLink.push_back("       <string>-RunAsAgent</string>");
+    agentLink.push_back("       <string>YES</string>");
+    agentLink.push_back("   </array>");
+    agentLink.push_back("   <key>WorkingDirectory</key>");
+    agentLink.push_back("   <string>"+appInfo.absolutePath()+"/</string>");
+    agentLink.push_back("   <key>RunAtLoad</key>");
+    agentLink.push_back("   <true/>");
+    agentLink.push_back("   <key>KeepAlive</key>");
+    agentLink.push_back("   <false/>");
+    agentLink.push_back("   <key>Disabled</key>");
+    agentLink.push_back("   <false/>");
+    agentLink.push_back("</dict>");
+    agentLink.push_back("</plist>");
+
+    writeStringListToFile(agentLink,getAutoRunLink(),"\r");
 }
 
 void removeAutorun()

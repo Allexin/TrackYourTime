@@ -22,25 +22,16 @@
 
 
 void cTrayIcon::rebuildMenu()
-{    
-    m_Menu.clear();
-    m_Menu.addAction(tr("Applications..."))->setData("APPLICATIONS");
-    m_Menu.addAction(tr("Statistic..."))->setData("STATISTIC");
-    m_Menu.addSeparator();
-    m_Menu.addAction(tr("Settings..."))->setData("SETTINGS");
-    m_Menu.addSeparator();
+{
+    m_ProfilesMenu.clear();
     for (int i = 0; i<m_DataManager->profilesCount(); i++){
-        QAction* profile = m_Menu.addAction(m_DataManager->profiles(i)->name);
+        QAction* profile = m_ProfilesMenu.addAction(m_DataManager->profiles(i)->name);
         if (m_DataManager->getCurrentProfileIndex()==i){
             profile->setCheckable(true);
             profile->setChecked(true);
             profile->setData(i);
         }
     }
-    m_Menu.addSeparator();
-    m_Menu.addAction(tr("About..."))->setData("ABOUT");
-    m_Menu.addSeparator();
-    m_Menu.addAction(tr("Exit"))->setData("EXIT");
 }
 
 cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
@@ -48,10 +39,20 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_DataManager = DataManager;
     rebuildMenu();
 
-    connect(&m_Menu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
+    connect(&m_ProfilesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
 
-    //In some WM in Linux rebuilding context menu not working properly. We do not use context tray menu and show menu manually.
-    connect(this, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onTrayTriggered(QSystemTrayIcon::ActivationReason)));
+    connect(&m_Menu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
+    setContextMenu(&m_Menu);
+    m_Menu.addAction(tr("Applications..."))->setData("APPLICATIONS");
+    m_Menu.addAction(tr("Statistic..."))->setData("STATISTIC");
+    m_Menu.addSeparator();
+    m_Menu.addAction(tr("Settings..."))->setData("SETTINGS");
+    m_Menu.addSeparator();
+    m_Menu.addAction(tr("Profiles ►"))->setData("PROFILES");
+    m_Menu.addSeparator();
+    m_Menu.addAction(tr("About..."))->setData("ABOUT");
+    m_Menu.addSeparator();
+    m_Menu.addAction(tr("Exit"))->setData("EXIT");
 
 
     setActive();
@@ -106,15 +107,13 @@ void cTrayIcon::onMenuSelection(QAction *menuAction)
         return;
     }
 
+    if (id=="PROFILES"){
+        m_ProfilesMenu.popup(QCursor::pos());
+        return;
+    }
+
     bool isProfile;
     int profileID = menuAction->data().toInt(&isProfile);
     if (isProfile)
         m_DataManager->setCurrentProfileIndex(profileID);
-}
-
-void cTrayIcon::onTrayTriggered(QSystemTrayIcon::ActivationReason reason)
-{
-    if (reason==QSystemTrayIcon::Context){
-        m_Menu.popup(QCursor::pos());
-    }
 }

@@ -8,19 +8,22 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+mac:LIBS += -framework CoreGraphics
+mac:LIBS += -framework AppKit
+
 TARGET = TrackYourTime
 TEMPLATE = app
 CONFIG+=address_sanitizer
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 
-QMAKE_CXXFLAGS += -std=c++0x
+!mac:QMAKE_CXXFLAGS += -std=c++0x
 
 win32:RC_ICONS = main.ico
 mac:ICON = main.icns
 
 win32:LIBS += -luser32
-unix:LIBS += -lX11
+unix:!mac:LIBS += -lX11
 
 
 SOURCES += \

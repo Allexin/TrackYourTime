@@ -57,12 +57,15 @@ eActiveWindowState checkActiveWindow(){
         Window *active_window = (Window *)prop_data;
         Atom wm_state = XInternAtom(display, "WM_CLASS", False);
         XGetTextProperty(display, *active_window, &text, wm_state);
+	XCloseDisplay(display);
         if (text.value==NULL)
             return CANT_GET_WINDOW_CLASS;
         return ACTIVE_WINDOW_OK;
     }
-    else
+    else{
+	XCloseDisplay(display);
         return CANT_GET_NET_ACTIVE_WINDOW;
+	}
 }
 
 enum eInputState{

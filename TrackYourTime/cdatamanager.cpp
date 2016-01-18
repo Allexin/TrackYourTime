@@ -64,8 +64,6 @@ cDataManager::cDataManager():QObject()
         storagePath.mkpath(".");
     loadDB();
 
-    m_IdleDelay = 15;//TODO - temp value remove this string
-
     if (m_Profiles.size()==0){
         sProfile defaultProfile;
         defaultProfile.name = tr("Default");
