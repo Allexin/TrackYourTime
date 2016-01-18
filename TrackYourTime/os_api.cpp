@@ -268,7 +268,7 @@ void setAutorun()
     desktopLink.push_back("GenericName=Cross-platform time tracker");
     desktopLink.push_back("Categories=Office");
     desktopLink.push_back("InitialPreference=9");
-    writeStringListToFile(desktopLink,getAutoRunLink(),'\n');
+    writeStringListToFile(desktopLink,getAutoRunLink(),"\n");
 }
 
 void removeAutorun()

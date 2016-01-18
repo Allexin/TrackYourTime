@@ -52,7 +52,7 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
 #ifdef Q_OS_WIN
     m_Menu.addMenu(&m_ProfilesMenu);
 #else
-    m_Menu.addAction(m_ProfilesMenu.title()+" ►"))->setData("PROFILES");
+    m_Menu.addAction(m_ProfilesMenu.title()+" ►")->setData("PROFILES");
 #endif
     m_Menu.addSeparator();
     m_Menu.addAction(tr("About..."))->setData("ABOUT");
