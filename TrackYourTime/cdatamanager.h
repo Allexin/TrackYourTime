@@ -64,6 +64,7 @@ public:
     static const QString CONF_STORAGE_FILENAME_ID;
     static const QString CONF_LANGUAGE_ID;
     static const QString CONF_FIRST_LAUNCH_ID;
+    static const QString CONF_SHOW_BALOONS_ID;
     static const QString CONF_AUTORUN_ID;
 protected:
     cExternalTrackers   m_ExternalTrackers;
@@ -76,10 +77,11 @@ protected:
     int                 m_CurrentProfile;
     QString             m_StorageFileName;
 
+    bool                m_ShowBaloons;
+
     int                 m_UpdateCounter;
     int                 m_UpdateDelay;
 
-    bool                m_CurrentKeyboardState[256];
     QPoint              m_CurrentMousePos;
     int                 m_CurrentApplicationIndex;
     int                 m_CurrentApplicationCategory;

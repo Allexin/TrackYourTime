@@ -28,7 +28,7 @@ struct sAppFileName{
 };
 
 sAppFileName getCurrentApplication();
-bool isKeyPressed(unsigned char KeyCode);
+bool isKeyboardChanged();
 QPoint getMousePos();
 
 void setAutorun();

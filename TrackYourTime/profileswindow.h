@@ -36,9 +36,6 @@ protected:
     cDataManager*       m_DataManager;
 
     QMenu               m_Menu;
-    QAction*            m_NewProfile;
-    QAction*            m_CloneProfile;
-    QAction*            m_MergeProfiles;
     void rebuild();
 public:
     explicit ProfilesWindow(cDataManager* DataManager);

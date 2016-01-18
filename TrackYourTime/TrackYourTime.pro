@@ -14,10 +14,13 @@ CONFIG+=address_sanitizer
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 win32:RC_ICONS = main.ico
 mac:ICON = main.icns
 
 win32:LIBS += -luser32
+unix:LIBS += -lX11
 
 
 SOURCES += \

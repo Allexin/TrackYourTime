@@ -33,13 +33,6 @@ protected:
     cDataManager*       m_DataManager;
     QMenu               m_Menu;
 
-    QAction*            m_Settings;
-    QAction*            m_Applications;
-    QAction*            m_Statistic;
-    QVector<QAction*>   m_Profiles;
-    QAction*            m_About;
-    QAction*            m_Exit;
-
     void rebuildMenu();
 public:
     cTrayIcon(cDataManager* DataManager);
@@ -55,6 +48,7 @@ public slots:
     void showHint(QString text);
     void onProfilesChange();
     void onMenuSelection(QAction* menuAction);
+    void onTrayTriggered(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif // CTRAYICON_H

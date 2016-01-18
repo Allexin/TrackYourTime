@@ -40,9 +40,9 @@ ProfilesWindow::ProfilesWindow(cDataManager *DataManager) : QMainWindow(0),
 
     m_DataManager = DataManager;
 
-    m_NewProfile = m_Menu.addAction(tr("New profile"));
-    m_CloneProfile = m_Menu.addAction(tr("Clone profile"));
-    m_MergeProfiles = m_Menu.addAction(tr("Merge profiles"));
+    m_Menu.addAction(tr("New profile"))->setData("NEW_PROFILE");
+    m_Menu.addAction(tr("Clone profile"))->setData("CLONE_PROFILE");
+    m_Menu.addAction(tr("Merge profiles"))->setData("MERGE_PROFILES");
     connect(&m_Menu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
 
 
@@ -76,6 +76,8 @@ void ProfilesWindow::onContextMenu(const QPoint &pos)
 
 void ProfilesWindow::onMenuSelection(QAction *menuAction)
 {
+    QString id = menuAction->data().toString();
+
     QVector<int> checkedItems;
     for (int i = 0; i<ui->listWidgetProfiles->count(); i++){
         QListWidgetItem* item = ui->listWidgetProfiles->item(i);
@@ -83,13 +85,13 @@ void ProfilesWindow::onMenuSelection(QAction *menuAction)
             checkedItems.push_back(item->data(Qt::UserRole).toInt());
     }
 
-    if (menuAction==m_NewProfile){
+    if (id=="NEW_PROFILE"){
         m_DataManager->addNewProfile(tr("New Profile"));
         rebuild();
         return;
     }
 
-    if (menuAction==m_CloneProfile){
+    if (id=="CLONE_PROFILE"){
         if (checkedItems.size()!=1){
             QMessageBox::critical(this,tr("Incorrect arguments"),tr("Please select one and only one profile for cloning"),QMessageBox::Ok);
             return;
@@ -100,7 +102,7 @@ void ProfilesWindow::onMenuSelection(QAction *menuAction)
         return;
     }
 
-    if (menuAction==m_MergeProfiles){
+    if (id=="MERGE_PROFILES"){
         if (checkedItems.size()<2){
             QMessageBox::critical(this,tr("Incorrect arguments"),tr("Please select at least two profiles for merging"),QMessageBox::Ok);
             return;

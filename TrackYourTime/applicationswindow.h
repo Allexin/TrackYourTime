@@ -58,9 +58,6 @@ class ApplicationsWindow : public QMainWindow
     Q_OBJECT
 protected:
     QMenu               m_CategoriesMenu;
-    QAction*            m_AddCategory;
-    QAction*            m_DeleteCategory;
-    QAction*            m_SetCategoryColor;
 
     cDataManager*       m_DataManager;
     bool                m_LoadingData;

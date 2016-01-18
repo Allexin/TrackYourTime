@@ -31,23 +31,25 @@ const QString cDataManager::CONF_AUTOSAVE_DELAY_ID = "AUTOSAVE_DELAY";
 const QString cDataManager::CONF_STORAGE_FILENAME_ID = "STORAGE_FILENAME";
 const QString cDataManager::CONF_LANGUAGE_ID = "LANGUAGE";
 const QString cDataManager::CONF_FIRST_LAUNCH_ID = "FIRST_LAUNCH";
+const QString cDataManager::CONF_SHOW_BALOONS_ID = "SHOW_BALOONS";
 const QString cDataManager::CONF_AUTORUN_ID = "AUTORUN_ENABLED";
 
 cDataManager::cDataManager():QObject()
 {
     m_CurrentApplicationIndex = -1;
 
+    m_ShowBaloons = true;
+
     m_UpdateCounter = 0;
     m_UpdateDelay = DEFAULT_SECONDS_UPDATE_DELAY;
 
-    memset(m_CurrentKeyboardState,0,256*sizeof(bool));
     m_CurrentMousePos = QPoint(0,0);
     m_CurrentApplicationIndex = -1;
     m_CurrentApplicationCategory = 0;
 
     m_Idle = false;
     m_IdleCounter = 0;
-    m_IdleDelay = DEFAULT_SECONDS_IDLE_DELAY;
+    m_IdleDelay = DEFAULT_SECONDS_IDLE_DELAY;    
 
     m_AutoSaveCounter = 0;
     m_AutoSaveDelay = DEFAULT_SECONDS_AUTOSAVE_DELAY;
@@ -61,6 +63,8 @@ cDataManager::cDataManager():QObject()
     if (!storagePath.exists())
         storagePath.mkpath(".");
     loadDB();
+
+    m_IdleDelay = 15;//TODO - temp value remove this string
 
     if (m_Profiles.size()==0){
         sProfile defaultProfile;
@@ -163,11 +167,9 @@ void cDataManager::process()
     bool isUserActive = false;
 
     //Update keyboard activity
-    for (int keyCode = 0; keyCode<256; keyCode++)
-        if (m_CurrentKeyboardState[keyCode]!=isKeyPressed(keyCode)){
-            isUserActive = true;
-            m_CurrentKeyboardState[keyCode] = !m_CurrentKeyboardState[keyCode];
-        }
+    if (isKeyboardChanged()){
+        isUserActive = true;
+    }
 
     //Update mouse activity
     QPoint mousePos = getMousePos();
@@ -187,7 +189,8 @@ void cDataManager::process()
             int appCategory = m_Applications[m_CurrentApplicationIndex].categories[m_CurrentProfile];
             if (m_CurrentApplicationCategory!=appCategory){
                 QString hint = m_Profiles[m_CurrentProfile].name+":"+(appCategory==-1?tr("Uncategorized"):m_Categories[appCategory].name);
-                emit trayShowHint(hint);
+                if (m_ShowBaloons)
+                    emit trayShowHint(hint);
             }
         }
     }
@@ -241,7 +244,7 @@ int cDataManager::getAppIndex(sAppFileName FileName)
 
     for (int i = 0; i<m_Applications.size(); i++){
         if (m_Applications[i].name==FileName.fileName){
-            if (m_Applications[i].path.isEmpty()){
+            if (m_Applications[i].path.isEmpty() && !FileName.path.isEmpty()){
                 m_Applications[i].path = FileName.path;
                 emit applicationsChanged();
             }
@@ -386,6 +389,7 @@ void cDataManager::loadPreferences()
     m_IdleDelay = settings.value(CONF_IDLE_DELAY_ID,m_IdleDelay).toInt();
     m_AutoSaveDelay = settings.value(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay).toInt();
     m_StorageFileName = settings.value(CONF_STORAGE_FILENAME_ID,m_StorageFileName).toString();
+    m_ShowBaloons = settings.value(CONF_SHOW_BALOONS_ID,m_ShowBaloons).toBool();
 }
 
 void cDataManager::savePreferences()

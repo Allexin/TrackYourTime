@@ -29,6 +29,7 @@ void SettingsWindow::loadPreferences()
     int UpdateDelay = settings.value(cDataManager::CONF_UPDATE_DELAY_ID,cDataManager::DEFAULT_SECONDS_UPDATE_DELAY).toInt();
     int IdleDelay = settings.value(cDataManager::CONF_IDLE_DELAY_ID,cDataManager::DEFAULT_SECONDS_IDLE_DELAY).toInt();
     int AutoSaveDelay = settings.value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();
+    bool ShowBaloons = settings.value(cDataManager::CONF_SHOW_BALOONS_ID,true).toBool();
     bool Autorun = settings.value(cDataManager::CONF_AUTORUN_ID,true).toBool();
     QString StorageFileName = settings.value(cDataManager::CONF_STORAGE_FILENAME_ID,m_DataManager->getStorageFileName()).toString();
     QString Language = QLocale::system().name();
@@ -46,6 +47,7 @@ void SettingsWindow::loadPreferences()
     ui->spinBoxIdleDelay->setValue(IdleDelay);
     ui->spinBoxAutosaveDelay->setValue(AutoSaveDelay);
     ui->lineEditStorageFileName->setText(StorageFileName);
+    ui->checkBoxShowBaloon->setChecked(ShowBaloons);
     ui->checkBoxAutorun->setChecked(Autorun);
 
 }
@@ -61,6 +63,7 @@ void SettingsWindow::applyPreferences()
 
     if (ui->comboBoxLanguage->currentIndex()>-1)
         settings.setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
+    settings.setValue(cDataManager::CONF_SHOW_BALOONS_ID,ui->checkBoxShowBaloon->isChecked());
     if (ui->checkBoxAutorun->isChecked()){
         setAutorun();
         settings.setValue(cDataManager::CONF_AUTORUN_ID,true);
@@ -128,7 +131,7 @@ void SettingsWindow::handleButtonCancel()
 void SettingsWindow::handleButtonBrowse()
 {
 
-    QString NewStorageFileName = QFileDialog::getSaveFileName(this,
+    QString NewStorageFileName = QFileDialog::getOpenFileName(this,
                                  tr("Select DB location"),
                                  ui->lineEditStorageFileName->text(),
                                  tr("Default DB (db.bin);;All files (*.*)")

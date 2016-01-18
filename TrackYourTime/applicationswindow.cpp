@@ -96,9 +96,9 @@ ApplicationsWindow::ApplicationsWindow(cDataManager *DataManager) : QMainWindow(
     connect(ui->pushButtonEditProfiles, SIGNAL(released()), this, SLOT(onEditProfiles()));
 
 
-    m_AddCategory = m_CategoriesMenu.addAction(tr("New category"));
-    m_DeleteCategory = m_CategoriesMenu.addAction(tr("Delete category"));
-    m_SetCategoryColor = m_CategoriesMenu.addAction(tr("Set category color"));
+    m_CategoriesMenu.addAction(tr("New category"))->setData("NEW_CATEGORY_MENU");
+    m_CategoriesMenu.addAction(tr("Delete category"))->setData("DELETE_CATEGORY_MENU");
+    m_CategoriesMenu.addAction(tr("Set category color"))->setData("SET_CATEGORY_COLOR_MENU");
     connect(&m_CategoriesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
 
     ui->treeWidgetApplications->setAcceptDrops(true);
@@ -157,8 +157,14 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
                 canEditItem = true;
         item->setSelected(true);
     }
-    m_DeleteCategory->setVisible(canEditItem);
-    m_SetCategoryColor->setVisible(canEditItem);\
+
+    QList<QAction*> actions = m_CategoriesMenu.actions();
+    for (int i = 0; i<actions.size(); i++){
+        QString id = actions[i]->data().toString();
+        if (id=="DELETE_CATEGORY_MENU" || id=="SET_CATEGORY_COLOR_MENU"){
+            actions[i]->setVisible(canEditItem);
+        }
+    }\
 
     QPoint pt(pos);
     m_CategoriesMenu.exec( ui->treeWidgetApplications->mapToGlobal(pos) );
@@ -166,12 +172,13 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
 
 void ApplicationsWindow::onMenuSelection(QAction *menuAction)
 {
-    if (menuAction==m_AddCategory){
+    QString id = menuAction->data().toString();
+    if (id=="NEW_CATEGORY_MENU"){
         m_DataManager->addNewCategory(tr("New Category"),QColor::fromHsv(rand() % 255,rand() % 255,255));
         rebuildApplicationsList();
         return;
     }
-    if (menuAction==m_DeleteCategory){
+    if (id=="DELETE_CATEGORY_MENU"){
         QList<QTreeWidgetItem*> items =  ui->treeWidgetApplications->selectedItems();
         if (items.size()==1){
             QTreeWidgetItem* item = items.first();
@@ -184,7 +191,7 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
         }
         return;
     }
-    if (menuAction==m_SetCategoryColor){
+    if (id=="SET_CATEGORY_COLOR_MENU"){
         QList<QTreeWidgetItem*> items =  ui->treeWidgetApplications->selectedItems();
         if (items.size()==1){
             QTreeWidgetItem* item = items.first();

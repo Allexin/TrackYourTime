@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>551</width>
-    <height>291</height>
+    <height>305</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>551</width>
-    <height>291</height>
+    <height>305</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>551</width>
-    <height>291</height>
+    <height>305</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -209,7 +209,7 @@
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>260</y>
+      <y>280</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -222,7 +222,7 @@
     <property name="geometry">
      <rect>
       <x>470</x>
-      <y>260</y>
+      <y>280</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -235,7 +235,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>250</y>
+      <y>270</y>
       <width>531</width>
       <height>17</height>
      </rect>
@@ -248,6 +248,25 @@
     </property>
     <property name="text">
      <string>Launch on Start up</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBoxShowBaloon">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>250</y>
+      <width>531</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="text">
+     <string>Show baloon when category changed</string>
     </property>
    </widget>
   </widget>
