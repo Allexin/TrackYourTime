@@ -38,8 +38,23 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("sol-online.org"),
     QCoreApplication::setApplicationName("TrackYourTime");
 
+#ifdef Q_OS_MAC
+    QDir dir(argv[0]);
+    dir.cdUp();
+    QString currentDir = dir.absolutePath();
+    dir.cdUp();
+    dir.cd("PlugIns");
+    QCoreApplication::setLibraryPaths(QStringList(dir.absolutePath()));
+#endif
+
     QApplication a(argc, argv);
     QApplication::setQuitOnLastWindowClosed(false);
+
+#ifdef Q_OS_MAC
+    QDir::setCurrent(currentDir);
+#endif
+
+
 
     QSettings settings;
     QString Language = QLocale::system().name();

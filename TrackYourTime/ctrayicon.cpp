@@ -66,12 +66,20 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
 
 void cTrayIcon::setActive()
 {    
-     setIcon(QIcon("data/icons/main.ico"));
+#ifdef Q_OS_MAC
+    setIcon(QIcon("data/icons/main.png"));
+#else
+    setIcon(QIcon("data/icons/main.ico"));
+#endif
 }
 
 void cTrayIcon::setInactive()
 {
+#ifdef Q_OS_MAC
+    setIcon(QIcon("data/icons/main_gray.png"));
+#else
     setIcon(QIcon("data/icons/main_gray.ico"));
+#endif
 }
 
 void cTrayIcon::showHint(QString text)
