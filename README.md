@@ -1,6 +1,9 @@
 # TrackYourTime
 Main TrackYourTime repository
 
+#Downloads
+[Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/v0.9.0beta)
+
 # Installation
 
 Remember! App will work from folder where you first launch it. If you want change app location - move app folder into a new location, launch, go to Settings and press apply. This will change autostart settings to new location.
