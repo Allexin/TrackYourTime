@@ -1,3 +1,7 @@
+you need Qt 5.
+just build TrackYourTime.pro - it's typical Qt project
+after thet:
+
 #Windows
 Place TrackYourTime.exe in build folder, copy data folder, copy platforms plugin with qwindows, copy necessary qt libs
 Pack int TrackYourTime_Windows.zip
