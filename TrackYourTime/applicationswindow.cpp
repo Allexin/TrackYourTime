@@ -110,9 +110,6 @@ ApplicationsWindow::ApplicationsWindow(cDataManager *DataManager) : QMainWindow(
 
     ui->treeWidgetApplications->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeWidgetApplications,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(onContextMenu(QPoint)));
-
-    connect(&m_CategoriesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
-
 }
 
 ApplicationsWindow::~ApplicationsWindow()

@@ -17,7 +17,9 @@ CONFIG+=address_sanitizer
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 
-!mac:QMAKE_CXXFLAGS += -std=c++0x
+unix:!mac:QMAKE_CXXFLAGS += -std=c++0x
+
+win32:QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
 
 win32:RC_ICONS = main.ico
 mac:ICON = main.icns
@@ -57,5 +59,3 @@ FORMS    += \
     applicationswindow.ui \
     profileswindow.ui \
     aboutwindow.ui
-
-DISTFILES +=

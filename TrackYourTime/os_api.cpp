@@ -64,10 +64,39 @@ void writeStringListToFile(QStringList& lines, const QString& FileName, const QS
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#include <psapi.h>
+
+typedef BOOL (__stdcall *GetProcessImageFileNamePtr)(HANDLE, char* ,DWORD);
+
+class cGetProcessImageFileName{
+protected:
+    GetProcessImageFileNamePtr m_GetProcessImageFileName; //psapi
+    GetProcessImageFileNamePtr m_K32GetProcessImageFileName; //kernel32
+    HMODULE             m_Kernel32Lib;
+    HMODULE            m_psapiLib;
+public:
+    cGetProcessImageFileName():m_GetProcessImageFileName(0),m_K32GetProcessImageFileName(0){
+        m_Kernel32Lib = LoadLibraryA("kernel32.dll");
+        if (m_Kernel32Lib)
+            m_K32GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_Kernel32Lib,"K32GetProcessImageFileNameA");
+        m_psapiLib = LoadLibraryA("psapi.dll");
+        if (m_psapiLib)
+            m_GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_psapiLib,"GetProcessImageFileNameA");
+    }
+    ~cGetProcessImageFileName(){
+        FreeLibrary(m_Kernel32Lib);
+        FreeLibrary(m_psapiLib);
+    }
+
+    BOOL GetProcessFileName(HANDLE process, char* path,DWORD length){
+        if (m_K32GetProcessImageFileName!=0)
+            return m_K32GetProcessImageFileName(process,path,length);
+        return m_GetProcessImageFileName(process,path,length);
+    }
+};
 
 QString getWindowApplication(HWND Wnd)
 {
+    static cGetProcessImageFileName processFileName;
     QString appFileName;
     DWORD pid;
     GetWindowThreadProcessId(Wnd, &pid);
@@ -75,7 +104,7 @@ QString getWindowApplication(HWND Wnd)
     if (hProcess != 0){
         try {
             char path[MAX_PATH];
-            if (GetProcessImageFileNameA(hProcess,path, MAX_PATH-1) != 0)
+            if (processFileName.GetProcessFileName(hProcess,path, MAX_PATH-1) != 0)
                 appFileName=path;
             else
                 qCritical() << "GetProcessImageFileName Error " << GetLastError();
@@ -104,7 +133,7 @@ bool isKeyboardChanged()
 {
     bool stateChanged = false;
     for (int i = 0; i<256; i++)
-        if (KeyboardState[i]!=(GetAsyncKeyState(i) & 0x8000)){
+        if (KeyboardState[i]!=((GetAsyncKeyState(i) & 0x8000)==0)){
             stateChanged = true;
             KeyboardState[i] = !KeyboardState[i];
         }

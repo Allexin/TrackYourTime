@@ -69,16 +69,22 @@ void cTrayIcon::setActive()
 #ifdef Q_OS_MAC
     setIcon(QIcon("data/icons/main.png"));
 #else
-    setIcon(QIcon("data/icons/main.ico"));
+    QIcon icon("data/icons/main.png");
+    if (icon.isNull())
+        icon = QIcon("data/icons/main.png");
+    setIcon(icon);
 #endif
 }
 
 void cTrayIcon::setInactive()
-{
+{    
 #ifdef Q_OS_MAC
     setIcon(QIcon("data/icons/main_gray.png"));
 #else
-    setIcon(QIcon("data/icons/main_gray.ico"));
+    QIcon icon("data/icons/main_gray.png");
+    if (icon.isNull())
+        icon = QIcon("data/icons/main_gray.png");
+    setIcon(icon);
 #endif
 }
 
