@@ -122,12 +122,14 @@ void StatisticWindow::rebuild(QDate from, QDate to)
     ui->treeWidgetApplications->setSortingEnabled(false);
     ui->treeWidgetApplications->clear();
     for (int i = 0; i<m_Applications.size(); i++){
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0,m_Applications[i].Name);
-        item->setData(0,Qt::UserRole,i);
-        item->setText(1,DurationToString(m_Applications[i].TotalTime));
-        item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
-        ui->treeWidgetApplications->addTopLevelItem(item);
+        if (m_Applications[i].TotalTime>0){
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setText(0,m_Applications[i].Name);
+            item->setData(0,Qt::UserRole,i);
+            item->setText(1,DurationToString(m_Applications[i].TotalTime));
+            item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
+            ui->treeWidgetApplications->addTopLevelItem(item);
+        }
     }
     ui->treeWidgetApplications->setSortingEnabled(true);
 }
