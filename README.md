@@ -1,4 +1,6 @@
 # TrackYourTime
+
+[![Join the chat at https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Main TrackYourTime repository
 
 #Downloads
