@@ -1,10 +1,14 @@
-# TrackYourTime
+# TrackYourTime 
 
-[![Join the chat at https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-Main TrackYourTime repository
+#[Documentation](./README.md) [[en](./README.md)|[ru](./README_RU.md)]  
+[![Join the chat at https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 #Downloads
 [Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/v0.9.0beta)
+
+#Roadmap
+
+https://github.com/Allexin/TrackYourTime/wiki
 
 # Installation
 
