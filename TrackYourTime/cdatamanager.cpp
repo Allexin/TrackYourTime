@@ -56,7 +56,11 @@ cDataManager::cDataManager():QObject()
 
     m_CurrentProfile = 0;
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
+    m_StorageFileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation)+"/db.bin";
+#else
     m_StorageFileName = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/db.bin";
+#endif
 
     loadPreferences();
     QDir storagePath(QFileInfo(m_StorageFileName).absolutePath());
