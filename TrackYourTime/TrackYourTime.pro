@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network script
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,6 +17,8 @@ CONFIG+=address_sanitizer
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 
+QMAKE_CXXFLAGS += -DQT_COMPILING_QSTRING_COMPAT_CPP
+
 unix:!mac:QMAKE_CXXFLAGS += -std=c++0x
 
 win32:QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
@@ -27,35 +29,47 @@ mac:ICON = main.icns
 win32:LIBS += -luser32
 unix:!mac:LIBS += -lX11
 
+INCLUDEPATH += "ui"
 
 SOURCES += \
     main.cpp \
-    settingswindow.cpp \
-    os_api.cpp \
-    cdatamanager.cpp \
-    cfilebin.cpp \
-    ctrayicon.cpp \
-    statisticwindow.cpp \
-    applicationswindow.cpp \
-    profileswindow.cpp \
-    cexternaltrackers.cpp \
-    aboutwindow.cpp
+    ui/settingswindow.cpp \
+    tools/os_api.cpp \
+    data/cdatamanager.cpp \
+    tools/cfilebin.cpp \
+    ui/ctrayicon.cpp \
+    ui/statisticwindow.cpp \
+    ui/applicationswindow.cpp \
+    ui/profileswindow.cpp \
+    data/cexternaltrackers.cpp \
+    ui/aboutwindow.cpp \
+    data/cdbversionconverter.cpp \
+    data/cscriptsmanager.cpp \
+    ui/app_settingswindow.cpp \
+    data/capppredefinedinfo.cpp \
+    tools/tools.cpp
 
 HEADERS  += \
-    settingswindow.h \
-    os_api.h \
-    cdatamanager.h \
-    cfilebin.h \
-    ctrayicon.h \
-    statisticwindow.h \
-    applicationswindow.h \
-    profileswindow.h \
-    cexternaltrackers.h \
-    aboutwindow.h
+    ui/settingswindow.h \
+    tools/os_api.h \
+    data/cdatamanager.h \
+    tools/cfilebin.h \
+    ui/ctrayicon.h \
+    ui/statisticwindow.h \
+    ui/applicationswindow.h \
+    ui/profileswindow.h \
+    data/cexternaltrackers.h \
+    ui/aboutwindow.h \
+    data/cdbversionconverter.h \
+    data/cscriptsmanager.h \
+    ui/app_settingswindow.h \
+    data/capppredefinedinfo.h \
+    tools/tools.h
 
 FORMS    += \
-    settingswindow.ui \
-    statisticwindow.ui \
-    applicationswindow.ui \
-    profileswindow.ui \
-    aboutwindow.ui
+    ui/settingswindow.ui \
+    ui/statisticwindow.ui \
+    ui/applicationswindow.ui \
+    ui/profileswindow.ui \
+    ui/aboutwindow.ui \
+    ui/app_settingswindow.ui

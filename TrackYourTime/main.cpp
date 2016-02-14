@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "settingswindow.h"
-#include "statisticwindow.h"
-#include "applicationswindow.h"
-#include "profileswindow.h"
-#include "aboutwindow.h"
+#include "ui/settingswindow.h"
+#include "ui/statisticwindow.h"
+#include "ui/applicationswindow.h"
+#include "ui/profileswindow.h"
+#include "ui/aboutwindow.h"
+#include "ui/app_settingswindow.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -29,8 +30,8 @@
 #include <QSettings>
 #include <QTranslator>
 #include <QSystemTrayIcon>
-#include "cdatamanager.h"
-#include "ctrayicon.h"
+#include "data/cdatamanager.h"
+#include "ui/ctrayicon.h"
 
 int main(int argc, char *argv[])
 {
@@ -87,6 +88,10 @@ int main(int argc, char *argv[])
 
     ProfilesWindow profilesWindow(&datamanager);
     QObject::connect(&applicationsWindow, SIGNAL(showProfiles()), &profilesWindow, SLOT(show()));
+
+    App_SettingsWindow app_settingsWindow(&datamanager);
+    QObject::connect(&applicationsWindow, SIGNAL(showAppSettings(int)), &app_settingsWindow, SLOT(showApp(int)));
+    QObject::connect(&datamanager, SIGNAL(debugScriptResult(QString,sSysInfo)), &app_settingsWindow, SLOT(onScriptResult(QString,sSysInfo)));
 
     SettingsWindow settingsWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showSettings()), &settingsWindow, SLOT(show()));
