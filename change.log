@@ -1,0 +1,4 @@
+0.9.2
+-change external trackers format from binary to text
+-add http server for external trackers on port 25856
+-add detailed information about app activity in applications window and statistic window
