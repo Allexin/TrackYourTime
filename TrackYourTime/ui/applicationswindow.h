@@ -44,11 +44,12 @@ public:
                 QList<QTreeWidgetItem*> selected = selectedItems();
                 for (int i = 0; i<selected.size(); i++)
                     emit itemMoved(selected.at(i),newParent);
-                QTreeWidget::dropEvent(event);
+                emit needRebuild();
             }
     }
 signals:
     void itemMoved(QTreeWidgetItem* item, QTreeWidgetItem* newParent);
+    void needRebuild();
 };
 
 namespace Ui {
@@ -58,6 +59,10 @@ class ApplicationsWindow;
 class ApplicationsWindow : public QMainWindow
 {
     Q_OBJECT
+private:
+    QVector<bool>       m_CategoriesExpandedState;
+    int                 m_ScrollPos;
+    QTreeWidgetItem*    m_ContextMenuItem;
 protected:
     QMenu               m_CategoriesMenu;
     QIcon               m_ScriptDetector;
@@ -87,6 +92,7 @@ public slots:
     void onProfileSelection(int newProfileIndex);
     void onApplicationMoved(QTreeWidgetItem* item, QTreeWidgetItem* newParent);
     void onEditProfiles(){emit showProfiles();}
+    void onDelayedRebuild();
 };
 
 #endif // APPLICATIONSWINDOW_H

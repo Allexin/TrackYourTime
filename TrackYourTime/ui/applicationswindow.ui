@@ -87,7 +87,7 @@
       <item>
        <widget class="cApplicationsTreeWidget" name="treeWidgetApplications">
         <property name="selectionMode">
-         <enum>QAbstractItemView::MultiSelection</enum>
+         <enum>QAbstractItemView::ExtendedSelection</enum>
         </property>
         <attribute name="headerVisible">
          <bool>false</bool>
