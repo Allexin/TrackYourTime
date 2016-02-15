@@ -60,6 +60,8 @@ class ApplicationsWindow : public QMainWindow
 {
     Q_OBJECT
 private:
+    Ui::ApplicationsWindow *ui;
+private:
     QVector<bool>       m_CategoriesExpandedState;
     int                 m_ScrollPos;
     QTreeWidgetItem*    m_ContextMenuItem;
@@ -76,8 +78,7 @@ public:
     explicit ApplicationsWindow(cDataManager* DataManager);
     ~ApplicationsWindow();
 
-private:
-    Ui::ApplicationsWindow *ui;
+
 protected:
     virtual void showEvent(QShowEvent * event) override;
 signals:

@@ -132,9 +132,14 @@ public:
     virtual ~cDataManager();
 
     int profilesCount(){return m_Profiles.size();}
-    const sProfile* profiles(int index){return &m_Profiles[index];}
+    const sProfile* profiles(int index);
     int getCurrentProfileIndex(){return m_CurrentProfile;}
     void setCurrentProfileIndex(int ProfileIndex){ m_CurrentProfile = ProfileIndex; emit profilesChanged();}
+    void setCurrentProfileIndexSafe(int ProfileIndex){
+        if (ProfileIndex<0 || ProfileIndex>=m_Profiles.size())
+            return;
+        setCurrentProfileIndex(ProfileIndex);
+    }
     void setProfileName(int index, const QString& Name){m_Profiles[index].name = Name; emit profilesChanged();}
     void addNewProfile(const QString &Name, int CloneProfileIndex = -1);
     void mergeProfiles(int profile1, int profile2);

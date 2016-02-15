@@ -29,13 +29,23 @@ function extractDomain(url) {
     return domain;
 }
 
+var delimeter = ":";
 
 function sendState(url){
     var TRACKER_INFO='PREFIX=TYTET;VERSION=1;APP_1=chrome.exe;APP_2=chromium.exe;APP_3=Google-chrome-stable;APP_4=google-chrome;APP_5=chromium-browser;STATE='+extractDomain(url);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://127.0.0.1:25856?data=["+TRACKER_INFO+"]", true);
-    xhr.send();
-    
+    xhr.send();     
+    var currentTime = new Date();
+    var h = currentTime.getHours();
+    var m = currentTime.getMinutes().toString();
+    if (m.length==1) m = "0"+m;
+    var text = h+delimeter+m;
+    chrome.browserAction.setBadgeText({text:text});
+    if (delimeter==":")
+        delimeter = " ";
+    else
+        delimeter = ":";
 }
 
 function prepareData(){
@@ -44,5 +54,6 @@ function prepareData(){
 
 chrome.alarms.onAlarm.addListener(prepareData);
 chrome.alarms.create("TRACK_YOUR_TIME_TIMER", {
-       delayInMinutes: 0.05, periodInMinutes: 0.05}
+       delayInMinutes: 0.05, periodInMinutes: 0.02}
               );
+chrome.browserAction.setBadgeBackgroundColor({color:[0,0,0,255]});

@@ -48,7 +48,8 @@ SOURCES += \
     ui/app_settingswindow.cpp \
     data/capppredefinedinfo.cpp \
     tools/tools.cpp \
-    data/cschedule.cpp
+    data/cschedule.cpp \
+    ui/schedulewindow.cpp
 
 HEADERS  += \
     ui/settingswindow.h \
@@ -66,7 +67,8 @@ HEADERS  += \
     ui/app_settingswindow.h \
     data/capppredefinedinfo.h \
     tools/tools.h \
-    data/cschedule.h
+    data/cschedule.h \
+    ui/schedulewindow.h
 
 FORMS    += \
     ui/settingswindow.ui \
@@ -74,4 +76,5 @@ FORMS    += \
     ui/applicationswindow.ui \
     ui/profileswindow.ui \
     ui/aboutwindow.ui \
-    ui/app_settingswindow.ui
+    ui/app_settingswindow.ui \
+    ui/schedulewindow.ui

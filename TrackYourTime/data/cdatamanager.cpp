@@ -87,6 +87,13 @@ cDataManager::~cDataManager()
         delete m_Applications[i];
 }
 
+const sProfile *cDataManager::profiles(int index)
+{
+    if (index<0 || index>=m_Profiles.size())
+        return NULL;
+    return &m_Profiles[index];
+}
+
 void cDataManager::addNewProfile(const QString &Name, int CloneProfileIndex)
 {
     sProfile profile;
@@ -289,6 +296,10 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
     QString activity;
 
     switch(appInfo->trackerType){
+        case sAppInfo::eTrackerType::TT_EXECUTABLE_DETECTOR:{
+            return 0;
+        };
+            break;
         case sAppInfo::eTrackerType::TT_EXTERNAL_DETECTOR:{
             if (!m_ExternalTrackers.getExternalTrackerState(appInfo->activities[0].name,activity))
                 activity="";

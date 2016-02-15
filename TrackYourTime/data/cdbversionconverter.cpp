@@ -51,7 +51,7 @@ bool convertToVersion2(const QString& SrcFileName,const QString& DstFileName, bo
             char prefix[FILE_FORMAT_PREFIX_SIZE+1]; //add zero for simple convert to string
             prefix[FILE_FORMAT_PREFIX_SIZE] = 0;
             file.read(prefix,FILE_FORMAT_PREFIX_SIZE);
-            int Version = file.readInt();
+            file.readInt();//version - its 1. no variants
             //header
             out.write(FILE_FORMAT_PREFIX,FILE_FORMAT_PREFIX_SIZE);
             out.writeInt(2);

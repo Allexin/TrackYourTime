@@ -114,20 +114,15 @@ void cExternalTrackers::onDataReady(QString data)
         return;
     }
 
-    bool correctNumber;
-    int appCount=pairs["APP_COUNT"].toInt(&correctNumber);
-    if (!correctNumber){
-        qWarning() << "unknown exterinal tracker with APP_COUNT=" << pairs["VERSION"];
-        return;
-    }
-
-    for (int i = 0; i<appCount; i++){
-         QString app = pairs["APP_"+QString().setNum(i+1)];
-        if (app.isEmpty()){
-            qWarning() << "app " << i+1 << " not present";
-            return;
+    int i = 1;
+    while (true){
+        QString key = "APP_"+QString().setNum(i);
+        if (pairs.contains(key)){
+            addPair(pairs[key],state);
         }
-        addPair(app,state);
+        else
+            break;
+        i++;
     }
 }
 

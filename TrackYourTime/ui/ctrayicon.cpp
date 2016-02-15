@@ -48,6 +48,7 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_Menu.addAction(tr("Statistic..."))->setData("STATISTIC");
     m_Menu.addSeparator();
     m_Menu.addAction(tr("Settings..."))->setData("SETTINGS");
+    m_Menu.addAction(tr("Schedule..."))->setData("SCHEDULE");
     m_Menu.addSeparator();
 #ifdef Q_OS_WIN
     m_Menu.addMenu(&m_ProfilesMenu);
@@ -114,6 +115,11 @@ void cTrayIcon::onMenuSelection(QAction *menuAction)
 
     if (id=="SETTINGS"){
         emit showSettings();
+        return;
+    }
+
+    if (id=="SCHEDULE"){
+        emit showSchedule();
         return;
     }
 

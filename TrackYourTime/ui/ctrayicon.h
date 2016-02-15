@@ -48,6 +48,7 @@ public:
 
 signals:
     void showSettings();
+    void showSchedule();
     void showStatistic();
     void showApplications();
     void showAbout();

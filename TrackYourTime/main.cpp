@@ -22,6 +22,7 @@
 #include "ui/profileswindow.h"
 #include "ui/aboutwindow.h"
 #include "ui/app_settingswindow.h"
+#include "ui/schedulewindow.h"
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
@@ -31,6 +32,7 @@
 #include <QTranslator>
 #include <QSystemTrayIcon>
 #include "data/cdatamanager.h"
+#include "data/cschedule.h"
 #include "ui/ctrayicon.h"
 
 int main(int argc, char *argv[])
@@ -74,6 +76,7 @@ int main(int argc, char *argv[])
     QApplication::installTranslator(&translator);
 
     cDataManager datamanager;
+    cSchedule schedule(&datamanager);
 
     cTrayIcon trIcon(&datamanager);
     QObject::connect(&datamanager, SIGNAL(trayActive()), &trIcon, SLOT(setActive()));
@@ -97,11 +100,17 @@ int main(int argc, char *argv[])
     QObject::connect(&trIcon, SIGNAL(showSettings()), &settingsWindow, SLOT(show()));
     QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &datamanager, SLOT(onPreferencesChanged()));
 
+    ScheduleWindow scheduleWindow(&datamanager,&schedule);
+    QObject::connect(&datamanager, SIGNAL(profilesChanged()), &scheduleWindow, SLOT(rebuild()));
+    QObject::connect(&trIcon, SIGNAL(showSchedule()), &scheduleWindow, SLOT(show()));
+
     StatisticWindow statisticWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(show()));
 
     AboutWindow aboutWindow;
     QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(show()));
+
+    schedule.start();
 
     int result = a.exec();
 

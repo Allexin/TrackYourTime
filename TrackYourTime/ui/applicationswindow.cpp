@@ -207,7 +207,7 @@ void ApplicationsWindow::onApplicationsChange()
     rebuildApplicationsList();
 }
 
-void ApplicationsWindow::onCategoryChanged(QTreeWidgetItem *item, int column)
+void ApplicationsWindow::onCategoryChanged(QTreeWidgetItem *item, int column __attribute__ ((unused)))
 {
     if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_CATEGORY){
         int categoryIndex = item->data(0,Qt::UserRole).toInt();
