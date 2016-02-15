@@ -39,6 +39,8 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_DataManager = DataManager;
     rebuildMenu();
 
+    connect(this,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(onTray(QSystemTrayIcon::ActivationReason)));
+
     connect(&m_ProfilesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
     m_ProfilesMenu.setTitle(tr("Profiles"));
 
@@ -63,6 +65,12 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
 
     setActive();
     show();
+}
+
+void cTrayIcon::onTray(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason==QSystemTrayIcon::Trigger)
+        emit showApplications();
 }
 
 void cTrayIcon::setActive()

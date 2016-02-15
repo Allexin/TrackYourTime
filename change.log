@@ -5,3 +5,7 @@
 -add portable config support
 -fix all warnings in source code
 -add schedule
+-Improve HDPI display support
+-Add periods in statistic window
+-Add percents on categories statistic
+-Show Applications on tray icon click

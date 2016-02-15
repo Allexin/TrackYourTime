@@ -53,6 +53,7 @@ signals:
     void showApplications();
     void showAbout();
 public slots:
+    void onTray(QSystemTrayIcon::ActivationReason reason);
     void setActive();
     void setInactive();
     void showHint(QString text);
