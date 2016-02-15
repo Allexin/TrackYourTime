@@ -4,9 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core
-
-QT       -= gui
+QT       += core gui network script
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = checksystem
 CONFIG   += console

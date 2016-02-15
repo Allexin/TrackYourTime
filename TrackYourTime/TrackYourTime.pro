@@ -47,7 +47,8 @@ SOURCES += \
     data/cscriptsmanager.cpp \
     ui/app_settingswindow.cpp \
     data/capppredefinedinfo.cpp \
-    tools/tools.cpp
+    tools/tools.cpp \
+    data/cschedule.cpp
 
 HEADERS  += \
     ui/settingswindow.h \
@@ -64,7 +65,8 @@ HEADERS  += \
     data/cscriptsmanager.h \
     ui/app_settingswindow.h \
     data/capppredefinedinfo.h \
-    tools/tools.h
+    tools/tools.h \
+    data/cschedule.h
 
 FORMS    += \
     ui/settingswindow.ui \

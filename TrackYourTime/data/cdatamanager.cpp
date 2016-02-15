@@ -21,7 +21,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QStandardPaths>
-#include <QSettings>
+#include "../tools/tools.h"
 #include "../tools/os_api.h"
 #include "../tools/cfilebin.h"
 #include "cdbversionconverter.h"
@@ -465,24 +465,24 @@ void cDataManager::loadDB()
 
 void cDataManager::loadPreferences()
 {
-    QSettings settings;
+    cSettings settings;
 
-    m_UpdateDelay = settings.value(CONF_UPDATE_DELAY_ID,m_UpdateDelay).toInt();
-    m_IdleDelay = settings.value(CONF_IDLE_DELAY_ID,m_IdleDelay).toInt();
-    m_AutoSaveDelay = settings.value(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay).toInt();
-    m_StorageFileName = settings.value(CONF_STORAGE_FILENAME_ID,m_StorageFileName).toString();
-    m_ShowBaloons = settings.value(CONF_SHOW_BALOONS_ID,m_ShowBaloons).toBool();
+    m_UpdateDelay = settings.db()->value(CONF_UPDATE_DELAY_ID,m_UpdateDelay).toInt();
+    m_IdleDelay = settings.db()->value(CONF_IDLE_DELAY_ID,m_IdleDelay).toInt();
+    m_AutoSaveDelay = settings.db()->value(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay).toInt();
+    m_StorageFileName = settings.db()->value(CONF_STORAGE_FILENAME_ID,m_StorageFileName).toString();
+    m_ShowBaloons = settings.db()->value(CONF_SHOW_BALOONS_ID,m_ShowBaloons).toBool();
 }
 
 void cDataManager::savePreferences()
 {
-    QSettings settings;
+    cSettings settings;
 
-    settings.setValue(CONF_UPDATE_DELAY_ID,m_UpdateDelay);
-    settings.setValue(CONF_IDLE_DELAY_ID,m_IdleDelay);
-    settings.setValue(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay);
-    settings.setValue(CONF_STORAGE_FILENAME_ID,m_StorageFileName);
-    settings.sync();
+    settings.db()->setValue(CONF_UPDATE_DELAY_ID,m_UpdateDelay);
+    settings.db()->setValue(CONF_IDLE_DELAY_ID,m_IdleDelay);
+    settings.db()->setValue(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay);
+    settings.db()->setValue(CONF_STORAGE_FILENAME_ID,m_StorageFileName);
+    settings.db()->sync();
 }
 
 

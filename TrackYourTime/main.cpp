@@ -27,7 +27,7 @@
 #include <QDir>
 #include <QThread>
 #include <QTimer>
-#include <QSettings>
+#include "tools/tools.h"
 #include <QTranslator>
 #include <QSystemTrayIcon>
 #include "data/cdatamanager.h"
@@ -57,16 +57,16 @@ int main(int argc, char *argv[])
 
 
 
-    QSettings settings;
+    cSettings settings;
     QString Language = QLocale::system().name();
     Language.truncate(Language.lastIndexOf('_'));
-    Language = settings.value(cDataManager::CONF_LANGUAGE_ID,Language).toString();
-    if (settings.value(cDataManager::CONF_FIRST_LAUNCH_ID,true).toBool()){
-        settings.setValue(cDataManager::CONF_FIRST_LAUNCH_ID,false);
-        settings.setValue(cDataManager::CONF_LANGUAGE_ID,Language);
-        settings.setValue(cDataManager::CONF_AUTORUN_ID,true);
+    Language = settings.db()->value(cDataManager::CONF_LANGUAGE_ID,Language).toString();
+    if (settings.db()->value(cDataManager::CONF_FIRST_LAUNCH_ID,true).toBool()){
+        settings.db()->setValue(cDataManager::CONF_FIRST_LAUNCH_ID,false);
+        settings.db()->setValue(cDataManager::CONF_LANGUAGE_ID,Language);
+        settings.db()->setValue(cDataManager::CONF_AUTORUN_ID,true);
         setAutorun();
-        settings.sync();
+        settings.db()->sync();
     }
 
     QTranslator translator;

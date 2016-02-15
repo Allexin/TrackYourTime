@@ -18,23 +18,23 @@
 
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
-#include <QSettings>
+#include "../tools/tools.h"
 #include <QFileDialog>
 #include "../tools/cfilebin.h"
 
 void SettingsWindow::loadPreferences()
 {
-    QSettings settings;
+    cSettings settings;
 
-    int UpdateDelay = settings.value(cDataManager::CONF_UPDATE_DELAY_ID,cDataManager::DEFAULT_SECONDS_UPDATE_DELAY).toInt();
-    int IdleDelay = settings.value(cDataManager::CONF_IDLE_DELAY_ID,cDataManager::DEFAULT_SECONDS_IDLE_DELAY).toInt();
-    int AutoSaveDelay = settings.value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();
-    bool ShowBaloons = settings.value(cDataManager::CONF_SHOW_BALOONS_ID,true).toBool();
-    bool Autorun = settings.value(cDataManager::CONF_AUTORUN_ID,true).toBool();
-    QString StorageFileName = settings.value(cDataManager::CONF_STORAGE_FILENAME_ID,m_DataManager->getStorageFileName()).toString();
+    int UpdateDelay = settings.db()->value(cDataManager::CONF_UPDATE_DELAY_ID,cDataManager::DEFAULT_SECONDS_UPDATE_DELAY).toInt();
+    int IdleDelay = settings.db()->value(cDataManager::CONF_IDLE_DELAY_ID,cDataManager::DEFAULT_SECONDS_IDLE_DELAY).toInt();
+    int AutoSaveDelay = settings.db()->value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();
+    bool ShowBaloons = settings.db()->value(cDataManager::CONF_SHOW_BALOONS_ID,true).toBool();
+    bool Autorun = settings.db()->value(cDataManager::CONF_AUTORUN_ID,true).toBool();
+    QString StorageFileName = settings.db()->value(cDataManager::CONF_STORAGE_FILENAME_ID,m_DataManager->getStorageFileName()).toString();
     QString Language = QLocale::system().name();
     Language.truncate(Language.lastIndexOf('_'));
-    Language = settings.value(cDataManager::CONF_LANGUAGE_ID,Language).toString();
+    Language = settings.db()->value(cDataManager::CONF_LANGUAGE_ID,Language).toString();
 
 
     ui->comboBoxLanguage->setCurrentIndex(-1);
@@ -54,26 +54,26 @@ void SettingsWindow::loadPreferences()
 
 void SettingsWindow::applyPreferences()
 {
-    QSettings settings;
+    cSettings settings;
 
-    settings.setValue(cDataManager::CONF_UPDATE_DELAY_ID,ui->spinBoxUpdateDelay->value());
-    settings.setValue(cDataManager::CONF_IDLE_DELAY_ID,ui->spinBoxIdleDelay->value());
-    settings.setValue(cDataManager::CONF_AUTOSAVE_DELAY_ID,ui->spinBoxAutosaveDelay->value());
-    settings.setValue(cDataManager::CONF_STORAGE_FILENAME_ID,ui->lineEditStorageFileName->text());
+    settings.db()->setValue(cDataManager::CONF_UPDATE_DELAY_ID,ui->spinBoxUpdateDelay->value());
+    settings.db()->setValue(cDataManager::CONF_IDLE_DELAY_ID,ui->spinBoxIdleDelay->value());
+    settings.db()->setValue(cDataManager::CONF_AUTOSAVE_DELAY_ID,ui->spinBoxAutosaveDelay->value());
+    settings.db()->setValue(cDataManager::CONF_STORAGE_FILENAME_ID,ui->lineEditStorageFileName->text());
 
     if (ui->comboBoxLanguage->currentIndex()>-1)
-        settings.setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
-    settings.setValue(cDataManager::CONF_SHOW_BALOONS_ID,ui->checkBoxShowBaloon->isChecked());
+        settings.db()->setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
+    settings.db()->setValue(cDataManager::CONF_SHOW_BALOONS_ID,ui->checkBoxShowBaloon->isChecked());
     if (ui->checkBoxAutorun->isChecked()){
         setAutorun();
-        settings.setValue(cDataManager::CONF_AUTORUN_ID,true);
+        settings.db()->setValue(cDataManager::CONF_AUTORUN_ID,true);
     }
     else{
         removeAutorun();
-        settings.setValue(cDataManager::CONF_AUTORUN_ID,false);
+        settings.db()->setValue(cDataManager::CONF_AUTORUN_ID,false);
     }
 
-    settings.sync();
+    settings.db()->sync();
 
     emit preferencesChange();
 }

@@ -75,20 +75,50 @@ enum eInputState{
     UDEV_NOACCESS
 };
 
+
 eInputState checkUdev(){
     QDir dir("/dev/input/by-id");
     if (!dir.exists())
         return UDEV_NOTFOUND;
 
-    QStringList keyboards = dir.entryList(QStringList() << "*keyboard*");
-    if (keyboards.size()==0)
+    QVector<int> keyboards_fd;
+
+    QString path;
+    QStringList keyboards;
+    
+    path = "/dev/input/by-id";
+    keyboards = QDir(path).entryList(QStringList() << "*keyboard*");
+    for (int i = 0; i<keyboards; i++)
+        keyboards_fd.push_back(open((path+keyboards[i]).toUtf8().constData(), 0));
+    
+    path = "/dev/input/by-id";
+    keyboards = QDir(path).entryList(QStringList() << "*kbd*");
+    for (int i = 0; i<keyboards; i++)
+        keyboards_fd.push_back(open((path+keyboards[i]).toUtf8().constData(), 0));
+    
+    path = "/dev/input/by-path";
+    keyboards = QDir(path).entryList(QStringList() << "*keyboard*");
+    for (int i = 0; i<keyboards; i++)
+        keyboards_fd.push_back(open((path+keyboards[i]).toUtf8().constData(), 0));
+    
+    path = "/dev/input/by-path";
+    keyboards = QDir(path).entryList(QStringList() << "*kbd*");
+    for (int i = 0; i<keyboards; i++)
+        keyboards_fd.push_back(open((path+keyboards[i]).toUtf8().constData(), 0));
+    
+    if (keyboards_fd.size()==0)
         return UDEV_KEYBOARD_NOT_FOUND;
-
-    int fd = open(("/dev/input/by-id/"+keyboards[0]).toUtf8().constData(), 0);
-    if (fd==-1)
-        return UDEV_NOACCESS;
-    close(fd);
-
+    
+    bool haveActiveKeyboard = false;
+    for (int i = 0; i<keyboards_fd.size(); i++)
+        if (keyboards_fd[i]>-1){
+            close(keyboards_fd[i]);
+            haveActiveKeyboard = true;
+        }
+        
+    if (!haveActiveKeyboard)
+        return  UDEV_NOACCESS;
+    
     return UDEV_OK;
 }
 

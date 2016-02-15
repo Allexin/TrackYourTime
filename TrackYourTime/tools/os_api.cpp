@@ -249,18 +249,24 @@ struct sKeyboardState{
 };
 QVector<sKeyboardState> keyboards;
 
+void initKeyboard(const QString& path, const QString& regexp){
+    QStringList keyboardsList = QDir(path).entryList(QStringList() << regexp);
+    keyboards.resize(keyboardsList.size());
+    for (int i = 0; i<keyboards.size(); i++){
+        sKeyboardState *kb_s = &keyboards[i];
+        kb_s->id = path+keyboardsList[i];
+
+    }
+}
 
 bool isKeyboardChanged()
 {
     if (firstKeyboardUpdate){
         firstKeyboardUpdate = false;
-        QStringList keyboardsList = QDir("/dev/input/by-id/").entryList(QStringList() << "*keyboard*");
-        keyboards.resize(keyboardsList.size());
-        for (int i = 0; i<keyboards.size(); i++){
-            sKeyboardState *kb_s = &keyboards[i];
-            kb_s->id = "/dev/input/by-id/"+keyboardsList[i];
-
-        }
+        initKeyboard("/dev/input/by-id/","*keyboard*");
+        initKeyboard("/dev/input/by-id/","*kbd*");
+        initKeyboard("/dev/input/by-path/","*keyboard*");
+        initKeyboard("/dev/input/by-path/","*kbd*");
     }
 
     bool noAccesToKeyboard = true;
