@@ -44,7 +44,14 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBoxLanguage"/>
+     <widget class="QComboBox" name="comboBoxLanguage">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="label">
@@ -58,6 +65,12 @@
     </item>
     <item>
      <widget class="QSpinBox" name="spinBoxUpdateDelay">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimum">
        <number>1</number>
       </property>
@@ -78,6 +91,12 @@
     </item>
     <item>
      <widget class="QSpinBox" name="spinBoxIdleDelay">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimum">
        <number>60</number>
       </property>
@@ -101,6 +120,12 @@
     </item>
     <item>
      <widget class="QSpinBox" name="spinBoxAutosaveDelay">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="minimum">
        <number>300</number>
       </property>
@@ -131,10 +156,23 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLineEdit" name="lineEditStorageFileName"/>
+       <widget class="QLineEdit" name="lineEditStorageFileName">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonBrowseStorageFileName">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Browse...</string>
         </property>
@@ -185,6 +223,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonApply">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Apply</string>
         </property>
@@ -192,6 +236,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="pushButtonCancel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Cancel</string>
         </property>

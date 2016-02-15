@@ -71,7 +71,7 @@ public:
 private:
     Ui::StatisticWindow *ui;    
 public slots:
-    void onSetTodayPress();
+    void onSetPeriodPress();
     void onUpdatePress();
     void onExportCategoriesCSVPress();
     void onExportApplicationsCSVPress();

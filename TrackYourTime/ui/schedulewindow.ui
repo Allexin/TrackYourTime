@@ -30,7 +30,7 @@
          <number>3</number>
         </property>
         <attribute name="headerVisible">
-         <bool>true</bool>
+         <bool>false</bool>
         </attribute>
         <attribute name="headerDefaultSectionSize">
          <number>200</number>
@@ -152,6 +152,12 @@
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <widget class="QPushButton" name="pushButtonAdd">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>Add new record</string>
              </property>
@@ -159,6 +165,12 @@
            </item>
            <item>
             <widget class="QPushButton" name="pushButtonDelete">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>Delete selected record</string>
              </property>
