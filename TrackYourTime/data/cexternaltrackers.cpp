@@ -25,7 +25,7 @@ const QString EXTERNAL_TRACKER_FORMAT_VERSION = "1";
 
 cExternalTrackers::cExternalTrackers(QObject *parent) : QObject(parent),m_HTTPServer(EXTERNAL_TRACKERS_HTTP_PORT)
 {
-    m_Server.bind(QHostAddress::LocalHost, EXTERNAL_TRACKERS_UDP_PORT);
+    m_Server.bind(QHostAddress::Any, EXTERNAL_TRACKERS_UDP_PORT);
     connect(&m_Server, SIGNAL(readyRead()), this, SLOT(readyRead()));
 
     connect(&m_HTTPServer,SIGNAL(dataReady(QString)), this, SLOT(onDataReady(QString)));
