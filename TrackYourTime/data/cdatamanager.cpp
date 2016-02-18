@@ -33,12 +33,20 @@ const QString cDataManager::CONF_AUTOSAVE_DELAY_ID = "AUTOSAVE_DELAY";
 const QString cDataManager::CONF_STORAGE_FILENAME_ID = "STORAGE_FILENAME";
 const QString cDataManager::CONF_LANGUAGE_ID = "LANGUAGE";
 const QString cDataManager::CONF_FIRST_LAUNCH_ID = "FIRST_LAUNCH";
-const QString cDataManager::CONF_SHOW_BALOONS_ID = "SHOW_BALOONS";
+const QString cDataManager::CONF_NOTIFICATION_TYPE_ID = "NOTIFICATION_TYPE";
+const QString cDataManager::CONF_NOTIFICATION_MESSAGE_ID = "NOTIFICATION_MESSAGE";
+const QString cDataManager::CONF_NOTIFICATION_HIDE_SECONDS_ID = "NOTIFICATION_HIDE_SECONDS";
+const QString cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID = "NOTIFICATION_HIDE_MOVES";
+const QString cDataManager::CONF_NOTIFICATION_POSITION_ID = "NOTIFICATION_POSITION";
+const QString cDataManager::CONF_NOTIFICATION_SIZE_ID = "NOTIFICATION_SIZE";
+const QString cDataManager::CONF_NOTIFICATION_OPACITY_ID = "NOTIFICATION_OPACITY";
 const QString cDataManager::CONF_AUTORUN_ID = "AUTORUN_ENABLED";
+const QString cDataManager::CONF_CLIENT_MODE_ID = "CLIENT_MODE";
+const QString cDataManager::CONF_CLIENT_MODE_HOST_ID = "CLIENT_MODE_HOST";
 
 cDataManager::cDataManager():QObject()
 {
-    m_ShowBaloons = true;
+    m_NotificationType = NT_SYSTEM;
 
     m_UpdateCounter = 0;
     m_UpdateDelay = DEFAULT_SECONDS_UPDATE_DELAY;
@@ -194,11 +202,34 @@ void cDataManager::process()
         m_CurrentMousePos = mousePos;
     }
 
+    if (isUserActive)
+        m_LastLocalActivity = 0;
+    else
+        m_LastLocalActivity+=m_UpdateDelay;
+    int hostActivity = m_LastLocalActivity+1;
+    sOverrideTrackerInfo* info = m_ExternalTrackers.getOverrideTracker();
+    if (info)
+        hostActivity = info->IdleTime-2000;
+
+
     //Update application
     bool isAppChanged = false;
     sSysInfo currentAppInfo = getCurrentApplication();
     int appIndex = getAppIndex(currentAppInfo);
     int activityIndex = appIndex>-1?getActivityIndex(appIndex,currentAppInfo):0;
+
+    if (m_LastLocalActivity*1000>hostActivity){
+        if (info){
+            sSysInfo remoteInfo;
+            remoteInfo.fileName = info->AppFileName;
+            remoteInfo.path = "";
+            remoteInfo.title = "";
+            appIndex = getAppIndex(remoteInfo);
+            activityIndex = appIndex>-1?getActivityIndexDirect(appIndex,info->State):0;
+            isUserActive = true;
+        }
+    }
+
     if (appIndex!=m_CurrentApplicationIndex || activityIndex!=m_CurrentApplicationActivityIndex){
         isUserActive = true;
         isAppChanged = true;
@@ -206,11 +237,24 @@ void cDataManager::process()
         m_CurrentApplicationActivityIndex = activityIndex;
         if (m_CurrentApplicationIndex>-1){
             int activityCategory = m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile];
-            if (m_CurrentApplicationActivityCategory!=activityCategory){
+            if (m_CurrentApplicationActivityCategory!=activityCategory || activityCategory==-1){
                 m_CurrentApplicationActivityCategory = activityCategory;
-                QString hint = m_Profiles[m_CurrentProfile].name+":"+(m_CurrentApplicationActivityCategory==-1?tr("Uncategorized"):m_Categories[m_CurrentApplicationActivityCategory].name);
-                if (m_ShowBaloons)
-                    emit trayShowHint(hint);
+
+                switch(m_NotificationType){
+                    case NT_NONE:{
+
+                    };
+                    break;
+                    case NT_SYSTEM:{
+                        QString hint = m_Profiles[m_CurrentProfile].name+":"+(m_CurrentApplicationActivityCategory==-1?tr("Uncategorized"):m_Categories[m_CurrentApplicationActivityCategory].name);
+                        emit trayShowHint(hint);
+                    };
+                    break;
+                    case NT_BUILTIN:{
+                        emit showNotification();
+                    };
+                    break;
+                }
             }
         }
     }
@@ -245,6 +289,18 @@ void cDataManager::process()
     if (m_AutoSaveCounter>=m_AutoSaveDelay){
         m_AutoSaveCounter = 0;
         saveDB();
+    }
+
+    if (!m_Idle && m_ClientMode){
+        if (m_CurrentApplicationIndex>-1){
+            m_ExternalTrackers.sendOverrideTracker(m_Applications[m_CurrentApplicationIndex]->activities[0].name,
+                                                   m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].name,
+                                                   m_IdleCounter,
+                                                   m_ClientModeHost);
+        }
+        else{
+            m_ExternalTrackers.sendOverrideTracker("","",m_IdleCounter,m_ClientModeHost);
+        }
     }
 }
 
@@ -315,22 +371,26 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
         break;
     }
 
+    return getActivityIndexDirect(appIndex,activity);
+}
 
-    if (activity.isEmpty())
+int cDataManager::getActivityIndexDirect(int appIndex, QString activityName)
+{
+    if (activityName.isEmpty())
         return 0;
 
     for (int i = 0; i<m_Applications[appIndex]->activities.size(); i++){
-        if (m_Applications[appIndex]->activities[i].name==activity){
+        if (m_Applications[appIndex]->activities[i].name==activityName){
             return i;
         }
     }
 
     sActivityInfo ainfo;
     ainfo.visible = true;
-    ainfo.name = activity;
+    ainfo.name = activityName;
     ainfo.categories.resize(m_Profiles.size());
     for (int i = 0; i<ainfo.categories.size(); i++)
-        ainfo.categories[i] = m_Applications[appIndex]->activities[0].categories[i];
+        ainfo.categories[i] = -1;
     m_Applications[appIndex]->activities.push_back(ainfo);
     emit applicationsChanged();
     return m_Applications[appIndex]->activities.size()-1;
@@ -482,20 +542,10 @@ void cDataManager::loadPreferences()
     m_IdleDelay = settings.db()->value(CONF_IDLE_DELAY_ID,m_IdleDelay).toInt();
     m_AutoSaveDelay = settings.db()->value(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay).toInt();
     m_StorageFileName = settings.db()->value(CONF_STORAGE_FILENAME_ID,m_StorageFileName).toString();
-    m_ShowBaloons = settings.db()->value(CONF_SHOW_BALOONS_ID,m_ShowBaloons).toBool();
+    m_NotificationType = (eNotificationType)settings.db()->value(CONF_NOTIFICATION_TYPE_ID,m_NotificationType).toInt();
+    m_ClientMode = settings.db()->value(CONF_CLIENT_MODE_ID,m_ClientMode).toBool();
+    m_ClientModeHost = settings.db()->value(CONF_CLIENT_MODE_HOST_ID,m_ClientModeHost).toString();
 }
-
-void cDataManager::savePreferences()
-{
-    cSettings settings;
-
-    settings.db()->setValue(CONF_UPDATE_DELAY_ID,m_UpdateDelay);
-    settings.db()->setValue(CONF_IDLE_DELAY_ID,m_IdleDelay);
-    settings.db()->setValue(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay);
-    settings.db()->setValue(CONF_STORAGE_FILENAME_ID,m_StorageFileName);
-    settings.db()->sync();
-}
-
 
 
 

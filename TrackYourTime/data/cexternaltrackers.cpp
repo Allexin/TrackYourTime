@@ -20,6 +20,7 @@
 #include <QDebug>
 
 const QString EXTERNAL_TRACKER_PREFIX = "TYTET";
+const QString OVERRIDE_TRACKER_PREFIX = "TYTOT";
 const QString EXTERNAL_TRACKER_FORMAT_VERSION = "1";
 
 cExternalTrackers::cExternalTrackers(QObject *parent) : QObject(parent),m_HTTPServer(EXTERNAL_TRACKERS_HTTP_PORT)
@@ -47,6 +48,25 @@ void cExternalTrackers::addPair(const QString& AppName, const QString& CurrentSt
     m_Pairs.push_back(pair);
 }
 
+void cExternalTrackers::addOverride(const QString &AppName, const QString &CurrentState, int idleTime)
+{
+    for (int i = 0; i<m_Override.size(); i++){
+        if (m_Override[i].AppFileName==AppName){
+            m_Override[i].State = CurrentState;
+            m_Override[i].LifeTime = OVERRIDE_TRACKERS_PAIR_LIFE_TIME_SECOND;
+            m_Override[i].IdleTime = idleTime;
+            return;
+        }
+    }
+
+    sOverrideTrackerInfo pair;
+    pair.AppFileName = AppName;
+    pair.State = CurrentState;
+    pair.LifeTime = OVERRIDE_TRACKERS_PAIR_LIFE_TIME_SECOND;
+    pair.IdleTime = idleTime;
+    m_Override.push_back(pair);
+}
+
 void cExternalTrackers::update()
 {
     int i = 0;
@@ -55,6 +75,17 @@ void cExternalTrackers::update()
         if (m_Pairs[i].LifeTime<=0){
             m_Pairs[i] = m_Pairs.last();
             m_Pairs.pop_back();
+        }
+        else
+            i++;
+    }
+
+    i = 0;
+    while (i<m_Override.size()){
+        m_Override[i].LifeTime--;
+        if (m_Override[i].LifeTime<=0){
+            m_Override[i] = m_Override.last();
+            m_Override.pop_back();
         }
         else
             i++;
@@ -71,6 +102,32 @@ bool cExternalTrackers::getExternalTrackerState(const QString &appName, QString&
     }
 
     return false;
+}
+
+sOverrideTrackerInfo *cExternalTrackers::getOverrideTracker()
+{
+    if (m_Override.size()==0)
+        return NULL;
+    int min = m_Override[0].IdleTime;
+    sOverrideTrackerInfo* tracker = &m_Override[0];
+    for (int i = 1; i<m_Override.size(); i++)
+        if (m_Override[i].IdleTime<min){
+            min = m_Override[i].IdleTime;
+            tracker = &m_Override[i];
+        }
+    return tracker;
+}
+
+void cExternalTrackers::sendOverrideTracker(const QString &AppName, const QString &CurrentState, int idleTime, const QString &host)
+{
+    QString data;
+    data += "PREFIX="+OVERRIDE_TRACKER_PREFIX;
+    data += ";VERSION=1";
+    data += ";APP_FILENAME="+AppName;
+    data += ";STATE="+CurrentState;
+    data += ";USER_INACTIVE_TIME="+QString::number(idleTime);
+    m_Client.connectToHost(QHostAddress(host),EXTERNAL_TRACKERS_UDP_PORT);
+    m_Client.write(data.toUtf8());
 }
 
 void cExternalTrackers::readyRead()
@@ -98,11 +155,6 @@ void cExternalTrackers::onDataReady(QString data)
         }
     }
 
-    if (pairs["PREFIX"].compare(EXTERNAL_TRACKER_PREFIX)!=0){
-        qWarning() << "unknown exterinal tracker with PREFIX=" << pairs["PREFIX"];
-        return;
-    }
-
     if (pairs["VERSION"].compare(EXTERNAL_TRACKER_FORMAT_VERSION)!=0){
         qWarning() << "unknown exterinal tracker with VERSION=" << pairs["VERSION"];
         return;
@@ -114,16 +166,36 @@ void cExternalTrackers::onDataReady(QString data)
         return;
     }
 
-    int i = 1;
-    while (true){
-        QString key = "APP_"+QString().setNum(i);
-        if (pairs.contains(key)){
-            addPair(pairs[key],state);
+    if (pairs["PREFIX"].compare(EXTERNAL_TRACKER_PREFIX)==0){
+        int i = 1;
+        while (true){
+            QString key = "APP_"+QString().setNum(i);
+            if (pairs.contains(key)){
+                addPair(pairs[key],state);
+            }
+            else
+                break;
+            i++;
         }
-        else
-            break;
-        i++;
     }
+    else
+    if (pairs["PREFIX"].compare(OVERRIDE_TRACKER_PREFIX)==0){
+        if (!pairs.contains("APP_FILENAME")){
+            qWarning() << "override tracker APP_FILENAME not defined";
+            return;
+        }
+        if (!pairs.contains("USER_INACTIVE_TIME")){
+            qWarning() << "override tracker USER_INACTIVE_TIME not defined";
+            return;
+        }
+
+        addOverride(pairs["APP_FILENAME"],pairs["APP_STATE"],pairs["USER_INACTIVE_TIME"].toInt());
+    }
+    else{
+        qWarning() << "unknown exterinal tracker with PREFIX=" << pairs["PREFIX"];
+    }
+
+
 }
 
 

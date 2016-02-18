@@ -34,6 +34,7 @@
 #include "data/cdatamanager.h"
 #include "data/cschedule.h"
 #include "ui/ctrayicon.h"
+#include "ui/notificationwindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -109,6 +110,10 @@ int main(int argc, char *argv[])
 
     AboutWindow aboutWindow;
     QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(show()));
+
+    NotificationWindow notificationWindow(&datamanager);
+    QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &notificationWindow, SLOT(onPreferencesChanged()));
+    QObject::connect(&datamanager, SIGNAL(showNotification()), &notificationWindow, SLOT(onShow()));
 
     schedule.start();
 

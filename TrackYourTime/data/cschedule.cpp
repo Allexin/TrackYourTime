@@ -119,6 +119,10 @@ void cScheduleItem::process(const QString &currentDateTime, cDataManager* dataMa
                 dataManager->setCurrentProfileIndexSafe(m_Param.toInt());
             }
             break;
+            case SA_COUNT:{
+                //WAAAT???
+            }
+            break;
         }
     }
 }

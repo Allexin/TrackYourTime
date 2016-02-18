@@ -35,6 +35,21 @@ QString readFile(const QString &fileName)
 
 cSettings::cSettings()
 {
+    QString OSName = "UNKNOWN";
+#ifdef Q_OS_LINUX
+    OSName="Linux";
+#else
+    #ifdef Q_OS_WIN
+        OSName="Linux";
+    #else
+        #ifdef Q_OS_MAC
+            OSName="MacOSX";
+        #endif
+    #endif
+#endif
+    if (QFileInfo("settings_"+OSName+".conf").exists())
+        m_Settings = new QSettings("settings_"+OSName+".conf",QSettings::IniFormat);
+    else
     if (QFileInfo("settings.conf").exists())
         m_Settings = new QSettings("settings.conf",QSettings::IniFormat);
     else
