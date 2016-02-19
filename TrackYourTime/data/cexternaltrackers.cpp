@@ -126,8 +126,7 @@ void cExternalTrackers::sendOverrideTracker(const QString &AppName, const QStrin
     data += ";APP_FILENAME="+AppName;
     data += ";STATE="+CurrentState;
     data += ";USER_INACTIVE_TIME="+QString::number(idleTime);
-    m_Client.connectToHost(QHostAddress(host),EXTERNAL_TRACKERS_UDP_PORT);
-    m_Client.write(data.toUtf8());
+    m_Client.writeDatagram(data.toUtf8(),QHostAddress(host),EXTERNAL_TRACKERS_UDP_PORT);
 }
 
 void cExternalTrackers::readyRead()
