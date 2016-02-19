@@ -72,10 +72,12 @@ cDataManager::cDataManager():QObject()
 #endif
 
     loadPreferences();
-    QDir storagePath(QFileInfo(m_StorageFileName).absolutePath());
-    if (!storagePath.exists())
-        storagePath.mkpath(".");
-    loadDB();
+    if (!m_StorageFileName.isEmpty()){
+        QDir storagePath(QFileInfo(m_StorageFileName).absolutePath());
+        if (!storagePath.exists())
+            storagePath.mkpath(".");
+        loadDB();
+    }
 
     if (m_Profiles.size()==0){
         sProfile defaultProfile;
@@ -400,6 +402,8 @@ const int FILE_FORMAT_VERSION = 2;
 
 void cDataManager::saveDB()
 {
+    if (m_StorageFileName.isEmpty())
+        return;
     cFileBin file( m_StorageFileName+".new" );
     if ( file.open(QIODevice::WriteOnly) )
     {
@@ -461,6 +465,8 @@ void cDataManager::saveDB()
 
 void cDataManager::loadDB()
 {
+    if (m_StorageFileName.isEmpty())
+        return;
     qDebug() << "cDataManager: start DB loading\n";
     for (int i = 0; i<m_Applications.size(); i++)
         delete m_Applications[i];

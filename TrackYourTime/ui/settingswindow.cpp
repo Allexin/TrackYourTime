@@ -91,7 +91,7 @@ void SettingsWindow::applyPreferences()
 
     settings.db()->setValue(cDataManager::CONF_IDLE_DELAY_ID,ui->spinBoxIdleDelay->value());
     settings.db()->setValue(cDataManager::CONF_AUTOSAVE_DELAY_ID,ui->spinBoxAutosaveDelay->value());
-    settings.db()->setValue(cDataManager::CONF_STORAGE_FILENAME_ID,ui->lineEditStorageFileName->text());
+    settings.db()->setValue(cDataManager::CONF_STORAGE_FILENAME_ID,ui->lineEditStorageFileName->text().trimmed());
     settings.db()->setValue(cDataManager::CONF_CLIENT_MODE_ID,ui->checkBoxClientMode->isChecked());
     settings.db()->setValue(cDataManager::CONF_CLIENT_MODE_HOST_ID,ui->lineEditClientModeHost->text());
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_MESSAGE_ID,ui->lineEditNotif_Message->text());

@@ -94,12 +94,10 @@ public:
     }
 };
 
-QString getWindowApplication(HWND Wnd)
+QString GetAppNameFromPID(DWORD pid)
 {
     static cGetProcessImageFileName processFileName;
-    QString appFileName;
-    DWORD pid;
-    GetWindowThreadProcessId(Wnd, &pid);
+    QString appFileName = "";
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION , FALSE, pid);
     if (hProcess != 0){
         try {
@@ -114,10 +112,43 @@ QString getWindowApplication(HWND Wnd)
         }
         CloseHandle(hProcess);
     }
+    return appFileName;
+}
+
+struct sAppPIDs{
+    DWORD ownerPID;
+    DWORD childPID;
+};
+
+BOOL CALLBACK EnumChildWindowsProc(HWND wnd, LPARAM lp)
+{
+    sAppPIDs* pids = (sAppPIDs*)lp;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(wnd, &pid);
+    if (pid!=pids->ownerPID)
+        pids->childPID = pid;
+    return TRUE;
+}
+
+QString getWindowApplicationModernWin(HWND wnd, DWORD pid)
+{
+    sAppPIDs pids;
+    pids.childPID = pid;
+    pids.ownerPID = pid;
+    EnumChildWindows(wnd,EnumChildWindowsProc,(LPARAM)&pids);
+    return GetAppNameFromPID(pids.childPID);
+}
+
+QString getWindowApplication(HWND wnd)
+{
+    QString appFileName;
+    DWORD pid;
+    GetWindowThreadProcessId(wnd, &pid);
+    appFileName = GetAppNameFromPID(pid);
     QFileInfo fInfo(appFileName);
     QString fName = fInfo.baseName().toUpper();
     if (fName=="WWAHOST" || fName=="APPLICATIONFRAMEHOST"){
-        TODO - get modern app file name
+        return getWindowApplicationModernWin(wnd,pid);
     }
 
     return appFileName;
