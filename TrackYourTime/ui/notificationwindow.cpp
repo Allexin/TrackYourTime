@@ -15,7 +15,7 @@ NotificationWindow::NotificationWindow(cDataManager *dataManager) :
     connect(&m_Timer,SIGNAL(timeout()),this,SLOT(onTimeout()));
     connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onButtonApply()));
     ui->centralwidget->installEventFilter(this);
-    ui->labelCategory->installEventFilter(this);
+    ui->groupBoxCategory->installEventFilter(this);
     ui->labelMessage->installEventFilter(this);
     ui->pushButtonApply->installEventFilter(this);
     ui->comboBoxCategory->installEventFilter(this);
@@ -41,7 +41,7 @@ void NotificationWindow::enterEvent(QEvent *event)
 bool NotificationWindow::eventFilter(QObject *object, QEvent *event)
 {
     Q_UNUSED(object)
-    if (event->type()==QEvent::MouseButtonPress){
+    if (event->type()==QEvent::MouseButtonPress && m_CanCloseInterrupt){
         m_ClosingInterrupted = true;
         setWindowOpacity(1.0);
     }
@@ -63,7 +63,13 @@ void NotificationWindow::stop()
 void NotificationWindow::onButtonApply()
 {
     if (m_AppIndex>-1){
-        m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()] = ui->comboBoxCategory->currentIndex();
+        if (ui->checkBoxAllProfiles->isChecked()){
+            for (int i = 0; i<m_DataManager->profilesCount(); i++)
+                m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[i] = ui->comboBoxCategory->currentIndex();
+        }
+        else{
+            m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()] = ui->comboBoxCategory->currentIndex();
+        }
     }
     stop();
 }
@@ -97,6 +103,7 @@ void NotificationWindow::onShow()
         return;
     QString appName = tr("UNKNOWN");
     QString appState = tr("UNKNOWN");
+    QString appCategory = tr("NONE");
     int profile = m_DataManager->getCurrentProfileIndex();
     int category = -1;
     m_AppIndex = m_DataManager->getCurrentAppliction();
@@ -109,31 +116,33 @@ void NotificationWindow::onShow()
         else
             appState=info->activities[m_ActivityIndex].name;
         category = info->activities[m_ActivityIndex].categories[profile];
+        if (category==-1)
+            appCategory=tr("Uncategorized");
+        else
+            appCategory=m_DataManager->categories(category)->name;
     }
     QString message = m_ConfMessageFormat;
     message = message.replace("%PROFILE%",m_DataManager->profiles(profile)->name);
     message = message.replace("%APP_NAME%",appName);
     message = message.replace("%APP_STATE%",appState);
+    message = message.replace("%APP_CATEGORY%",appCategory);
     ui->labelMessage->setText(message);
 
-    if (category==-1 && m_AppIndex>-1){
-        ui->labelCategory->setVisible(true);
-        ui->checkBoxAllProfiles->setVisible(true);
-        ui->comboBoxCategory->setVisible(true);
+    if (category==-1 && m_AppIndex>-1 && m_ConfMoves!=1){
         ui->comboBoxCategory->clear();
         for (int i = 0; i<m_DataManager->categoriesCount(); i++)
             ui->comboBoxCategory->addItem(m_DataManager->categories(i)->name);
         ui->comboBoxCategory->setCurrentIndex(category);
-        ui->pushButtonApply->setVisible(true);
+
+        ui->groupBoxCategory->setVisible(true);
+        m_CanCloseInterrupt = true;
     }
     else{
-        ui->labelCategory->setVisible(false);
-        ui->checkBoxAllProfiles->setVisible(false);
-        ui->comboBoxCategory->setVisible(false);
-        ui->pushButtonApply->setVisible(false);
+        ui->groupBoxCategory->setVisible(false);
+        m_CanCloseInterrupt = false;
     }
     setWindowOpacity(m_ConfOpacity==100?1.0:m_ConfOpacity/100.f);
-    setGeometry(m_ConfPosition.x(),m_ConfPosition.y(),m_ConfSize.x(),m_ConfSize.y());
+    setGeometry(m_ConfPosition.x(),m_ConfPosition.y(),m_ConfSize.x(),0);
 
     m_TimerCounter = 0;
     m_ClosingInterrupted = false;

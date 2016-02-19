@@ -20,6 +20,7 @@ TRANSLATIONS = lang_en.ts  lang_ru.ts
 QMAKE_CXXFLAGS += -DQT_COMPILING_QSTRING_COMPAT_CPP
 
 unix:!mac:QMAKE_CXXFLAGS += -std=c++0x
+unix:!mac: LIBS += -rdynamic
 
 win32:QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
 

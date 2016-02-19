@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>980</width>
-    <height>563</height>
+    <height>520</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -67,36 +67,6 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>How often check system state(seconds):</string>
-        </property>
-        <property name="scaledContents">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBoxUpdateDelay">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>60</number>
         </property>
        </widget>
       </item>
@@ -238,19 +208,19 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>3</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QRadioButton" name="radioButtonNotif_Off">
@@ -276,7 +246,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="spacing">
-          <number>3</number>
+          <number>0</number>
          </property>
          <property name="leftMargin">
           <number>40</number>
@@ -340,27 +310,6 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Hide after(mouse moves. 0=ignore mouse)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="spinBoxNotif_Moves">
-             <property name="maximum">
-              <number>5</number>
-             </property>
-             <property name="value">
-              <number>1</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
           <layout class="QHBoxLayout" name="horizontalLayout_11">
            <item>
             <widget class="QLabel" name="label_8">
@@ -383,6 +332,51 @@
             </widget>
            </item>
           </layout>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="title">
+            <string>Mouse interactions</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="radioButtonNotif_HideOnMouse1">
+              <property name="text">
+               <string>Hide notification on mouse move and never show category selection menu</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButtonNotif_NerverHideOnMouse">
+              <property name="text">
+               <string>Never hide notification on mouse move(hide only by timer) and show category selection menu if category not selected</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButtonNotif_HideOnMouse3">
+              <property name="text">
+               <string>Hide notification on some mouse moves and show category selection meny if category not selected(recomended)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_9">
@@ -410,7 +404,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="pushButtonSetDefaultMessage">
              <property name="text">
               <string>Set default message</string>
              </property>

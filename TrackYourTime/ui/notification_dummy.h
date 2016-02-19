@@ -15,7 +15,7 @@ public:
     explicit notification_dummy(QWidget *parent = 0);
     ~notification_dummy();
 
-    void showWithMessage(const QString& format);
+    void showWithMessage(const QString& format, bool compactMode);
 private:
     Ui::notification_dummy *ui;
 signals:

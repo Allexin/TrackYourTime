@@ -55,6 +55,7 @@ public slots:
 
     void handleButtonSetNotificationWindow();
     void handleButtonResetNotificationWindow();
+    void handleButtonSetDefaultMessage();
 
     void onNotificationSetPosAndSize();
 };

@@ -122,16 +122,15 @@ void cExternalTrackers::sendOverrideTracker(const QString &AppName, const QStrin
 {
     QString data;
     data += "PREFIX="+OVERRIDE_TRACKER_PREFIX;
-    data += ";VERSION=1";
-    data += ";APP_FILENAME="+AppName;
-    data += ";STATE="+CurrentState;
-    data += ";USER_INACTIVE_TIME="+QString::number(idleTime);
+    data += "&VERSION=1";
+    data += "&APP_FILENAME="+AppName;
+    data += "&STATE="+CurrentState;
+    data += "&USER_INACTIVE_TIME="+QString::number(idleTime);
     m_Client.writeDatagram(data.toUtf8(),QHostAddress(host),EXTERNAL_TRACKERS_UDP_PORT);
 }
 
 void cExternalTrackers::readyRead()
 {
-    qInfo() << "external tracker info";
     QByteArray buffer;
     buffer.resize(m_Server.pendingDatagramSize());
 
@@ -145,7 +144,7 @@ void cExternalTrackers::readyRead()
 
 void cExternalTrackers::onDataReady(QString data)
 {
-    QStringList list = data.split(';');
+    QStringList list = data.split('&');
     QMap<QString,QString> pairs;
     for (int i = 0; i<list.size(); i++){
         QStringList pair = list[i].split('=');
@@ -220,10 +219,10 @@ void cHTTPTrackerServer::onReadyRead()
 
     QString data = socket->readAll();
     data = data.split("\r")[0];
-    int dataPos = data.indexOf("[");
+    int dataPos = data.indexOf("?");
     if (dataPos>-1){
         data = data.mid(dataPos+1);
-        dataPos = data.indexOf("]");
+        dataPos = data.indexOf(" ");
         if (dataPos>-1){
             data = data.mid(0,dataPos);
             emit dataReady(data);

@@ -32,9 +32,9 @@ function extractDomain(url) {
 var delimeter = ":";
 
 function sendState(url){
-    var TRACKER_INFO='PREFIX=TYTET;VERSION=1;APP_1=chrome.exe;APP_2=chromium.exe;APP_3=Google-chrome-stable;APP_4=google-chrome;APP_5=chromium-browser;STATE='+extractDomain(url);
+    var TRACKER_INFO='PREFIX=TYTET&VERSION=1&APP_1=chrome.exe&APP_2=chromium.exe&APP_3=Google-chrome-stable&APP_4=google-chrome&APP_5=chromium-browser&STATE='+extractDomain(url);
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:25856?data=["+TRACKER_INFO+"]", true);
+    xhr.open("GET", "http://127.0.0.1:25856?"+TRACKER_INFO, true);
     xhr.send();     
     var currentTime = new Date();
     var h = currentTime.getHours();

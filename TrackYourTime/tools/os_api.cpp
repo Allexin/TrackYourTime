@@ -114,6 +114,12 @@ QString getWindowApplication(HWND Wnd)
         }
         CloseHandle(hProcess);
     }
+    QFileInfo fInfo(appFileName);
+    QString fName = fInfo.baseName().toUpper();
+    if (fName=="WWAHOST" || fName=="APPLICATIONFRAMEHOST"){
+        TODO - get modern app file name
+    }
+
     return appFileName;
 }
 

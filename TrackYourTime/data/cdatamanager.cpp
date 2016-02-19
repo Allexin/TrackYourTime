@@ -461,6 +461,7 @@ void cDataManager::saveDB()
 
 void cDataManager::loadDB()
 {
+    qDebug() << "cDataManager: start DB loading\n";
     for (int i = 0; i<m_Applications.size(); i++)
         delete m_Applications[i];
     m_Applications.resize(0);
@@ -532,6 +533,7 @@ void cDataManager::loadDB()
 
         file.close();
     }
+    qDebug() << "cDataManager: end DB loading\n";
 }
 
 void cDataManager::loadPreferences()

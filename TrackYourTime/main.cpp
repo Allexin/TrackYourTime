@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
 #endif
 
 
+    qDebug() << "application start\n";
 
     cSettings settings;
     QString Language = QLocale::system().name();
@@ -72,52 +73,66 @@ int main(int argc, char *argv[])
         settings.db()->sync();
     }
 
+    qDebug() << "laod translation\n";
     QTranslator translator;
     translator.load("lang_" + Language,QDir::currentPath()+"/data/languages");
     QApplication::installTranslator(&translator);
 
+    qDebug() << "init datamanager\n";
     cDataManager datamanager;
+    qDebug() << "init schedule\n";
     cSchedule schedule(&datamanager);
 
+    qDebug() << "init tray icon\n";
     cTrayIcon trIcon(&datamanager);
     QObject::connect(&datamanager, SIGNAL(trayActive()), &trIcon, SLOT(setActive()));
     QObject::connect(&datamanager, SIGNAL(traySleep()), &trIcon, SLOT(setInactive()));
     QObject::connect(&datamanager, SIGNAL(trayShowHint(QString)), &trIcon, SLOT(showHint(QString)));
     QObject::connect(&datamanager, SIGNAL(profilesChanged()), &trIcon, SLOT(onProfilesChange()));
 
+    qDebug() << "init applications window\n";
     ApplicationsWindow applicationsWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showApplications()), &applicationsWindow, SLOT(show()));
     QObject::connect(&datamanager, SIGNAL(profilesChanged()), &applicationsWindow, SLOT(onProfilesChange()));
     QObject::connect(&datamanager, SIGNAL(applicationsChanged()), &applicationsWindow, SLOT(onApplicationsChange()));
 
+    qDebug() << "init profiles window\n";
     ProfilesWindow profilesWindow(&datamanager);
     QObject::connect(&applicationsWindow, SIGNAL(showProfiles()), &profilesWindow, SLOT(show()));
 
+    qDebug() << "init app settings window\n";
     App_SettingsWindow app_settingsWindow(&datamanager);
     QObject::connect(&applicationsWindow, SIGNAL(showAppSettings(int)), &app_settingsWindow, SLOT(showApp(int)));
     QObject::connect(&datamanager, SIGNAL(debugScriptResult(QString,sSysInfo)), &app_settingsWindow, SLOT(onScriptResult(QString,sSysInfo)));
 
+    qDebug() << "init settings window\n";
     SettingsWindow settingsWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showSettings()), &settingsWindow, SLOT(show()));
     QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &datamanager, SLOT(onPreferencesChanged()));
 
+    qDebug() << "init schedule window\n";
     ScheduleWindow scheduleWindow(&datamanager,&schedule);
     QObject::connect(&datamanager, SIGNAL(profilesChanged()), &scheduleWindow, SLOT(rebuild()));
     QObject::connect(&trIcon, SIGNAL(showSchedule()), &scheduleWindow, SLOT(show()));
 
+    qDebug() << "init statistic window\n";
     StatisticWindow statisticWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(show()));
 
+    qDebug() << "init about window\n";
     AboutWindow aboutWindow;
     QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(show()));
 
+    qDebug() << "init notification window\n";
     NotificationWindow notificationWindow(&datamanager);
     QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &notificationWindow, SLOT(onPreferencesChanged()));
     QObject::connect(&datamanager, SIGNAL(showNotification()), &notificationWindow, SLOT(onShow()));
 
+    qDebug() << "start schedule\n";
     schedule.start();
 
+    qDebug() << "start app loop\n";
     int result = a.exec();
-
+    qDebug() << "application close\n";
     return result;
 }

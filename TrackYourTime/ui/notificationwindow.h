@@ -24,6 +24,7 @@ protected:
     int                 m_TimerCounter;
     bool                m_ClosingInterrupted;
     int                 m_EntersCount;
+    bool                m_CanCloseInterrupt;
 
     int                 m_AppIndex;
     int                 m_ActivityIndex;

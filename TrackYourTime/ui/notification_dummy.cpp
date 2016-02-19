@@ -14,9 +14,13 @@ notification_dummy::~notification_dummy()
     delete ui;
 }
 
-void notification_dummy::showWithMessage(const QString &format)
+void notification_dummy::showWithMessage(const QString &format, bool compactMode)
 {
     ui->labelMessage->setText(format);
+    ui->checkBoxAllProfiles->setVisible(!compactMode);
+    ui->comboBoxCategories->setVisible(!compactMode);
+    ui->labelCategory->setVisible(!compactMode);
+
     show();
 }
 

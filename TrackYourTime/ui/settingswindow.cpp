@@ -26,7 +26,6 @@ void SettingsWindow::loadPreferences()
 {
     cSettings settings;
 
-    int UpdateDelay = settings.db()->value(cDataManager::CONF_UPDATE_DELAY_ID,cDataManager::DEFAULT_SECONDS_UPDATE_DELAY).toInt();
     int IdleDelay = settings.db()->value(cDataManager::CONF_IDLE_DELAY_ID,cDataManager::DEFAULT_SECONDS_IDLE_DELAY).toInt();
     int AutoSaveDelay = settings.db()->value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();
     cDataManager::eNotificationType NotificationType = (cDataManager::eNotificationType)settings.db()->value(cDataManager::CONF_NOTIFICATION_TYPE_ID,1).toInt();
@@ -49,7 +48,13 @@ void SettingsWindow::loadPreferences()
 
     ui->lineEditNotif_Message->setText(NotificationMessage);
     ui->spinBoxNotif_Delay->setValue(NotificationDelay);
-    ui->spinBoxNotif_Moves->setValue(NotificationMoves);
+    if (NotificationMoves==0)
+        ui->radioButtonNotif_NerverHideOnMouse->setChecked(true);
+    else
+    if (NotificationMoves==1)
+        ui->radioButtonNotif_HideOnMouse1->setChecked(true);
+    else
+        ui->radioButtonNotif_HideOnMouse3->setChecked(true);
     ui->spinBoxNotif_Opacity->setValue(NotificationOpacity);
 
     ui->comboBoxLanguage->setCurrentIndex(-1);
@@ -58,7 +63,6 @@ void SettingsWindow::loadPreferences()
             ui->comboBoxLanguage->setCurrentIndex(i);
             break;
         }
-    ui->spinBoxUpdateDelay->setValue(UpdateDelay);
     ui->spinBoxIdleDelay->setValue(IdleDelay);
     ui->spinBoxAutosaveDelay->setValue(AutoSaveDelay);
     ui->lineEditStorageFileName->setText(StorageFileName);
@@ -85,7 +89,6 @@ void SettingsWindow::applyPreferences()
 {
     cSettings settings;
 
-    settings.db()->setValue(cDataManager::CONF_UPDATE_DELAY_ID,ui->spinBoxUpdateDelay->value());
     settings.db()->setValue(cDataManager::CONF_IDLE_DELAY_ID,ui->spinBoxIdleDelay->value());
     settings.db()->setValue(cDataManager::CONF_AUTOSAVE_DELAY_ID,ui->spinBoxAutosaveDelay->value());
     settings.db()->setValue(cDataManager::CONF_STORAGE_FILENAME_ID,ui->lineEditStorageFileName->text());
@@ -95,8 +98,19 @@ void SettingsWindow::applyPreferences()
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_POSITION_ID,m_NotifPos);
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_SIZE_ID,m_NotifSize);
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_SECONDS_ID,ui->spinBoxNotif_Delay->value());
-    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID,ui->spinBoxNotif_Moves->value());
+
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_OPACITY_ID,ui->spinBoxNotif_Opacity->value());
+
+    int movesToHide = 3;
+    if (ui->radioButtonNotif_NerverHideOnMouse->isChecked())
+        movesToHide = 0;
+    else
+    if (ui->radioButtonNotif_HideOnMouse1->isChecked())
+        movesToHide = 1;
+    else
+    if (ui->radioButtonNotif_HideOnMouse3->isChecked())
+        movesToHide = 3;
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID,movesToHide);
 
     if (ui->comboBoxLanguage->currentIndex()>-1)
         settings.db()->setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
@@ -125,7 +139,7 @@ void SettingsWindow::applyPreferences()
 
 QString SettingsWindow::getDefaultMessage()
 {
-    return tr("<center>Current profile: %PROFILE%<br>Application: %APP_NAME%<br>State: %APP_STATE%</center>");
+    return tr("<center>Current profile: %PROFILE%<br>Application: %APP_NAME%<br>State: %APP_STATE%<br>Category: %APP_CATEGORY%</center>");
 }
 
 SettingsWindow::SettingsWindow(cDataManager *DataManager) : QMainWindow(0),
@@ -139,6 +153,7 @@ SettingsWindow::SettingsWindow(cDataManager *DataManager) : QMainWindow(0),
     connect(ui->pushButtonBrowseStorageFileName, SIGNAL (released()),this, SLOT (handleButtonBrowse()));
     connect(ui->pushButtonSetNotificationWindow, SIGNAL (released()),this, SLOT (handleButtonSetNotificationWindow()));
     connect(ui->pushButtonResetNotificationWindow, SIGNAL (released()),this, SLOT (handleButtonResetNotificationWindow()));
+    connect(ui->pushButtonSetDefaultMessage,SIGNAL(released()),this, SLOT(handleButtonSetDefaultMessage()));
 
     QString languagesPath = QDir::currentPath()+"/data/languages";
     QStringList languagesList = QDir(languagesPath).entryList(QStringList() << "*.qm");
@@ -197,7 +212,7 @@ void SettingsWindow::handleButtonBrowse()
 
 void SettingsWindow::handleButtonSetNotificationWindow()
 {
-    m_NotificationSetupWindow->showWithMessage(ui->lineEditNotif_Message->text());
+    m_NotificationSetupWindow->showWithMessage(ui->lineEditNotif_Message->text(), ui->radioButtonNotif_HideOnMouse1->isChecked());
     m_NotificationSetupWindow->setGeometry(m_NotifPos.x(),m_NotifPos.y(),m_NotifSize.x(),m_NotifSize.y());
     m_NotificationSetupWindow->setWindowOpacity(ui->spinBoxNotif_Opacity->value()/100.f);
 }
@@ -207,6 +222,11 @@ void SettingsWindow::handleButtonResetNotificationWindow()
     m_NotifPos = QPoint(0,0);
     m_NotifSize = QPoint(250,100);
     m_NotificationSetupWindow->setGeometry(m_NotifPos.x(),m_NotifPos.y(),m_NotifSize.x(),m_NotifSize.y());
+}
+
+void SettingsWindow::handleButtonSetDefaultMessage()
+{
+    ui->lineEditNotif_Message->setText(getDefaultMessage());
 }
 
 void SettingsWindow::onNotificationSetPosAndSize()

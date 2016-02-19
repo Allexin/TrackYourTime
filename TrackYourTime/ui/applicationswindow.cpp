@@ -33,14 +33,16 @@ void ApplicationsWindow::rebuildProfilesList()
     m_LoadingData = false;
 }
 
-QTreeWidgetItem* createTreeItemCategory(int index, QColor color, const QString& text){
+QIcon createColorIcon(QColor color){
     QPixmap pixmap(16,16);
     pixmap.fill(color);
-    QIcon icon(pixmap);
+    return QIcon(pixmap);
+}
 
+QTreeWidgetItem* createTreeItemCategory(int index, QColor color, const QString& text){
     QTreeWidgetItem* item = new QTreeWidgetItem(cApplicationsTreeWidget::TREE_ITEM_TYPE_CATEGORY);
     item->setText(0,text);
-    item->setIcon(0,icon);
+    item->setIcon(0,createColorIcon(color));
     item->setData(0,Qt::UserRole,index);
     return item;
 }
@@ -63,7 +65,7 @@ void ApplicationsWindow::rebuildApplicationsList()
         categories[i] = createTreeItemCategory(i,category->color,category->name);
         categories[i]->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled);
         ui->treeWidgetApplications->addTopLevelItem(categories[i]);
-    }
+    }    
     QTreeWidgetItem* uncategorized = createTreeItemCategory(-1,QColor(Qt::gray),tr("Uncategorized"));
     uncategorized->setFlags(Qt::ItemIsDropEnabled | Qt::ItemIsEnabled);
     ui->treeWidgetApplications->addTopLevelItem(uncategorized);
@@ -98,6 +100,8 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                             if (app->trackerType==sAppInfo::eTrackerType::TT_CUSTOM_SCRIPT || app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
                                 item->setIcon(0,m_ScriptDetector);
+                            else
+                                item->setIcon(0,createColorIcon(QColor(Qt::gray)));
                             item->setFlags(Qt::ItemIsEnabled);
                             uncategorized->addChild(item);
                             app_uncategorized = item;
@@ -107,6 +111,7 @@ void ApplicationsWindow::rebuildApplicationsList()
                     else{
                         parent = app_in_categories[app->activities[j].categories[currentProfile]];
                         if (parent==NULL){
+                            const sCategory* category = m_DataManager->categories(app->activities[j].categories[currentProfile]);
                             QTreeWidgetItem* item = new QTreeWidgetItem(cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION);
                             item->setText(0,app->activities[0].name);
                             item->setToolTip(0,app->path+"/"+app->activities[0].name);
@@ -116,6 +121,8 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                             if (app->trackerType==sAppInfo::eTrackerType::TT_CUSTOM_SCRIPT || app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
                                 item->setIcon(0,m_ScriptDetector);
+                            else
+                                item->setIcon(0,createColorIcon(category->color));
                             item->setFlags(Qt::ItemIsEnabled);
                             categories[app->activities[j].categories[currentProfile]]->addChild(item);
                             app_in_categories[app->activities[j].categories[currentProfile]] = item;

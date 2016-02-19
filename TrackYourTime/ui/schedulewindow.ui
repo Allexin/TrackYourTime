@@ -102,7 +102,7 @@
              <item>
               <widget class="QLabel" name="label_4">
                <property name="text">
-                <string>Condition(for e.g .*15:37 or .*Mon.*12:40 )</string>
+                <string>Condition(e.g .*15:37 or .*Mon.*12:40 )</string>
                </property>
               </widget>
              </item>
