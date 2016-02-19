@@ -2,8 +2,6 @@
 #include <QDateTime>
 #include "../tools/tools.h"
 
-const QString cScheduleItem::scheduleActionNames[cScheduleItem::SA_COUNT] = {tr("Set profile")};
-
 QString cSchedule::getCurrentDateTime()
 {
     return QDateTime::currentDateTime().toString("ddd yyyy.mm.dd HH:mm");
@@ -121,4 +119,16 @@ void cScheduleItem::process(const QString &currentDateTime, cDataManager* dataMa
             break;
         }
     }
+}
+
+QString cScheduleItem::getActionName(cScheduleItem::eScheduleAction action)
+{
+    switch (action){
+        case SA_SET_PROFILE:{
+            return tr("Set profile");
+        };
+        break;
+    }
+
+    return "UNKNOWN_ACTION";
 }

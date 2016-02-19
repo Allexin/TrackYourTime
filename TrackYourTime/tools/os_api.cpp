@@ -117,14 +117,19 @@ QString getWindowApplication(HWND Wnd)
     return appFileName;
 }
 
-sAppFileName getCurrentApplication()
+sSysInfo getCurrentApplication()
 {
-    QFileInfo fileInfo(getWindowApplication(GetForegroundWindow()));
-    sAppFileName fileName;
-    fileName.fileName = fileInfo.fileName();
-    fileName.path = fileInfo.absolutePath();
+    HWND wnd = GetForegroundWindow();
+    QFileInfo fileInfo(getWindowApplication(wnd));
+    sSysInfo appInfo;
+    appInfo.fileName = fileInfo.fileName();
+    appInfo.path = fileInfo.absolutePath();
+    char title[256];
+    int l = GetWindowTextA(wnd,title,256);
+    if (l>0)
+        appInfo.title = title;
 
-    return fileName;
+    return appInfo;
 }
 
 static bool KeyboardState[256];

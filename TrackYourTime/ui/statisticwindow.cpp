@@ -291,8 +291,9 @@ void StatisticWindow::onUpdatePress()
 
 
 
-void cStatisticDiagramWidget::paintEvent(QPaintEvent *event __attribute__ ((unused)))
+void cStatisticDiagramWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     QPainter painter( this );
     painter.setPen( QPen( Qt::black, 1 ) );
 

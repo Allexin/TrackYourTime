@@ -22,7 +22,7 @@ void ScheduleWindow::rebuild()
 {
     ui->comboBoxAction->clear();
     for (int i = 0; i<cScheduleItem::SA_COUNT; i++)
-        ui->comboBoxAction->addItem(cScheduleItem::scheduleActionNames[i],i);
+        ui->comboBoxAction->addItem(cScheduleItem::getActionName((cScheduleItem::eScheduleAction)i),i);
     ui->comboBoxAction->setCurrentIndex(0);
 
     ui->comboBoxProfiles->clear();
@@ -36,7 +36,7 @@ void ScheduleWindow::rebuild()
         const cScheduleItem* action = m_Schedule->getItem(i);
 
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0,cScheduleItem::scheduleActionNames[action->action()]);
+        item->setText(0,cScheduleItem::getActionName(action->action()));
         item->setData(0,Qt::UserRole,i);
         if (action->action()==cScheduleItem::SA_SET_PROFILE){
             const sProfile* profile = m_DataManager->profiles(action->param().toInt());

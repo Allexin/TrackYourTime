@@ -9,13 +9,16 @@
 
 class cScheduleItem: public QObject{
     Q_OBJECT
+
 public:
     enum eScheduleAction{
-        SA_SET_PROFILE=0,
+        SA_SET_PROFILE = 0,
         SA_COUNT
     };
-    static const QString scheduleActionNames[SA_COUNT];
+
 protected:
+
+
     eScheduleAction     m_Action;
     QString             m_Param;
     QRegExp             m_RegExp;
@@ -26,6 +29,7 @@ public:
     eScheduleAction action() const{return m_Action;}
     QString param() const{return m_Param;}
     QString condition() const{return m_RegExp.pattern();}
+    static QString getActionName(eScheduleAction action);
 };
 
 class cSchedule : public QObject
