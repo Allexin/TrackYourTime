@@ -21,6 +21,7 @@
 
 #include <QMainWindow>
 #include "../data/cdatamanager.h"
+#include "notification_dummy.h"
 
 namespace Ui {
 class SettingsWindow;
@@ -31,8 +32,12 @@ class SettingsWindow : public QMainWindow
     Q_OBJECT
 protected:
     cDataManager*       m_DataManager;
+    QPoint              m_NotifPos;
+    QPoint              m_NotifSize;
+    notification_dummy* m_NotificationSetupWindow;
     void loadPreferences();
     void applyPreferences();
+    QString getDefaultMessage();
 public:
     explicit SettingsWindow(cDataManager* DataManager);
     ~SettingsWindow();
@@ -48,6 +53,10 @@ public slots:
     void handleButtonCancel();
     void handleButtonBrowse();
 
+    void handleButtonSetNotificationWindow();
+    void handleButtonResetNotificationWindow();
+
+    void onNotificationSetPosAndSize();
 };
 
 #endif // SETTINGSWINDOW_H
