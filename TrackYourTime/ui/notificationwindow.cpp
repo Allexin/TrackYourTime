@@ -3,7 +3,7 @@
 #include "../tools/tools.h"
 
 NotificationWindow::NotificationWindow(cDataManager *dataManager) :
-    QMainWindow(0),
+    QMainWindow(0,Qt::Dialog),
     ui(new Ui::NotificationWindow)
 {
     setWindowFlags(windowFlags() | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
