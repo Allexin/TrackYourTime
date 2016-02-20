@@ -29,8 +29,11 @@ struct sSysInfo{
 };
 
 sSysInfo getCurrentApplication();
+
 bool isKeyboardChanged();
 QPoint getMousePos();
+
+QString getUserName();
 
 void setAutorun();
 void removeAutorun();

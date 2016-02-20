@@ -65,6 +65,11 @@ void writeStringListToFile(QStringList& lines, const QString& FileName, const QS
 #ifdef Q_OS_WIN
 #include <windows.h>
 
+QString getUserName()
+{
+    return qgetenv("USERNAME");
+}
+
 typedef BOOL (__stdcall *GetProcessImageFileNamePtr)(HANDLE, char* ,DWORD);
 
 class cGetProcessImageFileName{
@@ -211,6 +216,11 @@ void removeAutorun()
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+
+QString getUserName()
+{
+    return qgetenv("USER");
+}
 
 bool GetActiveWindowClassAndTitle(QString& windowClass,QString& windowTitle)
 {
@@ -379,6 +389,11 @@ void removeAutorun()
 //#include </System/Library/Frameworks/ApplicationServices.framework/Frameworks/CoreGraphics.framework/Headers/CGWindow.h>
 #include <ApplicationServices/ApplicationServices.h>
 #include <CoreFoundation/CoreFoundation.h>
+
+QString getUserName()
+{
+    return qgetenv("USER");
+}
 
 QString uniCFStrToQStr(const CFStringRef cfString)
 {
