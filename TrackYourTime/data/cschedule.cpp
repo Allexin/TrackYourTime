@@ -132,6 +132,10 @@ QString cScheduleItem::getActionName(cScheduleItem::eScheduleAction action)
             return tr("Set profile");
         };
         break;
+        case SA_COUNT:{
+            //WAAAT???
+        }
+        break;
     }
 
     return "UNKNOWN_ACTION";

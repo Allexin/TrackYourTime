@@ -297,11 +297,11 @@ void cDataManager::process()
         if (m_CurrentApplicationIndex>-1){
             m_ExternalTrackers.sendOverrideTracker(m_Applications[m_CurrentApplicationIndex]->activities[0].name,
                                                    m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].name,
-                                                   m_IdleCounter,
+                                                   m_IdleCounter==m_UpdateDelay?0:m_IdleCounter,
                                                    m_ClientModeHost);
         }
         else{
-            m_ExternalTrackers.sendOverrideTracker("","",m_IdleCounter,m_ClientModeHost);
+            m_ExternalTrackers.sendOverrideTracker("","",m_IdleCounter==m_UpdateDelay?0:m_IdleCounter,m_ClientModeHost);
         }
     }
 }
@@ -348,16 +348,10 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
         emit debugScriptResult(m_ScriptsManager.evalute(FileInfo,m_DebugScript),FileInfo);
     }
 
-    if (appInfo->trackerType==sAppInfo::eTrackerType::TT_EXECUTABLE_DETECTOR)
-        return 0;
-
     QString activity;
 
     switch(appInfo->trackerType){
-        case sAppInfo::eTrackerType::TT_EXECUTABLE_DETECTOR:{
-            return 0;
-        };
-            break;
+        case sAppInfo::eTrackerType::TT_EXECUTABLE_DETECTOR:
         case sAppInfo::eTrackerType::TT_EXTERNAL_DETECTOR:{
             if (!m_ExternalTrackers.getExternalTrackerState(appInfo->activities[0].name,activity))
                 activity="";

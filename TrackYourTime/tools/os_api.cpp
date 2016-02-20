@@ -164,12 +164,12 @@ sSysInfo getCurrentApplication()
     HWND wnd = GetForegroundWindow();
     QFileInfo fileInfo(getWindowApplication(wnd));
     sSysInfo appInfo;
-    appInfo.fileName = fileInfo.fileName();
-    appInfo.path = fileInfo.absolutePath();
+    appInfo.fileName = fileInfo.fileName().simplified();
+    appInfo.path = fileInfo.absolutePath().simplified();
     char title[256];
     int l = GetWindowTextA(wnd,title,256);
     if (l>0)
-        appInfo.title = title;
+        appInfo.title = title.simplified();
 
     return appInfo;
 }
@@ -280,8 +280,8 @@ sSysInfo getCurrentApplication()
     QString windowClass;
     QString windowTitle;
     if (GetActiveWindowClassAndTitle(windowClass,windowTitle)){
-        fileInfo.fileName = windowClass;
-        fileInfo.title = windowTitle;
+        fileInfo.fileName = windowClass.simplified();
+        fileInfo.title = windowTitle.simplified();
     }
 
     return fileInfo;
@@ -409,9 +409,10 @@ QString uniCFStrToQStr(const CFStringRef cfString)
 }
 
 
-sAppFileName getCurrentApplication()
+sSysInfo getCurrentApplication()
 {
     QString appOwner;
+    QString appTitle;
 
     //get visible windows from front to back. first window with layer 0 - current window
     CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
@@ -439,20 +440,23 @@ sAppFileName getCurrentApplication()
          */
         dictionary = (CFDictionaryRef) CFArrayGetValueAtIndex(windowList, cfiI);
         CFStringRef owner = reinterpret_cast<CFStringRef>(CFDictionaryGetValue(dictionary,kCGWindowOwnerName));
+        CFStringRef title = reinterpret_cast<CFStringRef>(CFDictionaryGetValue(dictionary,kCGWindowName));
         CFNumberRef window_layer = reinterpret_cast<CFNumberRef>(CFDictionaryGetValue(dictionary, kCGWindowLayer));
         int layer;
         CFNumberGetValue(window_layer, kCFNumberIntType, &layer);
         if (layer==0){
             appOwner = uniCFStrToQStr(owner);
+            appTitle = uniCFStrToQStr(title);
             break;
         }
     }
 
-    sAppFileName fileName;
-    fileName.fileName = appOwner;
-    fileName.path = "";
+    sSysInfo fileInfo;
+    fileInfo.fileName = appOwner.simplified();
+    fileInfo.path = "";
+    fileInfo.title = appTitle.simplified();
 
-    return fileName;
+    return fileInfo;
 }
 
 //i know, this is wrong way. but it's simple, and i do not need slot/signals functionaloty in this part of code.
@@ -464,6 +468,8 @@ private:
 
     // The following callback method is invoked on every keypress.
     static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+        Q_UNUSED(proxy)
+        Q_UNUSED(refcon)
         if (type != kCGEventKeyDown && type != kCGEventFlagsChanged && type != kCGEventKeyUp) {
             return event;
         }
@@ -478,7 +484,7 @@ private:
         m_KeyboardChanged = false;
 
         CGEventMask eventMask = (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged));
-        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, 0, eventMask, CGEventCallback, NULL );
+        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionDefault, eventMask, CGEventCallback, NULL );
 
         if(!eventTap) {
             qCritical() << "ERROR: Unable to create event tap.\n";

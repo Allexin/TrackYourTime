@@ -10,10 +10,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 mac:LIBS += -framework CoreGraphics
 mac:LIBS += -framework AppKit
+mac: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.8
 
 TARGET = TrackYourTime
 TEMPLATE = app
 CONFIG+=address_sanitizer
+CONFIG+=C++11
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 

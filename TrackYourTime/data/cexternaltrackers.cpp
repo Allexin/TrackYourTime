@@ -32,7 +32,7 @@ cExternalTrackers::cExternalTrackers(QObject *parent) : QObject(parent),m_HTTPSe
 }
 
 void cExternalTrackers::addPair(const QString& AppName, const QString& CurrentState)
-{
+{    
     for (int i = 0; i<m_Pairs.size(); i++){
         if (m_Pairs[i].HostAppFileName==AppName){
             m_Pairs[i].ClientState = CurrentState;
@@ -145,7 +145,8 @@ void cExternalTrackers::readyRead()
 
 void cExternalTrackers::onDataReady(QString data)
 {
-    QStringList list = data.split('&');
+    QString dataFix = data.simplified().replace("%20"," ");
+    QStringList list = dataFix.split('&');
     QMap<QString,QString> pairs;
     for (int i = 0; i<list.size(); i++){
         QStringList pair = list[i].split('=');

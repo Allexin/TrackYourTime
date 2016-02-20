@@ -1,3 +1,4 @@
 /build-*
 *.pro.user
 /build_64_release/
+/TrackYourTime.app/

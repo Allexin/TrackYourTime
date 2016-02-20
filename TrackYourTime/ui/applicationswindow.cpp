@@ -263,9 +263,8 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
         if (id=="APP_SETTINGS"){
             actions[i]->setVisible(haveSettings);
         }
-    }\
+    }
 
-    QPoint pt(pos);
     m_CategoriesMenu.exec( ui->treeWidgetApplications->mapToGlobal(pos) );
 }
 

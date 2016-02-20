@@ -36,7 +36,7 @@ private:
     Ui::NotificationWindow *ui;
 protected:
     virtual void enterEvent(QEvent * event) override;
-    virtual bool eventFilter(QObject *object, QEvent *event);
+    virtual bool eventFilter(QObject *object, QEvent *event) override;
     virtual void focusInEvent(QFocusEvent * event) override;
     void stop();
 protected slots:
