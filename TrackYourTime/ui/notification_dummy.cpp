@@ -7,6 +7,7 @@ notification_dummy::notification_dummy(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onButtonApply()));
+    connect(ui->pushButtonClose,SIGNAL(released()),this,SLOT(hide()));
 }
 
 notification_dummy::~notification_dummy()
@@ -17,7 +18,6 @@ notification_dummy::~notification_dummy()
 void notification_dummy::showWithMessage(const QString &format, bool compactMode)
 {
     ui->labelMessage->setText(format);
-    ui->pushButton->setVisible(!compactMode);
     ui->comboBoxCategories->setVisible(!compactMode);
     ui->labelCategory->setVisible(!compactMode);
 

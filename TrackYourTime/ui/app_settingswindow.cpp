@@ -10,7 +10,7 @@ App_SettingsWindow::App_SettingsWindow(cDataManager *DataManager) :
     ui->setupUi(this);    
     m_DataManager = DataManager;
 
-    ui->plainTextEditScript->setPlaceholderText("Place title parser code here. Look predefined scripts for example.");
+    ui->plainTextEditScript->setPlaceholderText(tr("Place title parser code here. Look predefined scripts for example."));
     connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onApply()));
     connect(ui->pushButtonStartDebug,SIGNAL(released()),this,SLOT(onSetDebug()));
 }

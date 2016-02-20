@@ -92,16 +92,16 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="pushButtonApply">
         <property name="text">
-         <string>Set for all profiles</string>
+         <string>Apply</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButtonApply">
+       <widget class="QPushButton" name="pushButtonClose">
         <property name="text">
-         <string>Set for current profile</string>
+         <string>Close</string>
         </property>
        </widget>
       </item>

@@ -18,6 +18,8 @@
 
 #include "ctrayicon.h"
 #include <QApplication>
+#include <QDesktopServices>
+#include <QUrl>
 
 
 
@@ -59,6 +61,7 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
 #endif
     m_Menu.addSeparator();
     m_Menu.addAction(tr("About..."))->setData("ABOUT");
+    m_Menu.addAction(tr("Help..."))->setData("HELP");
     m_Menu.addSeparator();
     m_Menu.addAction(tr("Exit"))->setData("EXIT");
 
@@ -138,6 +141,11 @@ void cTrayIcon::onMenuSelection(QAction *menuAction)
 
     if (id=="ABOUT"){
         emit showAbout();
+        return;
+    }
+
+    if (id=="HELP"){
+        QDesktopServices::openUrl(QUrl(tr("https://github.com/Allexin/TrackYourTime/wiki/User-Manual")));
         return;
     }
 
