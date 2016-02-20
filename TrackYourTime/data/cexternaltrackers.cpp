@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cexternaltrackers.h"
+#include <QMessageLogger>
 #include <QDebug>
+#include "cexternaltrackers.h"
 
 const QString EXTERNAL_TRACKER_PREFIX = "TYTET";
 const QString EXTERNAL_TRACKER_FORMAT_VERSION = "1";
@@ -75,7 +76,9 @@ bool cExternalTrackers::getExternalTrackerState(const QString &appName, QString&
 
 void cExternalTrackers::readyRead()
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
     qInfo() << "external tracker info";
+#endif
     QByteArray buffer;
     buffer.resize(m_Server.pendingDatagramSize());
 
