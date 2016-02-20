@@ -187,7 +187,7 @@ void cExternalTrackers::onDataReady(QString data)
             return;
         }
 
-        addOverride(pairs["APP_FILENAME"],pairs["APP_STATE"],pairs["USER_INACTIVE_TIME"].toInt());
+        addOverride(pairs["APP_FILENAME"],pairs["STATE"],pairs["USER_INACTIVE_TIME"].toInt());
     }
     else{
         qWarning() << "unknown exterinal tracker with PREFIX=" << pairs["PREFIX"];

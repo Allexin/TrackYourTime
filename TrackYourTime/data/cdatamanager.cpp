@@ -211,7 +211,7 @@ void cDataManager::process()
     int hostActivity = m_LastLocalActivity+1;
     sOverrideTrackerInfo* info = m_ExternalTrackers.getOverrideTracker();
     if (info)
-        hostActivity = info->IdleTime-2000;
+        hostActivity = info->IdleTime-2;
 
 
     //Update application
@@ -220,7 +220,7 @@ void cDataManager::process()
     int appIndex = getAppIndex(currentAppInfo);
     int activityIndex = appIndex>-1?getActivityIndex(appIndex,currentAppInfo):0;
 
-    if (m_LastLocalActivity*1000>hostActivity){
+    if (m_LastLocalActivity>hostActivity){
         if (info){
             sSysInfo remoteInfo;
             remoteInfo.fileName = info->AppFileName;

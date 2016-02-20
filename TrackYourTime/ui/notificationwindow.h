@@ -40,7 +40,8 @@ protected:
     virtual void focusInEvent(QFocusEvent * event) override;
     void stop();
 protected slots:
-    void onButtonApply();
+    void onButtonSetCurrent();
+    void onButtonSetAll();
     void onTimeout();
 public slots:
     void onPreferencesChanged();

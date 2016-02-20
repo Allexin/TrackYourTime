@@ -13,11 +13,13 @@ NotificationWindow::NotificationWindow(cDataManager *dataManager) :
     onPreferencesChanged();
 
     connect(&m_Timer,SIGNAL(timeout()),this,SLOT(onTimeout()));
-    connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onButtonApply()));
+    connect(ui->pushButtonSetFoCurrentProfile,SIGNAL(released()),this,SLOT(onButtonSetCurrent()));
+    connect(ui->pushButtonSetForAllProfiles,SIGNAL(released()),this,SLOT(onButtonSetAll()));
     ui->centralwidget->installEventFilter(this);
     ui->groupBoxCategory->installEventFilter(this);
     ui->labelMessage->installEventFilter(this);
-    ui->pushButtonApply->installEventFilter(this);
+    ui->pushButtonSetFoCurrentProfile->installEventFilter(this);
+    ui->pushButtonSetForAllProfiles->installEventFilter(this);
     ui->comboBoxCategory->installEventFilter(this);
 }
 
@@ -60,16 +62,19 @@ void NotificationWindow::stop()
     m_Timer.stop();
 }
 
-void NotificationWindow::onButtonApply()
+void NotificationWindow::onButtonSetCurrent()
 {
     if (m_AppIndex>-1){
-        if (ui->checkBoxAllProfiles->isChecked()){
-            for (int i = 0; i<m_DataManager->profilesCount(); i++)
-                m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[i] = ui->comboBoxCategory->currentIndex();
-        }
-        else{
-            m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()] = ui->comboBoxCategory->currentIndex();
-        }
+        m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()] = ui->comboBoxCategory->currentIndex();
+    }
+    stop();
+}
+
+void NotificationWindow::onButtonSetAll()
+{
+    if (m_AppIndex>-1){
+        for (int i = 0; i<m_DataManager->profilesCount(); i++)
+            m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[i] = ui->comboBoxCategory->currentIndex();
     }
     stop();
 }
