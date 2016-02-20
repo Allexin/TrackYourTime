@@ -10,7 +10,9 @@ App_SettingsWindow::App_SettingsWindow(cDataManager *DataManager) :
     ui->setupUi(this);    
     m_DataManager = DataManager;
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 3, 0))
     ui->plainTextEditScript->setPlaceholderText("Place title parser code here. Look predefined scripts for example.");
+#endif
     connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onApply()));
     connect(ui->pushButtonStartDebug,SIGNAL(released()),this,SLOT(onSetDebug()));
 }

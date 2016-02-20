@@ -29,7 +29,7 @@ mac:ICON = main.icns
 win32:LIBS += -luser32
 unix:!mac:LIBS += -lX11
 
-INCLUDEPATH += "ui"
+INCLUDEPATH += ui data tools
 
 SOURCES += \
     main.cpp \
