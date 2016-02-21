@@ -70,7 +70,6 @@ void ProfilesWindow::onProfileChanged(QListWidgetItem *item)
 
 void ProfilesWindow::onContextMenu(const QPoint &pos)
 {
-    QPoint pt(pos);
     m_Menu.exec( ui->listWidgetProfiles->mapToGlobal(pos) );
 }
 

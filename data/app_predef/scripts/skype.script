@@ -1,6 +1,9 @@
 function parseTitle(appName,appTitle,currentOS){
+    var unreadPos=appTitle.indexOf("]");
+    if (unreadPos>0)
+        unreadPos=unreadPos+1;
     var pos = appTitle.indexOf("-");
     if (pos>0)
-	return appTitle.substring(0,pos);
+	return appTitle.substring(unreadPos,pos);
     return "";
 }

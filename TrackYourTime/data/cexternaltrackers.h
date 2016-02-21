@@ -30,6 +30,13 @@
 struct sExternalTrackerPair{
     QString HostAppFileName;
     QString ClientState;
+    int LifeTime;    
+};
+
+struct sOverrideTrackerInfo{
+    QString AppFileName;
+    QString State;
+    int IdleTime;
     int LifeTime;
 };
 
@@ -54,18 +61,25 @@ public:
     static const int    EXTERNAL_TRACKERS_UDP_PORT = 25855;
     static const int    EXTERNAL_TRACKERS_HTTP_PORT = 25856;
     static const int    EXTERNAL_TRACKERS_PAIR_LIFE_TIME_SECOND = 5;
+    static const int    OVERRIDE_TRACKERS_PAIR_LIFE_TIME_SECOND = 4;
 protected:
-    QUdpSocket          m_Server;
+    QUdpSocket          m_Client;
+
+    QUdpSocket          m_Server;    
     cHTTPTrackerServer  m_HTTPServer;
+    QVector<sOverrideTrackerInfo> m_Override;
     QVector<sExternalTrackerPair> m_Pairs;
     void addPair(const QString& AppName, const QString& CurrentState);
+    void addOverride(const QString& AppName, const QString& CurrentState, int idleTime);
 public:
     explicit cExternalTrackers(QObject *parent = 0);
 
     void update();
 
     bool getExternalTrackerState(const QString &appName, QString& outValue);
+    sOverrideTrackerInfo* getOverrideTracker();
 
+    void sendOverrideTracker(const QString& AppName, const QString& CurrentState, int idleTime, const QString& host);
 signals:
 
 public slots:

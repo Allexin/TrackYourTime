@@ -10,16 +10,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 mac:LIBS += -framework CoreGraphics
 mac:LIBS += -framework AppKit
+mac: QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.8
 
 TARGET = TrackYourTime
 TEMPLATE = app
 CONFIG+=address_sanitizer
+CONFIG+=C++11
 
 TRANSLATIONS = lang_en.ts  lang_ru.ts
 
 QMAKE_CXXFLAGS += -DQT_COMPILING_QSTRING_COMPAT_CPP
 
 unix:!mac:QMAKE_CXXFLAGS += -std=c++0x
+unix:!mac: LIBS += -rdynamic
 
 win32:QMAKE_LFLAGS_WINDOWS = /SUBSYSTEM:WINDOWS,5.01
 
@@ -29,7 +32,7 @@ mac:ICON = main.icns
 win32:LIBS += -luser32
 unix:!mac:LIBS += -lX11
 
-INCLUDEPATH += "ui"
+INCLUDEPATH += ui data tools
 
 SOURCES += \
     main.cpp \
@@ -47,7 +50,11 @@ SOURCES += \
     data/cscriptsmanager.cpp \
     ui/app_settingswindow.cpp \
     data/capppredefinedinfo.cpp \
-    tools/tools.cpp
+    tools/tools.cpp \
+    data/cschedule.cpp \
+    ui/schedulewindow.cpp \
+    ui/notification_dummy.cpp \
+    ui/notificationwindow.cpp
 
 HEADERS  += \
     ui/settingswindow.h \
@@ -64,7 +71,11 @@ HEADERS  += \
     data/cscriptsmanager.h \
     ui/app_settingswindow.h \
     data/capppredefinedinfo.h \
-    tools/tools.h
+    tools/tools.h \
+    data/cschedule.h \
+    ui/schedulewindow.h \
+    ui/notification_dummy.h \
+    ui/notificationwindow.h
 
 FORMS    += \
     ui/settingswindow.ui \
@@ -72,4 +83,7 @@ FORMS    += \
     ui/applicationswindow.ui \
     ui/profileswindow.ui \
     ui/aboutwindow.ui \
-    ui/app_settingswindow.ui
+    ui/app_settingswindow.ui \
+    ui/schedulewindow.ui \
+    ui/notification_dummy.ui \
+    ui/notificationwindow.ui

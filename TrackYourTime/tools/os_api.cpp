@@ -65,6 +65,11 @@ void writeStringListToFile(QStringList& lines, const QString& FileName, const QS
 #ifdef Q_OS_WIN
 #include <windows.h>
 
+QString getUserName()
+{
+    return qgetenv("USERNAME");
+}
+
 typedef BOOL (__stdcall *GetProcessImageFileNamePtr)(HANDLE, char* ,DWORD);
 
 class cGetProcessImageFileName{
@@ -94,12 +99,10 @@ public:
     }
 };
 
-QString getWindowApplication(HWND Wnd)
+QString GetAppNameFromPID(DWORD pid)
 {
     static cGetProcessImageFileName processFileName;
-    QString appFileName;
-    DWORD pid;
-    GetWindowThreadProcessId(Wnd, &pid);
+    QString appFileName = "";
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION , FALSE, pid);
     if (hProcess != 0){
         try {
@@ -117,14 +120,58 @@ QString getWindowApplication(HWND Wnd)
     return appFileName;
 }
 
-sAppFileName getCurrentApplication()
-{
-    QFileInfo fileInfo(getWindowApplication(GetForegroundWindow()));
-    sAppFileName fileName;
-    fileName.fileName = fileInfo.fileName();
-    fileName.path = fileInfo.absolutePath();
+struct sAppPIDs{
+    DWORD ownerPID;
+    DWORD childPID;
+};
 
-    return fileName;
+BOOL CALLBACK EnumChildWindowsProc(HWND wnd, LPARAM lp)
+{
+    sAppPIDs* pids = (sAppPIDs*)lp;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(wnd, &pid);
+    if (pid!=pids->ownerPID)
+        pids->childPID = pid;
+    return TRUE;
+}
+
+QString getWindowApplicationModernWin(HWND wnd, DWORD pid)
+{
+    sAppPIDs pids;
+    pids.childPID = pid;
+    pids.ownerPID = pid;
+    EnumChildWindows(wnd,EnumChildWindowsProc,(LPARAM)&pids);
+    return GetAppNameFromPID(pids.childPID);
+}
+
+QString getWindowApplication(HWND wnd)
+{
+    QString appFileName;
+    DWORD pid;
+    GetWindowThreadProcessId(wnd, &pid);
+    appFileName = GetAppNameFromPID(pid);
+    QFileInfo fInfo(appFileName);
+    QString fName = fInfo.baseName().toUpper();
+    if (fName=="WWAHOST" || fName=="APPLICATIONFRAMEHOST"){
+        return getWindowApplicationModernWin(wnd,pid);
+    }
+
+    return appFileName;
+}
+
+sSysInfo getCurrentApplication()
+{
+    HWND wnd = GetForegroundWindow();
+    QFileInfo fileInfo(getWindowApplication(wnd));
+    sSysInfo appInfo;
+    appInfo.fileName = fileInfo.fileName().simplified();
+    appInfo.path = fileInfo.absolutePath().simplified();
+    char title[256];
+    int l = GetWindowTextA(wnd,title,256);
+    if (l>0)
+        appInfo.title = title.simplified();
+
+    return appInfo;
 }
 
 static bool KeyboardState[256];
@@ -169,6 +216,11 @@ void removeAutorun()
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+
+QString getUserName()
+{
+    return qgetenv("USER");
+}
 
 bool GetActiveWindowClassAndTitle(QString& windowClass,QString& windowTitle)
 {
@@ -228,8 +280,8 @@ sSysInfo getCurrentApplication()
     QString windowClass;
     QString windowTitle;
     if (GetActiveWindowClassAndTitle(windowClass,windowTitle)){
-        fileInfo.fileName = windowClass;
-        fileInfo.title = windowTitle;
+        fileInfo.fileName = windowClass.simplified();
+        fileInfo.title = windowTitle.simplified();
     }
 
     return fileInfo;
@@ -249,18 +301,24 @@ struct sKeyboardState{
 };
 QVector<sKeyboardState> keyboards;
 
+void initKeyboard(const QString& path, const QString& regexp){
+    QStringList keyboardsList = QDir(path).entryList(QStringList() << regexp);
+    keyboards.resize(keyboardsList.size());
+    for (int i = 0; i<keyboards.size(); i++){
+        sKeyboardState *kb_s = &keyboards[i];
+        kb_s->id = path+keyboardsList[i];
+
+    }
+}
 
 bool isKeyboardChanged()
 {
     if (firstKeyboardUpdate){
         firstKeyboardUpdate = false;
-        QStringList keyboardsList = QDir("/dev/input/by-id/").entryList(QStringList() << "*keyboard*");
-        keyboards.resize(keyboardsList.size());
-        for (int i = 0; i<keyboards.size(); i++){
-            sKeyboardState *kb_s = &keyboards[i];
-            kb_s->id = "/dev/input/by-id/"+keyboardsList[i];
-
-        }
+        initKeyboard("/dev/input/by-id/","*keyboard*");
+        initKeyboard("/dev/input/by-id/","*kbd*");
+        initKeyboard("/dev/input/by-path/","*keyboard*");
+        initKeyboard("/dev/input/by-path/","*kbd*");
     }
 
     bool noAccesToKeyboard = true;
@@ -332,6 +390,11 @@ void removeAutorun()
 #include <ApplicationServices/ApplicationServices.h>
 #include <CoreFoundation/CoreFoundation.h>
 
+QString getUserName()
+{
+    return qgetenv("USER");
+}
+
 QString uniCFStrToQStr(const CFStringRef cfString)
 {
     QChar qchar;
@@ -346,9 +409,10 @@ QString uniCFStrToQStr(const CFStringRef cfString)
 }
 
 
-sAppFileName getCurrentApplication()
+sSysInfo getCurrentApplication()
 {
     QString appOwner;
+    QString appTitle;
 
     //get visible windows from front to back. first window with layer 0 - current window
     CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
@@ -376,20 +440,23 @@ sAppFileName getCurrentApplication()
          */
         dictionary = (CFDictionaryRef) CFArrayGetValueAtIndex(windowList, cfiI);
         CFStringRef owner = reinterpret_cast<CFStringRef>(CFDictionaryGetValue(dictionary,kCGWindowOwnerName));
+        CFStringRef title = reinterpret_cast<CFStringRef>(CFDictionaryGetValue(dictionary,kCGWindowName));
         CFNumberRef window_layer = reinterpret_cast<CFNumberRef>(CFDictionaryGetValue(dictionary, kCGWindowLayer));
         int layer;
         CFNumberGetValue(window_layer, kCFNumberIntType, &layer);
         if (layer==0){
             appOwner = uniCFStrToQStr(owner);
+            appTitle = uniCFStrToQStr(title);
             break;
         }
     }
 
-    sAppFileName fileName;
-    fileName.fileName = appOwner;
-    fileName.path = "";
+    sSysInfo fileInfo;
+    fileInfo.fileName = appOwner.simplified();
+    fileInfo.path = "";
+    fileInfo.title = appTitle.simplified();
 
-    return fileName;
+    return fileInfo;
 }
 
 //i know, this is wrong way. but it's simple, and i do not need slot/signals functionaloty in this part of code.
@@ -401,6 +468,8 @@ private:
 
     // The following callback method is invoked on every keypress.
     static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
+        Q_UNUSED(proxy)
+        Q_UNUSED(refcon)
         if (type != kCGEventKeyDown && type != kCGEventFlagsChanged && type != kCGEventKeyUp) {
             return event;
         }
@@ -415,7 +484,7 @@ private:
         m_KeyboardChanged = false;
 
         CGEventMask eventMask = (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged));
-        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, 0, eventMask, CGEventCallback, NULL );
+        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionDefault, eventMask, CGEventCallback, NULL );
 
         if(!eventTap) {
             qCritical() << "ERROR: Unable to create event tap.\n";

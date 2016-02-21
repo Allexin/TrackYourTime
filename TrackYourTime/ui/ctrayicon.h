@@ -48,10 +48,12 @@ public:
 
 signals:
     void showSettings();
+    void showSchedule();
     void showStatistic();
     void showApplications();
     void showAbout();
 public slots:
+    void onTray(QSystemTrayIcon::ActivationReason reason);
     void setActive();
     void setInactive();
     void showHint(QString text);

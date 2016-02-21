@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QTextStream>
+#include <QFileInfo>
 
 QMap<QString,QString> loadPairsFile(const QString& fileName){
     QMap<QString,QString> list;
@@ -30,4 +31,37 @@ QString readFile(const QString &fileName)
         return textFile.readAll();
     }
     return QString();
+}
+
+cSettings::cSettings()
+{
+    QString OSName = "UNKNOWN";
+#ifdef Q_OS_LINUX
+    OSName="Linux";
+#else
+    #ifdef Q_OS_WIN
+        OSName="Linux";
+    #else
+        #ifdef Q_OS_MAC
+            OSName="MacOSX";
+        #endif
+    #endif
+#endif
+    if (QFileInfo("settings_"+OSName+".conf").exists())
+        m_Settings = new QSettings("settings_"+OSName+".conf",QSettings::IniFormat);
+    else
+    if (QFileInfo("settings.conf").exists())
+        m_Settings = new QSettings("settings.conf",QSettings::IniFormat);
+    else
+        m_Settings = new QSettings();
+}
+
+cSettings::~cSettings()
+{
+    delete m_Settings;
+}
+
+QSettings *cSettings::db()
+{
+    return m_Settings;
 }

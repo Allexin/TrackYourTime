@@ -18,6 +18,8 @@
 
 #include "ctrayicon.h"
 #include <QApplication>
+#include <QDesktopServices>
+#include <QUrl>
 
 
 
@@ -39,6 +41,8 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_DataManager = DataManager;
     rebuildMenu();
 
+    connect(this,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(onTray(QSystemTrayIcon::ActivationReason)));
+
     connect(&m_ProfilesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
     m_ProfilesMenu.setTitle(tr("Profiles"));
 
@@ -48,6 +52,7 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
     m_Menu.addAction(tr("Statistic..."))->setData("STATISTIC");
     m_Menu.addSeparator();
     m_Menu.addAction(tr("Settings..."))->setData("SETTINGS");
+    m_Menu.addAction(tr("Schedule..."))->setData("SCHEDULE");
     m_Menu.addSeparator();
 #ifdef Q_OS_WIN
     m_Menu.addMenu(&m_ProfilesMenu);
@@ -56,12 +61,19 @@ cTrayIcon::cTrayIcon(cDataManager *DataManager):QSystemTrayIcon()
 #endif
     m_Menu.addSeparator();
     m_Menu.addAction(tr("About..."))->setData("ABOUT");
+    m_Menu.addAction(tr("Help..."))->setData("HELP");
     m_Menu.addSeparator();
     m_Menu.addAction(tr("Exit"))->setData("EXIT");
 
 
     setActive();
     show();
+}
+
+void cTrayIcon::onTray(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason==QSystemTrayIcon::Trigger)
+        emit showApplications();
 }
 
 void cTrayIcon::setActive()
@@ -117,6 +129,11 @@ void cTrayIcon::onMenuSelection(QAction *menuAction)
         return;
     }
 
+    if (id=="SCHEDULE"){
+        emit showSchedule();
+        return;
+    }
+
     if (id=="STATISTIC"){
         emit showStatistic();
         return;
@@ -124,6 +141,11 @@ void cTrayIcon::onMenuSelection(QAction *menuAction)
 
     if (id=="ABOUT"){
         emit showAbout();
+        return;
+    }
+
+    if (id=="HELP"){
+        QDesktopServices::openUrl(QUrl(tr("https://github.com/Allexin/TrackYourTime/wiki/User-Manual")));
         return;
     }
 

@@ -2,3 +2,12 @@
 -change external trackers format from binary to text
 -add http server for external trackers on port 25856
 -add detailed information about app activity in applications window and statistic window
+-add portable config support
+-fix all warnings in source code
+-add schedule
+-Improve HDPI display support
+-Add periods in statistic window
+-Add percents on categories statistic
+-Show Applications on tray icon click
+-Add built-in notification window
+-Add modern windows apps support

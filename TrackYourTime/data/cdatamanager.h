@@ -79,6 +79,12 @@ struct sCategory{
 class cDataManager : public QObject {
     Q_OBJECT
 public:
+    enum eNotificationType{
+        NT_NONE,
+        NT_SYSTEM,
+        NT_BUILTIN
+    };
+
     static const int    DEFAULT_SECONDS_UPDATE_DELAY = 1;
     static const int    DEFAULT_SECONDS_IDLE_DELAY = 300;
     static const int    DEFAULT_SECONDS_AUTOSAVE_DELAY = 1500;
@@ -89,8 +95,16 @@ public:
     static const QString CONF_STORAGE_FILENAME_ID;
     static const QString CONF_LANGUAGE_ID;
     static const QString CONF_FIRST_LAUNCH_ID;
-    static const QString CONF_SHOW_BALOONS_ID;
+    static const QString CONF_NOTIFICATION_TYPE_ID;
+    static const QString CONF_NOTIFICATION_MESSAGE_ID;
+    static const QString CONF_NOTIFICATION_HIDE_SECONDS_ID;
+    static const QString CONF_NOTIFICATION_HIDE_MOVES_ID;
+    static const QString CONF_NOTIFICATION_POSITION_ID;
+    static const QString CONF_NOTIFICATION_SIZE_ID;
+    static const QString CONF_NOTIFICATION_OPACITY_ID;
     static const QString CONF_AUTORUN_ID;
+    static const QString CONF_CLIENT_MODE_ID;
+    static const QString CONF_CLIENT_MODE_HOST_ID;
 protected:
     cExternalTrackers   m_ExternalTrackers;
     cScriptsManager     m_ScriptsManager;
@@ -100,12 +114,16 @@ protected:
     QVector<sAppInfo*>  m_Applications;
     QVector<sProfile>   m_Profiles;
 
+    int                 m_LastLocalActivity;
     int                 m_CurrentProfile;
     QString             m_StorageFileName;
 
     QString             m_DebugScript;
 
-    bool                m_ShowBaloons;
+    eNotificationType   m_NotificationType;
+
+    bool                m_ClientMode;
+    QString             m_ClientModeHost;
 
     int                 m_UpdateCounter;
     int                 m_UpdateDelay;
@@ -123,18 +141,23 @@ protected:
     int                 m_AutoSaveDelay;
     int getAppIndex(const sSysInfo& FileInfo);
     int getActivityIndex(int appIndex,const sSysInfo &FileInfo);
+    int getActivityIndexDirect(int appIndex, QString activityName);
     void saveDB();
     void loadDB();
     void loadPreferences();
-    void savePreferences();
 public:
     cDataManager();
     virtual ~cDataManager();
 
     int profilesCount(){return m_Profiles.size();}
-    const sProfile* profiles(int index){return &m_Profiles[index];}
+    const sProfile* profiles(int index);
     int getCurrentProfileIndex(){return m_CurrentProfile;}
     void setCurrentProfileIndex(int ProfileIndex){ m_CurrentProfile = ProfileIndex; emit profilesChanged();}
+    void setCurrentProfileIndexSafe(int ProfileIndex){
+        if (ProfileIndex<0 || ProfileIndex>=m_Profiles.size())
+            return;
+        setCurrentProfileIndex(ProfileIndex);
+    }
     void setProfileName(int index, const QString& Name){m_Profiles[index].name = Name; emit profilesChanged();}
     void addNewProfile(const QString &Name, int CloneProfileIndex = -1);
     void mergeProfiles(int profile1, int profile2);
@@ -151,6 +174,9 @@ public:
     sAppInfo* applications(int index){return m_Applications[index];}
     void setApplicationActivityCategory(int profile, int appIndex, int activityIndex, int category);
 
+    int getCurrentAppliction(){return m_CurrentApplicationIndex;}
+    int getCurrentApplictionActivity(){return m_CurrentApplicationActivityIndex;}
+
     QString getStorageFileName(){return m_StorageFileName;}
     void setDebugScript(const QString& script){m_DebugScript = script;}
 public slots:
@@ -164,6 +190,7 @@ signals:
     void profilesChanged();
     void applicationsChanged();
     void debugScriptResult(QString result, const sSysInfo& data);
+    void showNotification();
 };
 
 #endif // CDATAMANAGER_H

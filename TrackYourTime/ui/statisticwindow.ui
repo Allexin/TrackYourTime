@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>735</width>
-    <height>551</height>
+    <width>776</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,9 +20,48 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="pushButtonSetToday">
+         <widget class="QComboBox" name="comboBoxPeriod">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Today</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>This week</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>This month</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>This year</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButtonSetPeriod">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
-           <string>Set today&gt;&gt;</string>
+           <string>&gt;&gt;</string>
           </property>
          </widget>
         </item>
@@ -34,7 +73,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QDateEdit" name="dateEditFrom"/>
+         <widget class="QDateEdit" name="dateEditFrom">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label">
@@ -44,10 +90,23 @@
          </widget>
         </item>
         <item>
-         <widget class="QDateEdit" name="dateEditTo"/>
+         <widget class="QDateEdit" name="dateEditTo">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonUpdate">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Update</string>
           </property>
@@ -79,6 +138,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QPushButton" name="pushButtonExportCategoriesCSV">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Export categories to CSV...</string>
           </property>
@@ -86,6 +151,12 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonExportApplicationsCSV">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Export applications to CSV...</string>
           </property>

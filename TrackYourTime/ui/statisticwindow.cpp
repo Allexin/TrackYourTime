@@ -20,6 +20,7 @@
 #include "ui_statisticwindow.h"
 #include <QFileDialog>
 #include <QPainter>
+#include <QDate>
 
 QString DurationToString(quint32 durationSeconds)
 {
@@ -227,7 +228,8 @@ StatisticWindow::StatisticWindow(cDataManager *DataManager) :
 
     ui->widgetDiagram->setCategories(&m_Categories,&m_Uncategorized);
 
-    connect(ui->pushButtonSetToday, SIGNAL(released()), this, SLOT(onSetTodayPress()));
+    connect(ui->pushButtonSetPeriod, SIGNAL(released()), this, SLOT(onSetPeriodPress()));
+    connect(ui->comboBoxPeriod,SIGNAL(currentIndexChanged(int)),this, SLOT(onSetPeriodPress()));
     connect(ui->pushButtonUpdate, SIGNAL(released()), this, SLOT(onUpdatePress()));
     connect(ui->pushButtonExportApplicationsCSV, SIGNAL(released()), this, SLOT(onExportApplicationsCSVPress()));
     connect(ui->pushButtonExportCategoriesCSV, SIGNAL(released()), this, SLOT(onExportCategoriesCSVPress()));
@@ -241,10 +243,38 @@ StatisticWindow::~StatisticWindow()
     delete ui;
 }
 
-void StatisticWindow::onSetTodayPress()
+enum ePeriod{
+    P_TODAY = 0,
+    P_WEEK,
+    P_MONTH,
+    P_YEAR
+};
+
+void StatisticWindow::onSetPeriodPress()
 {
-    ui->dateEditFrom->setDate(QDate::currentDate());
+    switch(ui->comboBoxPeriod->currentIndex()){
+        case P_TODAY:{
+        ui->dateEditFrom->setDate(QDate::currentDate());
+        }
+        break;
+        case P_WEEK:{
+            QDate date = QDate::currentDate();
+            ui->dateEditFrom->setDate(date.addDays(-date.dayOfWeek()+1));
+        }
+        break;
+        case P_MONTH:{
+            QDate date = QDate::currentDate();
+            ui->dateEditFrom->setDate(date.addDays(-date.day()+1));
+        }
+        break;
+        case P_YEAR:{
+            QDate date = QDate::currentDate();
+            ui->dateEditFrom->setDate(date.addDays(-date.dayOfYear()+1));
+        }
+        break;
+    }
     ui->dateEditTo->setDate(QDate::currentDate());
+
     onUpdatePress();
 }
 
@@ -263,6 +293,7 @@ void StatisticWindow::onUpdatePress()
 
 void cStatisticDiagramWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     QPainter painter( this );
     painter.setPen( QPen( Qt::black, 1 ) );
 
@@ -287,7 +318,7 @@ void cStatisticDiagramWidget::paintEvent(QPaintEvent *event)
                     QRectF r(0,shift,width()-1,catHeight);
                     painter.drawRect(r);
                     if (catHeight>20){
-                        painter.drawText(r,Qt::AlignCenter | Qt::TextSingleLine,item.Name+"["+DurationToString(item.TotalTime)+"]");
+                        painter.drawText(r,Qt::AlignCenter | Qt::TextSingleLine,item.Name+"["+DurationToString(item.TotalTime)+"]["+QString::number(item.NormalValue*100,'f',2)+"%]");
                     }
                     shift+=catHeight;
                 }
@@ -300,7 +331,7 @@ void cStatisticDiagramWidget::paintEvent(QPaintEvent *event)
             QRectF r(0,shift,width()-1,catHeight);
             painter.drawRect(r);
             if (catHeight>20){
-                painter.drawText(r,Qt::AlignCenter | Qt::TextSingleLine,m_Uncategorized->Name+"["+DurationToString(m_Uncategorized->TotalTime)+"]");
+                painter.drawText(r,Qt::AlignCenter | Qt::TextSingleLine,m_Uncategorized->Name+"["+DurationToString(m_Uncategorized->TotalTime)+"]["+QString::number(m_Uncategorized->NormalValue*100,'f',2)+"%]");
             }
             shift+=catHeight;
         }
