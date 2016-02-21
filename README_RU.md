@@ -4,7 +4,7 @@
 [![Чат на https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 # Загрузка
-[Последняя стабильная версия](https://github.com/Allexin/TrackYourTime/releases/tag/v0.9.0beta)
+[Последняя стабильная версия](https://github.com/Allexin/TrackYourTime/releases/tag/0.9.2)
 
 # Roadmap  
 https://github.com/Allexin/TrackYourTime/wiki
