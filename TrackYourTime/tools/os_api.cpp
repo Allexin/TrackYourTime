@@ -169,7 +169,7 @@ sSysInfo getCurrentApplication()
     char title[256];
     int l = GetWindowTextA(wnd,title,256);
     if (l>0)
-        appInfo.title = title.simplified();
+        appInfo.title = QString(title).simplified();
 
     return appInfo;
 }
