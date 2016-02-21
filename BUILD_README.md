@@ -16,7 +16,6 @@ Pack in compressed folder TrackYourTime_Windows.zip
 #Mac OS X
 
 Copy data into TrackYourTime.app/Contents/MacOS  
-copy platforms/libqcocoa.dylib into TrackYourTime.app/Contents/PlugIns/platforms
 add key LSUIElement with value 1 into TrackYourTime.app/Contents/Info.plist
 execute macdeployqt with -dmg flag(<path_to_qt/macdeployqt TrackYourTime.app -dmg>)
 Rename package to TrackYourTime_MacOSX.dmg
