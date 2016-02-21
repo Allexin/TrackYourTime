@@ -4,7 +4,7 @@
 [![Join the chat at https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 #Downloads
-[Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/v0.9.0beta)
+[Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/0.9.2)
 
 #Roadmap
 
