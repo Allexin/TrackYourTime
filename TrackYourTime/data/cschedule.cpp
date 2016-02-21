@@ -4,7 +4,7 @@
 
 QString cSchedule::getCurrentDateTime()
 {
-    return QDateTime::currentDateTime().toString("ddd yyyy.mm.dd HH:mm");
+    return QDateTime::currentDateTime().toString("ddd yyyy.MM.dd HH:mm");
 }
 
 void cSchedule::save()
