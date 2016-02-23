@@ -5,6 +5,8 @@
 #include <QString>
 #include <QSettings>
 
+extern const QString CURRENT_VERSION;
+
 QMap<QString,QString> loadPairsFile(const QString& fileName);
 QString readFile(const QString& fileName);
 

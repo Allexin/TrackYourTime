@@ -181,6 +181,16 @@ void cDataManager::setApplicationActivityCategory(int profile, int appIndex, int
 
 }
 
+void cDataManager::checkUpdates()
+{
+    //TODO
+}
+
+void cDataManager::makeBackup()
+{
+    //TODO
+}
+
 void cDataManager::process()
 {
     m_ExternalTrackers.update();

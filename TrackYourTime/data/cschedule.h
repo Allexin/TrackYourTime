@@ -13,6 +13,8 @@ class cScheduleItem: public QObject{
 public:
     enum eScheduleAction{
         SA_SET_PROFILE = 0,
+        SA_CHECK_UPDATE,
+        SA_MAKE_BACKUP,
         SA_COUNT
     };
 

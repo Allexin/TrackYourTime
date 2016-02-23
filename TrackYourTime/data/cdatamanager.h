@@ -179,6 +179,9 @@ public:
 
     QString getStorageFileName(){return m_StorageFileName;}
     void setDebugScript(const QString& script){m_DebugScript = script;}
+
+    void checkUpdates();
+    void makeBackup();
 public slots:
     void process();
     void onPreferencesChanged();
