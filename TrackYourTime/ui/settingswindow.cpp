@@ -185,6 +185,9 @@ void SettingsWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent( event );
     loadPreferences();
+
+    raise();
+    activateWindow();
 }
 
 void SettingsWindow::handleButtonApply()

@@ -50,5 +50,7 @@ void App_SettingsWindow::showApp(int appIndex)
     ui->comboBoxTrackingType->setCurrentIndex(appInfo->trackerType);
     ui->plainTextEditScript->setPlainText(appInfo->customScript);
     ui->labelAdditionalInfo->setText(appInfo->predefinedInfo->info());
-    show();
+    showNormal();
+    raise();
+    activateWindow();
 }

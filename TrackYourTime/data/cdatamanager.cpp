@@ -111,8 +111,12 @@ void cDataManager::addNewProfile(const QString &Name, int CloneProfileIndex)
     m_Profiles.push_back(profile);
 
     for (int i = 0; i<m_Applications.size(); i++)
-        for (int j = 0; j<m_Applications[i]->activities.size(); j++)
-            m_Applications[i]->activities[j].categories.push_back(CloneProfileIndex==-1?-1:m_Applications[i]->activities[j].categories[CloneProfileIndex]);
+        for (int j = 0; j<m_Applications[i]->activities.size(); j++){
+            sActivityProfileState state;
+            state.category = CloneProfileIndex==-1?-1:m_Applications[i]->activities[j].categories[CloneProfileIndex].category;
+            state.visible = CloneProfileIndex==-1?false:m_Applications[i]->activities[j].categories[CloneProfileIndex].visible;
+            m_Applications[i]->activities[j].categories.push_back(state);
+        }
     emit profilesChanged();
 }
 
@@ -157,11 +161,11 @@ void cDataManager::deleteCategory(int index)
     for (int i = 0; i<m_Applications.size(); i++){
         for (int j = 0; j<m_Applications[i]->activities.size(); j++){
             for (int k = 0; k<m_Applications[i]->activities[j].categories.size(); k++){
-                if (m_Applications[i]->activities[j].categories[k]==index)
-                    m_Applications[i]->activities[j].categories[k] = -1;
+                if (m_Applications[i]->activities[j].categories[k].category==index)
+                    m_Applications[i]->activities[j].categories[k].category = -1;
                 else
-                if (m_Applications[i]->activities[j].categories[k]>index)
-                    m_Applications[i]->activities[j].categories[k];
+                if (m_Applications[i]->activities[j].categories[k].category>index)
+                    m_Applications[i]->activities[j].categories[k].category--;
             }
         }
     }
@@ -173,10 +177,10 @@ void cDataManager::setApplicationActivityCategory(int profile, int appIndex, int
 {
     if (profile==-1){
         for (int i = 0; i<m_Applications[appIndex]->activities[activityIndex].categories.size(); i++)
-            m_Applications[appIndex]->activities[activityIndex].categories[i] = category;
+            m_Applications[appIndex]->activities[activityIndex].categories[i].category = category;
     }
     else{
-        m_Applications[appIndex]->activities[activityIndex].categories[profile] = category;
+        m_Applications[appIndex]->activities[activityIndex].categories[profile].category = category;
     }
 
 }
@@ -248,7 +252,8 @@ void cDataManager::process()
         m_CurrentApplicationIndex = appIndex;
         m_CurrentApplicationActivityIndex = activityIndex;
         if (m_CurrentApplicationIndex>-1){
-            int activityCategory = m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile];
+            m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile].visible = true;
+            int activityCategory = m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile].category;
             if (m_CurrentApplicationActivityCategory!=activityCategory || activityCategory==-1){
                 m_CurrentApplicationActivityCategory = activityCategory;
 
@@ -392,17 +397,18 @@ int cDataManager::getActivityIndexDirect(int appIndex, QString activityName)
     }
 
     sActivityInfo ainfo;
-    ainfo.visible = true;
     ainfo.name = activityName;
     ainfo.categories.resize(m_Profiles.size());
-    for (int i = 0; i<ainfo.categories.size(); i++)
-        ainfo.categories[i] = -1;
+    for (int i = 0; i<ainfo.categories.size(); i++){
+        ainfo.categories[i].category = -1;
+        ainfo.categories[i].visible = false;
+    }
     m_Applications[appIndex]->activities.push_back(ainfo);
     emit applicationsChanged();
     return m_Applications[appIndex]->activities.size()-1;
 }
 
-const int FILE_FORMAT_VERSION = 2;
+const int FILE_FORMAT_VERSION = 3;
 
 void cDataManager::saveDB()
 {
@@ -439,14 +445,14 @@ void cDataManager::saveDB()
 
             file.writeInt(m_Applications[i]->activities.size());
             for (int activity = 0; activity<m_Applications[i]->activities.size(); activity++){
-                sActivityInfo* info = &m_Applications[i]->activities[activity];
-                file.writeInt(info->visible?1:0);
+                sActivityInfo* info = &m_Applications[i]->activities[activity];                
                 file.writeString(info->name);
 
                 //app category for every profile
                 file.writeInt(info->categories.size());
                 for (int j = 0; j<info->categories.size(); j++){
-                    file.writeInt(info->categories[j]);
+                    file.writeInt(info->categories[j].category);
+                    file.writeInt(info->categories[j].visible?1:0);
                 }
 
                 //total use time
@@ -476,7 +482,7 @@ void cDataManager::loadDB()
         delete m_Applications[i];
     m_Applications.resize(0);
 
-    convertToVersion2(m_StorageFileName,m_StorageFileName);
+    convertToVersion3(m_StorageFileName,m_StorageFileName);
     cFileBin file( m_StorageFileName );
     if ( file.open(QIODevice::ReadOnly) )
     {
@@ -513,14 +519,14 @@ void cDataManager::loadDB()
 
                     m_Applications[i]->activities.resize(file.readInt());
                     for (int activity = 0; activity<m_Applications[i]->activities.size(); activity++){
-                        sActivityInfo* info = &m_Applications[i]->activities[activity];
-                        info->visible = file.readInt()==1;
+                        sActivityInfo* info = &m_Applications[i]->activities[activity];                        
                         info->name = file.readString();
 
                         //app category for every profile
                         info->categories.resize(file.readInt());
                         for (int j = 0; j<info->categories.size(); j++){
-                            info->categories[j] = file.readInt();
+                            info->categories[j].category = file.readInt();
+                            info->categories[j].visible = file.readInt()==1;
                         }
 
                         //total use time
@@ -578,11 +584,12 @@ sAppInfo::sAppInfo(QString name, int profilesCount)
     predefinedInfo = new cAppPredefinedInfo(name);
     visible = true;
     sActivityInfo ainfo;
-    ainfo.visible = true;
     ainfo.name = name;
     ainfo.categories.resize(profilesCount);
-    for (int i = 0; i<ainfo.categories.size(); i++)
-        ainfo.categories[i] = -1;
+    for (int i = 0; i<ainfo.categories.size(); i++){
+        ainfo.categories[i].category = -1;
+        ainfo.categories[i].visible = false;
+    }
     activities.push_back(ainfo);
 
     trackerType = predefinedInfo->trackerType();

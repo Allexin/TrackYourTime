@@ -38,11 +38,15 @@ struct sTimePeriod{
     int profileIndex;
 };
 
+struct sActivityProfileState{
+    int category;
+    bool visible;
+};
+
 struct sActivityInfo{
     QString name;
     QVector<sTimePeriod> periods;
-    QVector<int> categories;
-    bool visible;
+    QVector<sActivityProfileState> categories;
     void incTime(bool FirstTime, int CurrentProfile, int UpdateDelay);
 };
 
