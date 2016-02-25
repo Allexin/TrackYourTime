@@ -2,4 +2,4 @@
 *.pro.user
 /build_64_release/
 /TrackYourTime.app/
-/build_64_debug/
+*.dmg

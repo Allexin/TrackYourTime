@@ -367,8 +367,9 @@ int cDataManager::getAppIndex(const sSysInfo &FileInfo)
     if (FileInfo.fileName.isEmpty())
         return -1;
 
+    QString upcaseFileName = FileInfo.fileName.toUpper();
     for (int i = 0; i<m_Applications.size(); i++){
-        if (m_Applications[i]->activities[0].name==FileInfo.fileName){
+        if (m_Applications[i]->activities[0].nameUpcase==upcaseFileName){
             if (m_Applications[i]->path.isEmpty() && !FileInfo.path.isEmpty()){
                 m_Applications[i]->path = FileInfo.path;
                 emit applicationsChanged();
@@ -400,7 +401,7 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
     switch(appInfo->trackerType){
         case sAppInfo::eTrackerType::TT_EXECUTABLE_DETECTOR:
         case sAppInfo::eTrackerType::TT_EXTERNAL_DETECTOR:{
-            if (!m_ExternalTrackers.getExternalTrackerState(appInfo->activities[0].name,activity))
+            if (!m_ExternalTrackers.getExternalTrackerState(appInfo->activities[0].nameUpcase,activity))
                 activity="";
         };
             break;
@@ -422,14 +423,17 @@ int cDataManager::getActivityIndexDirect(int appIndex, QString activityName)
     if (activityName.isEmpty())
         return 0;
 
+    QString activityNameUpcase = activityName.toUpper();
+
     for (int i = 0; i<m_Applications[appIndex]->activities.size(); i++){
-        if (m_Applications[appIndex]->activities[i].name==activityName){
+        if (m_Applications[appIndex]->activities[i].nameUpcase==activityNameUpcase){
             return i;
         }
     }
 
     sActivityInfo ainfo;
     ainfo.name = activityName;
+    ainfo.nameUpcase = activityNameUpcase;
     ainfo.categories.resize(m_Profiles.size());
     for (int i = 0; i<ainfo.categories.size(); i++){
         ainfo.categories[i].category = -1;
@@ -553,6 +557,7 @@ void cDataManager::loadDB()
                     for (int activity = 0; activity<m_Applications[i]->activities.size(); activity++){
                         sActivityInfo* info = &m_Applications[i]->activities[activity];                        
                         info->name = file.readString();
+                        info->nameUpcase = info->name.toUpper();
 
                         //app category for every profile
                         info->categories.resize(file.readInt());
@@ -632,6 +637,7 @@ sAppInfo::sAppInfo(QString name, int profilesCount)
     visible = true;
     sActivityInfo ainfo;
     ainfo.name = name;
+    ainfo.nameUpcase = name.toUpper();
     ainfo.categories.resize(profilesCount);
     for (int i = 0; i<ainfo.categories.size(); i++){
         ainfo.categories[i].category = -1;

@@ -45,6 +45,7 @@ struct sActivityProfileState{
 
 struct sActivityInfo{
     QString name;
+    QString nameUpcase;
     QVector<sTimePeriod> periods;
     QVector<sActivityProfileState> categories;
     void incTime(bool FirstTime, int CurrentProfile, int UpdateDelay);

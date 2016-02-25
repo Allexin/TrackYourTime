@@ -171,7 +171,7 @@ void cExternalTrackers::onDataReady(QString data)
         while (true){
             QString key = "APP_"+QString().setNum(i);
             if (pairs.contains(key)){
-                addPair(pairs[key],state);
+                addPair(pairs[key].toUpper(),state);
             }
             else
                 break;
