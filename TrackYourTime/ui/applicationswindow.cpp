@@ -72,6 +72,9 @@ void ApplicationsWindow::rebuildApplicationsList()
 
     bool showHidden = ui->checkBoxShowHidden->isChecked();
 
+    QBrush visibleItem(Qt::black);
+    QBrush invisibleItem(Qt::gray);
+
     //place applications in category
     int currentProfile = m_DataManager->getCurrentProfileIndex();
     for (int i = 0; i<m_DataManager->applicationsCount(); i++){
@@ -103,6 +106,7 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                                 item->setIcon(0,createColorIcon(QColor(Qt::gray)));
                             item->setFlags(Qt::ItemIsEnabled);
+                            item->setForeground(0,invisibleItem);
                             uncategorized->addChild(item);
                             app_uncategorized = item;
                             parent = item;
@@ -124,6 +128,7 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                                 item->setIcon(0,createColorIcon(category->color));
                             item->setFlags(Qt::ItemIsEnabled);
+                            item->setForeground(0,invisibleItem);
                             categories[ainfo->categories[currentProfile].category]->addChild(item);
                             app_in_categories[ainfo->categories[currentProfile].category] = item;
                             parent = item;
@@ -138,6 +143,14 @@ void ApplicationsWindow::rebuildApplicationsList()
                     item->setData(0,Qt::UserRole,i);
                     item->setData(0,Qt::UserRole+1,j);
                     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled);
+                    if (ainfo->categories[currentProfile].visible){
+                        item->setForeground(0,visibleItem);
+                        parent->setForeground(0,visibleItem);
+                    }
+                    else{
+                        item->setForeground(0,invisibleItem);
+                    }
+
                     parent->addChild(item);
                 }
             }

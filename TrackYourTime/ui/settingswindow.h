@@ -52,6 +52,7 @@ public slots:
     void handleButtonApply();
     void handleButtonCancel();
     void handleButtonBrowse();
+    void handleButtonBrowseBackup();
 
     void handleButtonSetNotificationWindow();
     void handleButtonResetNotificationWindow();

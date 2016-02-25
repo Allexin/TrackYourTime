@@ -33,8 +33,10 @@
 #include <QSystemTrayIcon>
 #include "data/cdatamanager.h"
 #include "data/cschedule.h"
+#include "data/cupdater.h"
 #include "ui/ctrayicon.h"
 #include "ui/notificationwindow.h"
+#include "ui/updateavailablewindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -82,6 +84,9 @@ int main(int argc, char *argv[])
     cDataManager datamanager;
     qDebug() << "init schedule\n";
     cSchedule schedule(&datamanager);
+    qDebug() << "init updater\n";
+    cUpdater updater;
+    QObject::connect(&schedule,SIGNAL(checkUpdates()),&updater,SLOT(checkUpdates()));
 
     qDebug() << "init tray icon\n";
     cTrayIcon trIcon(&datamanager);
@@ -122,6 +127,11 @@ int main(int argc, char *argv[])
     qDebug() << "init about window\n";
     AboutWindow aboutWindow;
     QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(showNormal()));
+
+    qDebug() << "init update window\n";
+    UpdateAvailableWindow updateAvailableWindow;
+    QObject::connect(&updater, SIGNAL(newVersionAvailable(QString)), &updateAvailableWindow, SLOT(showUpdate(QString)));
+    QObject::connect(&updateAvailableWindow, SIGNAL(ignoreUpdate()), &updater, SLOT(ignoreNewVersion()));
 
     qDebug() << "init notification window\n";
     NotificationWindow notificationWindow(&datamanager);

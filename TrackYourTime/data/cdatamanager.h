@@ -88,6 +88,13 @@ public:
         NT_SYSTEM,
         NT_BUILTIN
     };
+    enum eBackupDelay{
+        BD_ONE_DAY = 0,
+        BD_ONE_WEEK,
+        BD_ONE_MONTH,
+        BD_ONE_YEAR,
+        BD_FOREVER
+    };
 
     static const int    DEFAULT_SECONDS_UPDATE_DELAY = 1;
     static const int    DEFAULT_SECONDS_IDLE_DELAY = 300;
@@ -109,6 +116,9 @@ public:
     static const QString CONF_AUTORUN_ID;
     static const QString CONF_CLIENT_MODE_ID;
     static const QString CONF_CLIENT_MODE_HOST_ID;
+    static const QString CONF_LAST_AVAILABLE_VERSION_ID;
+    static const QString CONF_BACKUP_FILENAME_ID;
+    static const QString CONF_BACKUP_DELAY_ID;
 protected:
     cExternalTrackers   m_ExternalTrackers;
     cScriptsManager     m_ScriptsManager;
@@ -121,6 +131,8 @@ protected:
     int                 m_LastLocalActivity;
     int                 m_CurrentProfile;
     QString             m_StorageFileName;
+    QString             m_BackupFolder;
+    eBackupDelay        m_BackupDelay;
 
     QString             m_DebugScript;
 
@@ -184,7 +196,6 @@ public:
     QString getStorageFileName(){return m_StorageFileName;}
     void setDebugScript(const QString& script){m_DebugScript = script;}
 
-    void checkUpdates();
     void makeBackup();
 public slots:
     void process();

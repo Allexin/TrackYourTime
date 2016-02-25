@@ -26,6 +26,7 @@
 #include "../tools/cfilebin.h"
 #include "cdbversionconverter.h"
 #include "capppredefinedinfo.h"
+#include <QFileInfo>
 
 const QString cDataManager::CONF_UPDATE_DELAY_ID = "UPDATE_DELAY";
 const QString cDataManager::CONF_IDLE_DELAY_ID = "IDLE_DELAY";
@@ -43,6 +44,10 @@ const QString cDataManager::CONF_NOTIFICATION_OPACITY_ID = "NOTIFICATION_OPACITY
 const QString cDataManager::CONF_AUTORUN_ID = "AUTORUN_ENABLED";
 const QString cDataManager::CONF_CLIENT_MODE_ID = "CLIENT_MODE";
 const QString cDataManager::CONF_CLIENT_MODE_HOST_ID = "CLIENT_MODE_HOST";
+const QString cDataManager::CONF_LAST_AVAILABLE_VERSION_ID = "LAST_AVAILABLE_VERSION";
+const QString cDataManager::CONF_BACKUP_FILENAME_ID = "BACKUP_FILENAME";
+const QString cDataManager::CONF_BACKUP_DELAY_ID = "BACKUP_DELAY";
+
 
 cDataManager::cDataManager():QObject()
 {
@@ -70,14 +75,10 @@ cDataManager::cDataManager():QObject()
 #else
     m_StorageFileName = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/db.bin";
 #endif
+    m_BackupFolder = QFileInfo(m_StorageFileName).absolutePath()+"/backup/";
 
     loadPreferences();
-    if (!m_StorageFileName.isEmpty()){
-        QDir storagePath(QFileInfo(m_StorageFileName).absolutePath());
-        if (!storagePath.exists())
-            storagePath.mkpath(".");
-        loadDB();
-    }
+    loadDB();
 
     if (m_Profiles.size()==0){
         sProfile defaultProfile;
@@ -185,14 +186,44 @@ void cDataManager::setApplicationActivityCategory(int profile, int appIndex, int
 
 }
 
-void cDataManager::checkUpdates()
-{
-    //TODO
-}
-
 void cDataManager::makeBackup()
 {
-    //TODO
+    int delayDays = -1;
+    switch(m_BackupDelay){
+        case BD_ONE_DAY:{
+            delayDays = 1;
+        }
+        break;
+        case BD_ONE_WEEK:{
+            delayDays = 7;
+        }
+        break;
+        case BD_ONE_MONTH:{
+            delayDays = 31;
+        }
+        break;
+        case BD_ONE_YEAR:{
+            delayDays = 365;
+        }
+        break;
+        case BD_FOREVER:{
+            delayDays = -1;
+        }
+        break;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+    if (delayDays>-1){
+        QStringList backupFiles = QDir(m_BackupFolder).entryList(QStringList() << "*.backup");
+        for (int i = 0; i<backupFiles.size(); i++){
+            QFileInfo file(m_BackupFolder+"/"+backupFiles[i]);
+            if (now.daysTo(file.lastModified())>=delayDays){
+                QFile::remove(file.absoluteFilePath());
+            }
+        }
+    }
+
+    QFile::copy(m_StorageFileName,m_BackupFolder+"/"+QFileInfo(m_StorageFileName).baseName()+"."+now.toString("yyyy_MM_dd__HH_mm")+".backup");
 }
 
 void cDataManager::process()
@@ -563,6 +594,21 @@ void cDataManager::loadPreferences()
     m_NotificationType = (eNotificationType)settings.db()->value(CONF_NOTIFICATION_TYPE_ID,m_NotificationType).toInt();
     m_ClientMode = settings.db()->value(CONF_CLIENT_MODE_ID,m_ClientMode).toBool();
     m_ClientModeHost = settings.db()->value(CONF_CLIENT_MODE_HOST_ID,m_ClientModeHost).toString();
+
+    m_BackupDelay = (eBackupDelay)settings.db()->value(CONF_BACKUP_DELAY_ID,BD_ONE_WEEK).toInt();
+    m_BackupFolder = settings.db()->value(CONF_BACKUP_FILENAME_ID,m_BackupFolder).toString();
+
+    if (!m_StorageFileName.isEmpty()){
+        QDir storagePath(QFileInfo(m_StorageFileName).absolutePath());
+        if (!storagePath.exists())
+            storagePath.mkpath(".");
+    }
+
+    if (!m_BackupFolder.isEmpty()){
+        QDir backupPath(m_BackupFolder);
+        if (!backupPath.exists())
+            backupPath.mkpath(".");
+    }
 }
 
 

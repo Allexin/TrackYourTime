@@ -89,6 +89,7 @@ void cSchedule::deleteItem(int index)
 void cSchedule::addItem(cScheduleItem::eScheduleAction action, const QString &param, const QString &regexp)
 {
     m_Items.push_back(new cScheduleItem(action,param,regexp));
+    connect(m_Items.last(),SIGNAL(checkUpdates()),this,SLOT(onCheckUpdateAction()));
     save();
 }
 
@@ -104,6 +105,11 @@ void cSchedule::timer()
 
     for (int i = 0; i<m_Items.size(); i++)
         m_Items[i]->process(currentDateTime, m_DataManager);
+}
+
+void cSchedule::onCheckUpdateAction()
+{
+    emit checkUpdates();
 }
 
 
@@ -127,7 +133,7 @@ void cScheduleItem::process(const QString &currentDateTime, cDataManager* dataMa
             }
             break;
             case SA_CHECK_UPDATE:{
-                dataManager->checkUpdates();
+                emit checkUpdates();
             }
             break;
             case SA_MAKE_BACKUP:{
