@@ -61,6 +61,9 @@ void ProfilesWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent( event );
     rebuild();
+
+    raise();
+    activateWindow();
 }
 
 void ProfilesWindow::onProfileChanged(QListWidgetItem *item)

@@ -72,6 +72,9 @@ void ApplicationsWindow::rebuildApplicationsList()
 
     bool showHidden = ui->checkBoxShowHidden->isChecked();
 
+    QBrush visibleItem(Qt::black);
+    QBrush invisibleItem(Qt::gray);
+
     //place applications in category
     int currentProfile = m_DataManager->getCurrentProfileIndex();
     for (int i = 0; i<m_DataManager->applicationsCount(); i++){
@@ -86,9 +89,9 @@ void ApplicationsWindow::rebuildApplicationsList()
 
             for (int j = 0; j<app->activities.size(); j++){
                 const sActivityInfo* ainfo = &app->activities[j];
-                if (showHidden || ainfo->visible){
+                if (showHidden || ainfo->categories[currentProfile].visible){
                     QTreeWidgetItem* parent = NULL;
-                    if (app->activities[j].categories[currentProfile]==-1){
+                    if (ainfo->categories[currentProfile].category==-1){
                         parent = app_uncategorized;
                         if (parent==NULL){
                             QTreeWidgetItem* item = new QTreeWidgetItem(cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION);
@@ -103,15 +106,16 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                                 item->setIcon(0,createColorIcon(QColor(Qt::gray)));
                             item->setFlags(Qt::ItemIsEnabled);
+                            item->setForeground(0,invisibleItem);
                             uncategorized->addChild(item);
                             app_uncategorized = item;
                             parent = item;
                         }
                     }
                     else{
-                        parent = app_in_categories[app->activities[j].categories[currentProfile]];
+                        parent = app_in_categories[ainfo->categories[currentProfile].category];
                         if (parent==NULL){
-                            const sCategory* category = m_DataManager->categories(app->activities[j].categories[currentProfile]);
+                            const sCategory* category = m_DataManager->categories(ainfo->categories[currentProfile].category);
                             QTreeWidgetItem* item = new QTreeWidgetItem(cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION);
                             item->setText(0,app->activities[0].name);
                             item->setToolTip(0,app->path+"/"+app->activities[0].name);
@@ -124,8 +128,9 @@ void ApplicationsWindow::rebuildApplicationsList()
                             else
                                 item->setIcon(0,createColorIcon(category->color));
                             item->setFlags(Qt::ItemIsEnabled);
-                            categories[app->activities[j].categories[currentProfile]]->addChild(item);
-                            app_in_categories[app->activities[j].categories[currentProfile]] = item;
+                            item->setForeground(0,invisibleItem);
+                            categories[ainfo->categories[currentProfile].category]->addChild(item);
+                            app_in_categories[ainfo->categories[currentProfile].category] = item;
                             parent = item;
                         }
                     }
@@ -138,6 +143,14 @@ void ApplicationsWindow::rebuildApplicationsList()
                     item->setData(0,Qt::UserRole,i);
                     item->setData(0,Qt::UserRole+1,j);
                     item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEnabled);
+                    if (ainfo->categories[currentProfile].visible){
+                        item->setForeground(0,visibleItem);
+                        parent->setForeground(0,visibleItem);
+                    }
+                    else{
+                        item->setForeground(0,invisibleItem);
+                    }
+
                     parent->addChild(item);
                 }
             }
@@ -201,6 +214,9 @@ void ApplicationsWindow::showEvent(QShowEvent *event)
     m_CategoriesExpandedState.clear();
     rebuildProfilesList();
     rebuildApplicationsList();
+
+    raise();
+    activateWindow();
 }
 
 void ApplicationsWindow::onProfilesChange()
@@ -240,7 +256,7 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
         if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY)
             if (item->data(0,Qt::UserRole+1).toInt()>0){
                 const sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
-                if (app->activities[item->data(0,Qt::UserRole+1).toInt()].visible)
+                if (app->activities[item->data(0,Qt::UserRole+1).toInt()].categories[m_DataManager->getCurrentProfileIndex()].visible)
                     canHideItem = true;
                 else
                     canShowItem = true;
@@ -279,7 +295,7 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
                 sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
                 int activityIndex = item->data(0,Qt::UserRole+1).toInt();
                 if (activityIndex>0)
-                    app->activities[activityIndex].visible = true;
+                    app->activities[activityIndex].categories[m_DataManager->getCurrentProfileIndex()].visible = true;
             }
         }
     }
@@ -292,7 +308,7 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
                 sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
                 int activityIndex = item->data(0,Qt::UserRole+1).toInt();
                 if (activityIndex>0){
-                    app->activities[activityIndex].visible = false;
+                    app->activities[activityIndex].categories[m_DataManager->getCurrentProfileIndex()].visible = false;
                     if (!ui->checkBoxShowHidden->isChecked())
                         itemsToDelete.push_back(item);
                 }

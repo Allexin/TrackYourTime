@@ -18,6 +18,7 @@
 
 #include "aboutwindow.h"
 #include "ui_aboutwindow.h"
+#include "../tools/tools.h"
 
 AboutWindow::AboutWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,9 +27,19 @@ AboutWindow::AboutWindow(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+
+    ui->labelVersion->setText(CURRENT_VERSION);
 }
 
 AboutWindow::~AboutWindow()
 {
     delete ui;
+}
+
+void AboutWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    raise();
+    activateWindow();
 }

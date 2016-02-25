@@ -54,7 +54,9 @@ SOURCES += \
     data/cschedule.cpp \
     ui/schedulewindow.cpp \
     ui/notification_dummy.cpp \
-    ui/notificationwindow.cpp
+    ui/notificationwindow.cpp \
+    data/cupdater.cpp \
+    ui/updateavailablewindow.cpp
 
 HEADERS  += \
     ui/settingswindow.h \
@@ -75,7 +77,9 @@ HEADERS  += \
     data/cschedule.h \
     ui/schedulewindow.h \
     ui/notification_dummy.h \
-    ui/notificationwindow.h
+    ui/notificationwindow.h \
+    data/cupdater.h \
+    ui/updateavailablewindow.h
 
 FORMS    += \
     ui/settingswindow.ui \
@@ -86,4 +90,5 @@ FORMS    += \
     ui/app_settingswindow.ui \
     ui/schedulewindow.ui \
     ui/notification_dummy.ui \
-    ui/notificationwindow.ui
+    ui/notificationwindow.ui \
+    ui/updateavailablewindow.ui

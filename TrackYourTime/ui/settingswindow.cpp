@@ -21,6 +21,7 @@
 #include "../tools/tools.h"
 #include <QFileDialog>
 #include "../tools/cfilebin.h"
+#include <QFileInfo>
 
 void SettingsWindow::loadPreferences()
 {
@@ -43,8 +44,15 @@ void SettingsWindow::loadPreferences()
     int NotificationMoves = settings.db()->value(cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID,3).toInt();
     int NotificationOpacity = settings.db()->value(cDataManager::CONF_NOTIFICATION_OPACITY_ID,100).toInt();
 
+    QFileInfo info(StorageFileName);
+    QString BackupFileName = settings.db()->value(cDataManager::CONF_BACKUP_FILENAME_ID,info.absolutePath()+"/backup/").toString();
+    int BackupDelay = settings.db()->value(cDataManager::CONF_BACKUP_DELAY_ID,cDataManager::BD_ONE_WEEK).toInt();
+
     ui->checkBoxClientMode->setChecked(ClientMode);
     ui->lineEditClientModeHost->setText(ClientModeHost);
+
+    ui->lineEditBackupFolder->setText(BackupFileName);
+    ui->comboBoxBackupDelay->setCurrentIndex(BackupDelay);
 
     ui->lineEditNotif_Message->setText(NotificationMessage);
     ui->spinBoxNotif_Delay->setValue(NotificationDelay);
@@ -115,6 +123,9 @@ void SettingsWindow::applyPreferences()
     if (ui->comboBoxLanguage->currentIndex()>-1)
         settings.db()->setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
 
+    settings.db()->setValue(cDataManager::CONF_BACKUP_FILENAME_ID,ui->lineEditBackupFolder->text());
+    settings.db()->setValue(cDataManager::CONF_BACKUP_DELAY_ID,ui->comboBoxBackupDelay->currentIndex());
+
     cDataManager::eNotificationType notificationType = cDataManager::NT_SYSTEM;
     if (ui->radioButtonNotif_Off->isChecked())
         notificationType = cDataManager::NT_NONE;
@@ -151,6 +162,7 @@ SettingsWindow::SettingsWindow(cDataManager *DataManager) : QMainWindow(0),
     connect(ui->pushButtonApply, SIGNAL (released()),this, SLOT (handleButtonApply()));
     connect(ui->pushButtonCancel, SIGNAL (released()),this, SLOT (handleButtonCancel()));
     connect(ui->pushButtonBrowseStorageFileName, SIGNAL (released()),this, SLOT (handleButtonBrowse()));
+    connect(ui->pushButtonBrowseBackupFolder, SIGNAL (released()),this, SLOT (handleButtonBrowseBackup()));
     connect(ui->pushButtonSetNotificationWindow, SIGNAL (released()),this, SLOT (handleButtonSetNotificationWindow()));
     connect(ui->pushButtonResetNotificationWindow, SIGNAL (released()),this, SLOT (handleButtonResetNotificationWindow()));
     connect(ui->pushButtonSetDefaultMessage,SIGNAL(released()),this, SLOT(handleButtonSetDefaultMessage()));
@@ -185,6 +197,9 @@ void SettingsWindow::showEvent(QShowEvent *event)
 {
     QMainWindow::showEvent( event );
     loadPreferences();
+
+    raise();
+    activateWindow();
 }
 
 void SettingsWindow::handleButtonApply()
@@ -208,6 +223,16 @@ void SettingsWindow::handleButtonBrowse()
                                  );
     if (!NewStorageFileName.isEmpty())
         ui->lineEditStorageFileName->setText(NewStorageFileName);
+}
+
+void SettingsWindow::handleButtonBrowseBackup()
+{
+    QString NewBackupFolder = QFileDialog::getExistingDirectory(this, tr("Select backup location"),
+                                                                  ui->lineEditBackupFolder->text(),
+                                                                  QFileDialog::ShowDirsOnly
+                                                                  | QFileDialog::DontResolveSymlinks);
+    if (!NewBackupFolder.isEmpty())
+        ui->lineEditBackupFolder->setText(NewBackupFolder);
 }
 
 void SettingsWindow::handleButtonSetNotificationWindow()

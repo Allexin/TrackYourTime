@@ -70,7 +70,7 @@ QString getUserName()
     return qgetenv("USERNAME");
 }
 
-typedef BOOL (__stdcall *GetProcessImageFileNamePtr)(HANDLE, char* ,DWORD);
+typedef BOOL (__stdcall *GetProcessImageFileNamePtr)(HANDLE, WCHAR* ,DWORD);
 
 class cGetProcessImageFileName{
 protected:
@@ -82,17 +82,17 @@ public:
     cGetProcessImageFileName():m_GetProcessImageFileName(0),m_K32GetProcessImageFileName(0){
         m_Kernel32Lib = LoadLibraryA("kernel32.dll");
         if (m_Kernel32Lib)
-            m_K32GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_Kernel32Lib,"K32GetProcessImageFileNameA");
+            m_K32GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_Kernel32Lib,"K32GetProcessImageFileNameW");
         m_psapiLib = LoadLibraryA("psapi.dll");
         if (m_psapiLib)
-            m_GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_psapiLib,"GetProcessImageFileNameA");
+            m_GetProcessImageFileName = (GetProcessImageFileNamePtr)GetProcAddress(m_psapiLib,"GetProcessImageFileNameW");
     }
     ~cGetProcessImageFileName(){
         FreeLibrary(m_Kernel32Lib);
         FreeLibrary(m_psapiLib);
     }
 
-    BOOL GetProcessFileName(HANDLE process, char* path,DWORD length){
+    BOOL GetProcessFileName(HANDLE process, WCHAR* path,DWORD length){
         if (m_K32GetProcessImageFileName!=0)
             return m_K32GetProcessImageFileName(process,path,length);
         return m_GetProcessImageFileName(process,path,length);
@@ -106,9 +106,9 @@ QString GetAppNameFromPID(DWORD pid)
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION , FALSE, pid);
     if (hProcess != 0){
         try {
-            char path[MAX_PATH];
+            WCHAR path[MAX_PATH];
             if (processFileName.GetProcessFileName(hProcess,path, MAX_PATH-1) != 0)
-                appFileName=path;
+                appFileName=QString::fromWCharArray(path);
             else
                 qCritical() << "GetProcessImageFileName Error " << GetLastError();
         }
@@ -166,10 +166,10 @@ sSysInfo getCurrentApplication()
     sSysInfo appInfo;
     appInfo.fileName = fileInfo.fileName().simplified();
     appInfo.path = fileInfo.absolutePath().simplified();
-    char title[256];
-    int l = GetWindowTextA(wnd,title,256);
+    WCHAR title[256];
+    int l = GetWindowTextW(wnd,title,256);
     if (l>0)
-        appInfo.title = title.simplified();
+        appInfo.title = QString::fromWCharArray(title).simplified();
 
     return appInfo;
 }

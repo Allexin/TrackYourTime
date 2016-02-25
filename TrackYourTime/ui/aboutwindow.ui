@@ -56,9 +56,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="labelVersion">
           <property name="text">
-           <string>0.9.2 beta</string>
+           <string/>
           </property>
          </widget>
         </item>
@@ -125,6 +125,13 @@
        </widget>
       </item>
       <item>
+       <widget class="Line" name="line_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="Line" name="line_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -142,6 +149,23 @@
        <widget class="QLabel" name="label_9">
         <property name="text">
          <string>&lt;a href='https://github.com/Allexin/TrackYourTime.git'&gt;https://github.com/Allexin/TrackYourTime.git&lt;/a&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>User manual:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>&lt;a href=&quot;https://github.com/Allexin/TrackYourTime/wiki/User-Manual&quot;&gt;https://github.com/Allexin/TrackYourTime/wiki/User-Manual&lt;/a&gt;</string>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>

@@ -67,7 +67,8 @@ protected:
 public:
     explicit StatisticWindow(cDataManager* DataManager);
     ~StatisticWindow();
-
+protected:
+    virtual void showEvent(QShowEvent * event) override;
 private:
     Ui::StatisticWindow *ui;    
 public slots:

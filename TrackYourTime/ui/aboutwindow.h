@@ -32,7 +32,8 @@ class AboutWindow : public QMainWindow
 public:
     explicit AboutWindow(QWidget *parent = 0);
     ~AboutWindow();
-
+protected:
+    virtual void showEvent(QShowEvent * event) override;
 private:
     Ui::AboutWindow *ui;
 };
