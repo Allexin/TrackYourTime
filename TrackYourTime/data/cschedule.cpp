@@ -34,6 +34,15 @@ void cSchedule::load()
         QString regexp = settings.db()->value(settingsKey+"regexp").toString();
         m_Items[i] = new cScheduleItem(action,param,regexp);
     }
+
+    if (settings.db()->value("schedule/need_add_update_record",true).toBool()){
+        settings.db()->setValue("schedule/need_add_update_record",false);
+        settings.db()->sync();
+
+        addItem(cScheduleItem::SA_CHECK_UPDATE,"",".*12:00");
+
+        save();
+    }
 }
 
 cSchedule::cSchedule(cDataManager *dataManager, QObject *parent) : QObject(parent)
@@ -80,6 +89,7 @@ void cSchedule::deleteItem(int index)
 void cSchedule::addItem(cScheduleItem::eScheduleAction action, const QString &param, const QString &regexp)
 {
     m_Items.push_back(new cScheduleItem(action,param,regexp));
+    connect(m_Items.last(),SIGNAL(checkUpdates()),this,SLOT(onCheckUpdateAction()));
     save();
 }
 
@@ -95,6 +105,11 @@ void cSchedule::timer()
 
     for (int i = 0; i<m_Items.size(); i++)
         m_Items[i]->process(currentDateTime, m_DataManager);
+}
+
+void cSchedule::onCheckUpdateAction()
+{
+    emit checkUpdates();
 }
 
 
@@ -117,6 +132,14 @@ void cScheduleItem::process(const QString &currentDateTime, cDataManager* dataMa
                 dataManager->setCurrentProfileIndexSafe(m_Param.toInt());
             }
             break;
+            case SA_CHECK_UPDATE:{
+                emit checkUpdates();
+            }
+            break;
+            case SA_MAKE_BACKUP:{
+                dataManager->makeBackup();
+            }
+            break;
             case SA_COUNT:{
                 //WAAAT???
             }
@@ -128,13 +151,11 @@ void cScheduleItem::process(const QString &currentDateTime, cDataManager* dataMa
 QString cScheduleItem::getActionName(cScheduleItem::eScheduleAction action)
 {
     switch (action){
-        case SA_SET_PROFILE:{
-            return tr("Set profile");
-        };
-        break;
-        case SA_COUNT:{
+        case SA_SET_PROFILE:return tr("Set profile");
+        case SA_CHECK_UPDATE:return tr("Check for updates");
+        case SA_MAKE_BACKUP:return tr("Make backup");
+        case SA_COUNT:
             //WAAAT???
-        }
         break;
     }
 

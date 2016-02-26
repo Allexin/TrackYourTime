@@ -103,7 +103,7 @@ void StatisticWindow::rebuild(QDate from, QDate to)
                     TotalTime+=duration;
                     m_Applications[i].TotalTime+=duration;
                     m_Applications[i].childs[activity].TotalTime+=duration;
-                    int cat = ainfo->categories[ainfo->periods[j].profileIndex];
+                    int cat = ainfo->categories[ainfo->periods[j].profileIndex].category;
                     if (cat==-1)
                         m_Uncategorized.TotalTime+=duration;
                     else
@@ -241,6 +241,14 @@ StatisticWindow::StatisticWindow(cDataManager *DataManager) :
 StatisticWindow::~StatisticWindow()
 {
     delete ui;
+}
+
+void StatisticWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    raise();
+    activateWindow();
 }
 
 enum ePeriod{

@@ -21,7 +21,9 @@ void notification_dummy::showWithMessage(const QString &format, bool compactMode
     ui->comboBoxCategories->setVisible(!compactMode);
     ui->labelCategory->setVisible(!compactMode);
 
-    show();
+    showNormal();
+    raise();
+    activateWindow();
 }
 
 void notification_dummy::onButtonApply()

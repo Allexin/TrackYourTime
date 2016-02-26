@@ -33,8 +33,10 @@
 #include <QSystemTrayIcon>
 #include "data/cdatamanager.h"
 #include "data/cschedule.h"
+#include "data/cupdater.h"
 #include "ui/ctrayicon.h"
 #include "ui/notificationwindow.h"
+#include "ui/updateavailablewindow.h"
 
 int main(int argc, char *argv[])
 {
@@ -82,6 +84,9 @@ int main(int argc, char *argv[])
     cDataManager datamanager;
     qDebug() << "init schedule\n";
     cSchedule schedule(&datamanager);
+    qDebug() << "init updater\n";
+    cUpdater updater;
+    QObject::connect(&schedule,SIGNAL(checkUpdates()),&updater,SLOT(checkUpdates()));
 
     qDebug() << "init tray icon\n";
     cTrayIcon trIcon(&datamanager);
@@ -92,13 +97,13 @@ int main(int argc, char *argv[])
 
     qDebug() << "init applications window\n";
     ApplicationsWindow applicationsWindow(&datamanager);
-    QObject::connect(&trIcon, SIGNAL(showApplications()), &applicationsWindow, SLOT(show()));
+    QObject::connect(&trIcon, SIGNAL(showApplications()), &applicationsWindow, SLOT(showNormal()));
     QObject::connect(&datamanager, SIGNAL(profilesChanged()), &applicationsWindow, SLOT(onProfilesChange()));
     QObject::connect(&datamanager, SIGNAL(applicationsChanged()), &applicationsWindow, SLOT(onApplicationsChange()));
 
     qDebug() << "init profiles window\n";
     ProfilesWindow profilesWindow(&datamanager);
-    QObject::connect(&applicationsWindow, SIGNAL(showProfiles()), &profilesWindow, SLOT(show()));
+    QObject::connect(&applicationsWindow, SIGNAL(showProfiles()), &profilesWindow, SLOT(showNormal()));
 
     qDebug() << "init app settings window\n";
     App_SettingsWindow app_settingsWindow(&datamanager);
@@ -107,21 +112,26 @@ int main(int argc, char *argv[])
 
     qDebug() << "init settings window\n";
     SettingsWindow settingsWindow(&datamanager);
-    QObject::connect(&trIcon, SIGNAL(showSettings()), &settingsWindow, SLOT(show()));
+    QObject::connect(&trIcon, SIGNAL(showSettings()), &settingsWindow, SLOT(showNormal()));
     QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &datamanager, SLOT(onPreferencesChanged()));
 
     qDebug() << "init schedule window\n";
     ScheduleWindow scheduleWindow(&datamanager,&schedule);
     QObject::connect(&datamanager, SIGNAL(profilesChanged()), &scheduleWindow, SLOT(rebuild()));
-    QObject::connect(&trIcon, SIGNAL(showSchedule()), &scheduleWindow, SLOT(show()));
+    QObject::connect(&trIcon, SIGNAL(showSchedule()), &scheduleWindow, SLOT(showNormal()));
 
     qDebug() << "init statistic window\n";
     StatisticWindow statisticWindow(&datamanager);
-    QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(show()));
+    QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(showNormal()));
 
     qDebug() << "init about window\n";
     AboutWindow aboutWindow;
-    QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(show()));
+    QObject::connect(&trIcon, SIGNAL(showAbout()), &aboutWindow, SLOT(showNormal()));
+
+    qDebug() << "init update window\n";
+    UpdateAvailableWindow updateAvailableWindow;
+    QObject::connect(&updater, SIGNAL(newVersionAvailable(QString)), &updateAvailableWindow, SLOT(showUpdate(QString)));
+    QObject::connect(&updateAvailableWindow, SIGNAL(ignoreUpdate()), &updater, SLOT(ignoreNewVersion()));
 
     qDebug() << "init notification window\n";
     NotificationWindow notificationWindow(&datamanager);

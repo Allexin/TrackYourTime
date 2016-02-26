@@ -10,7 +10,9 @@ App_SettingsWindow::App_SettingsWindow(cDataManager *DataManager) :
     ui->setupUi(this);    
     m_DataManager = DataManager;
 
-    ui->plainTextEditScript->setPlaceholderText(tr("Place title parser code here. Look predefined scripts for example."));
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 3, 0))
+    ui->plainTextEditScript->setPlaceholderText("Place title parser code here. Look predefined scripts for example.");
+#endif
     connect(ui->pushButtonApply,SIGNAL(released()),this,SLOT(onApply()));
     connect(ui->pushButtonStartDebug,SIGNAL(released()),this,SLOT(onSetDebug()));
 }
@@ -48,5 +50,7 @@ void App_SettingsWindow::showApp(int appIndex)
     ui->comboBoxTrackingType->setCurrentIndex(appInfo->trackerType);
     ui->plainTextEditScript->setPlainText(appInfo->customScript);
     ui->labelAdditionalInfo->setText(appInfo->predefinedInfo->info());
-    show();
+    showNormal();
+    raise();
+    activateWindow();
 }

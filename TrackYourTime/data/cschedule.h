@@ -13,12 +13,12 @@ class cScheduleItem: public QObject{
 public:
     enum eScheduleAction{
         SA_SET_PROFILE = 0,
+        SA_CHECK_UPDATE,
+        SA_MAKE_BACKUP,
         SA_COUNT
     };
 
 protected:
-
-
     eScheduleAction     m_Action;
     QString             m_Param;
     QRegExp             m_RegExp;
@@ -30,6 +30,8 @@ public:
     QString param() const{return m_Param;}
     QString condition() const{return m_RegExp.pattern();}
     static QString getActionName(eScheduleAction action);
+signals:
+    void checkUpdates();
 };
 
 class cSchedule : public QObject
@@ -56,9 +58,10 @@ public:
 
     QString getSample(){return getCurrentDateTime();}
 signals:
-
+    void checkUpdates();
 protected slots:
     void timer();
+    void onCheckUpdateAction();
 };
 
 #endif // CSCHEDULE_H

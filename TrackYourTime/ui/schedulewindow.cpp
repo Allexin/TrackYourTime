@@ -77,4 +77,7 @@ void ScheduleWindow::showEvent(QShowEvent *event)
     QMainWindow::showEvent( event );
     rebuild();
     updateTimeSample();
+
+    raise();
+    activateWindow();
 }

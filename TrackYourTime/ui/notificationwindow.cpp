@@ -1,6 +1,7 @@
 #include "notificationwindow.h"
 #include "ui_notificationwindow.h"
 #include "../tools/tools.h"
+#include <QPalette>
 
 NotificationWindow::NotificationWindow(cDataManager *dataManager) :
     QMainWindow(0,Qt::Dialog),
@@ -65,7 +66,7 @@ void NotificationWindow::stop()
 void NotificationWindow::onButtonSetCurrent()
 {
     if (m_AppIndex>-1){
-        m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()] = ui->comboBoxCategory->currentIndex();
+        m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[m_DataManager->getCurrentProfileIndex()].category = ui->comboBoxCategory->currentIndex();
     }
     stop();
 }
@@ -74,7 +75,7 @@ void NotificationWindow::onButtonSetAll()
 {
     if (m_AppIndex>-1){
         for (int i = 0; i<m_DataManager->profilesCount(); i++)
-            m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[i] = ui->comboBoxCategory->currentIndex();
+            m_DataManager->applications(m_AppIndex)->activities[m_ActivityIndex].categories[i].category = ui->comboBoxCategory->currentIndex();
     }
     stop();
 }
@@ -120,7 +121,7 @@ void NotificationWindow::onShow()
             appState=tr("default");
         else
             appState=info->activities[m_ActivityIndex].name;
-        category = info->activities[m_ActivityIndex].categories[profile];
+        category = info->activities[m_ActivityIndex].categories[profile].category;
         if (category==-1)
             appCategory=tr("Uncategorized");
         else
@@ -131,6 +132,11 @@ void NotificationWindow::onShow()
     message = message.replace("%APP_NAME%",appName);
     message = message.replace("%APP_STATE%",appState);
     message = message.replace("%APP_CATEGORY%",appCategory);
+
+    QColor catColor = category==-1?Qt::gray:m_DataManager->categories(category)->color;
+    QColor catColorText = catColor.lightness()<127?Qt::white:Qt::black;
+    message = "<font color="+catColorText.name()+">"+message+"</font>";
+
     ui->labelMessage->setText(message);
 
     if (category==-1 && m_AppIndex>-1 && m_ConfMoves!=1){
@@ -146,8 +152,16 @@ void NotificationWindow::onShow()
         ui->groupBoxCategory->setVisible(false);
         m_CanCloseInterrupt = false;
     }
-    setWindowOpacity(m_ConfOpacity==100?1.0:m_ConfOpacity/100.f);
-    setGeometry(m_ConfPosition.x(),m_ConfPosition.y(),m_ConfSize.x(),0);
+    setWindowOpacity(m_ConfOpacity==100?1.0:m_ConfOpacity/100.f);    
+
+    QPalette Pal(palette());
+
+    if (category>-1)
+        Pal.setColor(QPalette::Background, m_DataManager->categories(category)->color);
+    else
+        Pal.setColor(QPalette::Background, Qt::gray);
+    setAutoFillBackground(true);
+    setPalette(Pal);
 
     m_TimerCounter = 0;
     m_ClosingInterrupted = false;
@@ -155,4 +169,6 @@ void NotificationWindow::onShow()
     m_Timer.start(1000);
 
     show();
+
+    setGeometry(m_ConfPosition.x(),m_ConfPosition.y(),m_ConfSize.x(),0);
 }

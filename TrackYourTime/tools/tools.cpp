@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QFileInfo>
 
+const QString CURRENT_VERSION = "0.9.2.1";
+
 QMap<QString,QString> loadPairsFile(const QString& fileName){
     QMap<QString,QString> list;
     QFile textFile(fileName);
