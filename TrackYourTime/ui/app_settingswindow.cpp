@@ -48,7 +48,10 @@ void App_SettingsWindow::showApp(int appIndex)
     const sAppInfo* appInfo = m_DataManager->applications(m_AppIndex);
     ui->labelApplication->setText(appInfo->activities[0].name);
     ui->comboBoxTrackingType->setCurrentIndex(appInfo->trackerType);
-    ui->plainTextEditScript->setPlainText(appInfo->customScript);
+    QString script = appInfo->customScript;
+    if (script.isEmpty())
+        script = "function parseTitle(appName, appTitle, currentOS){\n  return appTitle;\n}";
+    ui->plainTextEditScript->setPlainText(script);
     ui->labelAdditionalInfo->setText(appInfo->predefinedInfo->info());
     showNormal();
     raise();

@@ -223,7 +223,8 @@ void cDataManager::makeBackup()
         }
     }
 
-    QFile::copy(m_StorageFileName,m_BackupFolder+"/"+QFileInfo(m_StorageFileName).baseName()+"."+now.toString("yyyy_MM_dd__HH_mm")+".backup");
+    if (!m_StorageFileName.isEmpty())
+        QFile::copy(m_StorageFileName,m_BackupFolder+"/"+QFileInfo(m_StorageFileName).baseName()+"."+now.toString("yyyy_MM_dd__HH_mm")+".backup");
 }
 
 void cDataManager::process()

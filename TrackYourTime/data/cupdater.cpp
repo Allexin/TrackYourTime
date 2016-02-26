@@ -42,6 +42,7 @@ void cUpdater::ignoreNewVersion()
 
 void cUpdater::processError(QAbstractSocket::SocketError error)
 {
+    Q_UNUSED(error)
     qCritical() << "cUpdater: error " << m_Socket.errorString();
 }
 
