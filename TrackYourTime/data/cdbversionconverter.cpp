@@ -109,6 +109,7 @@ bool convertToVersion2(const QString& SrcFileName,const QString& DstFileName, bo
         if (success){
             if (makeBackup)
                 QFile::rename(DstFileName,DstFileName+".version.1");
+            QFile::remove(DstFileName);
             QFile::rename(tmpFileName,DstFileName);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
             qInfo() << "db converted from version 1 to version 2";
@@ -229,6 +230,7 @@ bool convertToVersion3(const QString &SrcFileName, const QString &DstFileName, b
         if (success){
             if (makeBackup)
                 QFile::rename(DstFileName,DstFileName+".version.2");
+            QFile::remove(DstFileName);
             QFile::rename(tmpFileName,DstFileName);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
             qInfo() << "db converted from version 2 to version 3";

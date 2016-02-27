@@ -513,6 +513,8 @@ void cDataManager::loadDB()
 {
     if (m_StorageFileName.isEmpty())
         return;
+    if (!QFile(m_StorageFileName).exists())
+        return;
     qDebug() << "cDataManager: start DB loading\n";
     for (int i = 0; i<m_Applications.size(); i++)
         delete m_Applications[i];
