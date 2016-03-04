@@ -67,6 +67,7 @@ private:
     QTreeWidgetItem*    m_ContextMenuItem;
 protected:
     QMenu               m_CategoriesMenu;
+    QMenu               m_MoveToMenu;
     QIcon               m_ScriptDetector;
     QIcon               m_ExternalDetector;
 
@@ -74,6 +75,7 @@ protected:
     bool                m_LoadingData;
     void rebuildProfilesList();
     void rebuildApplicationsList();
+    void rebuildContextMenu();
 public:
     explicit ApplicationsWindow(cDataManager* DataManager);
     ~ApplicationsWindow();
@@ -90,6 +92,7 @@ public slots:
     void onCategoryChanged(QTreeWidgetItem *item, int column);
     void onContextMenu(const QPoint& pos);
     void onMenuSelection(QAction* menuAction);
+    void onMoveToMenuSelection(QAction* menuAction);
     void onProfileSelection(int newProfileIndex);
     void onApplicationMoved(QTreeWidgetItem* item, QTreeWidgetItem* newParent);
     void onEditProfiles(){emit showProfiles();}

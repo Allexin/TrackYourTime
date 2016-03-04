@@ -49,6 +49,7 @@ QTreeWidgetItem* createTreeItemCategory(int index, QColor color, const QString& 
 
 void ApplicationsWindow::rebuildApplicationsList()
 {
+    rebuildContextMenu();
     m_CategoriesExpandedState.resize(ui->treeWidgetApplications->topLevelItemCount());
     for (int i = 0; i<m_CategoriesExpandedState.size(); i++){
         QTreeWidgetItem* item = ui->treeWidgetApplications->topLevelItem(i);
@@ -165,6 +166,13 @@ void ApplicationsWindow::rebuildApplicationsList()
     ui->treeWidgetApplications->verticalScrollBar()->setValue(m_ScrollPos);
 }
 
+void ApplicationsWindow::rebuildContextMenu()
+{
+    m_MoveToMenu.clear();
+    for (int i = 0; i<m_DataManager->categoriesCount(); i++)
+        m_MoveToMenu.addAction(m_DataManager->categories(i)->name)->setData(i);
+}
+
 ApplicationsWindow::ApplicationsWindow(cDataManager *DataManager) : QMainWindow(0),
     ui(new Ui::ApplicationsWindow),
     m_ScriptDetector("data/icons/script.png"),
@@ -181,6 +189,8 @@ ApplicationsWindow::ApplicationsWindow(cDataManager *DataManager) : QMainWindow(
 
     connect(ui->checkBoxShowHidden,SIGNAL(stateChanged(int)),this,SLOT(onApplicationsChange()));
 
+    m_MoveToMenu.setTitle(tr("Move to category"));
+    connect(&m_MoveToMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMoveToMenuSelection(QAction*)));
 
     m_CategoriesMenu.addAction(tr("New category"))->setData("NEW_CATEGORY_MENU");
     m_CategoriesMenu.addAction(tr("Delete category"))->setData("DELETE_CATEGORY_MENU");
@@ -188,6 +198,7 @@ ApplicationsWindow::ApplicationsWindow(cDataManager *DataManager) : QMainWindow(
     m_CategoriesMenu.addAction(tr("Hide activity"))->setData("HIDE_ACTIVITY");
     m_CategoriesMenu.addAction(tr("Show activity"))->setData("SHOW_ACTIVITY");
     m_CategoriesMenu.addAction(tr("Settings..."))->setData("APP_SETTINGS");
+    m_CategoriesMenu.addMenu(&m_MoveToMenu)->setData("MOVE_TO_CATEGORY");
     connect(&m_CategoriesMenu, SIGNAL(triggered(QAction*)), this, SLOT(onMenuSelection(QAction*)));
 
     ui->treeWidgetApplications->setAcceptDrops(true);
@@ -247,20 +258,21 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
     bool canEditItem = false;
     bool canHideItem = false;
     bool canShowItem = false;
+    bool canMoveToCategory = false;
     bool haveSettings = false;
     if (item){
         haveSettings = item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION;
         if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_CATEGORY)
             if (item->data(0,Qt::UserRole).toInt()>-1)
                 canEditItem = true;
-        if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY)
-            if (item->data(0,Qt::UserRole+1).toInt()>0){
-                const sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
-                if (app->activities[item->data(0,Qt::UserRole+1).toInt()].categories[m_DataManager->getCurrentProfileIndex()].visible)
-                    canHideItem = true;
-                else
-                    canShowItem = true;
-            }
+        if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY){
+            canMoveToCategory = true;
+            const sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
+            if (app->activities[item->data(0,Qt::UserRole+1).toInt()].categories[m_DataManager->getCurrentProfileIndex()].visible)
+                canHideItem = true;
+            else
+                canShowItem = true;
+        }
         item->setSelected(true);
     }
 
@@ -279,6 +291,9 @@ void ApplicationsWindow::onContextMenu(const QPoint &pos)
         if (id=="APP_SETTINGS"){
             actions[i]->setVisible(haveSettings);
         }
+        if (id=="MOVE_TO_CATEGORY"){
+            actions[i]->setVisible(canMoveToCategory);
+        }
     }
 
     m_CategoriesMenu.exec( ui->treeWidgetApplications->mapToGlobal(pos) );
@@ -294,7 +309,7 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
             if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY){
                 sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
                 int activityIndex = item->data(0,Qt::UserRole+1).toInt();
-                if (activityIndex>0)
+                if (activityIndex>-1)
                     app->activities[activityIndex].categories[m_DataManager->getCurrentProfileIndex()].visible = true;
             }
         }
@@ -307,7 +322,7 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
             if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY){
                 sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
                 int activityIndex = item->data(0,Qt::UserRole+1).toInt();
-                if (activityIndex>0){
+                if (activityIndex>-1){
                     app->activities[activityIndex].categories[m_DataManager->getCurrentProfileIndex()].visible = false;
                     if (!ui->checkBoxShowHidden->isChecked())
                         itemsToDelete.push_back(item);
@@ -364,6 +379,20 @@ void ApplicationsWindow::onMenuSelection(QAction *menuAction)
         }
         return;
     }
+}
+
+void ApplicationsWindow::onMoveToMenuSelection(QAction *menuAction)
+{
+    QList<QTreeWidgetItem*> items =  ui->treeWidgetApplications->selectedItems();
+    for (int i = 0; i<items.size(); i++){
+        QTreeWidgetItem* item = items[i];
+        if (item->type()==cApplicationsTreeWidget::TREE_ITEM_TYPE_APPLICATION_ACTIVITY){
+            sAppInfo* app = m_DataManager->applications(item->data(0,Qt::UserRole).toInt());
+            int activityIndex = item->data(0,Qt::UserRole+1).toInt();
+            app->activities[activityIndex].categories[m_DataManager->getCurrentProfileIndex()].category = menuAction->data().toInt();
+        }
+    }
+    onDelayedRebuild();
 }
 
 void ApplicationsWindow::onProfileSelection(int newProfileIndex)

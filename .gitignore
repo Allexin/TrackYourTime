@@ -3,3 +3,4 @@
 /build_64_release/
 /TrackYourTime.app/
 *.dmg
+/build_64_debug/
