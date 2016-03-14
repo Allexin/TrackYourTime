@@ -134,13 +134,13 @@ void cDataManager::mergeProfiles(int profile1, int profile2)
     for (int i = 0; i<m_Applications.size(); i++)
         for (int j = 0; j<m_Applications[i]->activities.size(); j++){
             m_Applications[i]->activities[j].categories.remove(profileToDelete);
-            for (int j = 0; j<m_Applications[i]->activities[j].periods.size(); j++){
-                if (m_Applications[i]->activities[j].periods[j].profileIndex==profileToDelete){
-                    m_Applications[i]->activities[j].periods[j].profileIndex = profileToSave;
+            for (int k = 0; k<m_Applications[i]->activities[j].periods.size(); k++){
+                if (m_Applications[i]->activities[j].periods[k].profileIndex==profileToDelete){
+                    m_Applications[i]->activities[j].periods[k].profileIndex = profileToSave;
                 }
                 else
-                if (m_Applications[i]->activities[j].periods[j].profileIndex>profileToDelete){
-                    m_Applications[i]->activities[j].periods[j].profileIndex--;
+                if (m_Applications[i]->activities[j].periods[k].profileIndex>profileToDelete){
+                    m_Applications[i]->activities[j].periods[k].profileIndex--;
                 }
             }
         }
