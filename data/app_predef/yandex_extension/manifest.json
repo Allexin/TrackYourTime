@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "TrackYourTime Opera Tracker",
+  "description": "This extension collect information about visited sites and send it to TrackYourTime",
+  "version": "1.0",
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+
+  "browser_action": {
+    "default_icon": "main.png"
+  },
+  "permissions": [
+    "tabs",
+    "alarms",
+    "http://127.0.0.1/"
+  ]
+}
