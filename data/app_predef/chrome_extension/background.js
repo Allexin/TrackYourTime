@@ -1,4 +1,4 @@
-ffunction getCurrentTabUrl(callback) {
+function getCurrentTabUrl(callback) {
   var queryInfo = {
     active: true,
     lastFocusedWindow: true
