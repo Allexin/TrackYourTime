@@ -399,7 +399,7 @@ QString uniCFStrToQStr(const CFStringRef cfString)
 {
     QChar qchar;
     QString qString("");
-    int lenCF=(int)CFStringGetLength(cfString);  // возвращает длину строки
+    int lenCF=cfString != nullptr ? (int)CFStringGetLength(cfString): 0;  // возвращает длину строки
     for (int i=0;i<lenCF;i++)
     {
         qchar=((ushort)CFStringGetCharacterAtIndex(cfString,(CFIndex)i));  // получает символ из строки
