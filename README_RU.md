@@ -1,10 +1,10 @@
 # TrackYourTime 
 
-#[Документация](./README.md) [[en](./README.md)|[ru](./README_RU.md)]  
+#[Документация](https://github.com/Allexin/TrackYourTime/wiki/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F) [[en](https://github.com/Allexin/TrackYourTime/wiki/User-Manual)|[ru](https://github.com/Allexin/TrackYourTime/wiki/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F)]  
 [![Чат на https://gitter.im/Allexin/TrackYourTime](https://badges.gitter.im/Allexin/TrackYourTime.svg)](https://gitter.im/Allexin/TrackYourTime?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 
 # Загрузка
-[Последняя стабильная версия](https://github.com/Allexin/TrackYourTime/releases/tag/v0.9.0beta)
+[Последняя стабильная версия](https://github.com/Allexin/TrackYourTime/releases/tag/0.9.2)
 
 # Roadmap  
 https://github.com/Allexin/TrackYourTime/wiki
