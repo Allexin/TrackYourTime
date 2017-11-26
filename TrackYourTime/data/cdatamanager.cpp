@@ -134,13 +134,13 @@ void cDataManager::mergeProfiles(int profile1, int profile2)
     for (int i = 0; i<m_Applications.size(); i++)
         for (int j = 0; j<m_Applications[i]->activities.size(); j++){
             m_Applications[i]->activities[j].categories.remove(profileToDelete);
-            for (int j = 0; j<m_Applications[i]->activities[j].periods.size(); j++){
-                if (m_Applications[i]->activities[j].periods[j].profileIndex==profileToDelete){
-                    m_Applications[i]->activities[j].periods[j].profileIndex = profileToSave;
+            for (int k = 0; k<m_Applications[i]->activities[j].periods.size(); k++){
+                if (m_Applications[i]->activities[j].periods[k].profileIndex==profileToDelete){
+                    m_Applications[i]->activities[j].periods[k].profileIndex = profileToSave;
                 }
                 else
-                if (m_Applications[i]->activities[j].periods[j].profileIndex>profileToDelete){
-                    m_Applications[i]->activities[j].periods[j].profileIndex--;
+                if (m_Applications[i]->activities[j].periods[k].profileIndex>profileToDelete){
+                    m_Applications[i]->activities[j].periods[k].profileIndex--;
                 }
             }
         }
@@ -310,6 +310,7 @@ void cDataManager::process()
 
     if (m_CurrentApplicationIndex>-1 && (!m_Idle || isAppChanged)){
         m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].incTime(isAppChanged,m_CurrentProfile,m_UpdateDelay);
+        emit statisticFastUpdate(m_CurrentApplicationIndex, m_CurrentApplicationActivityIndex, m_UpdateDelay, false);
     }
 
     if (isUserActive){
@@ -392,10 +393,6 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
 {    
     sAppInfo* appInfo = m_Applications[appIndex];
 
-    if (!m_DebugScript.isEmpty()){
-        emit debugScriptResult(m_ScriptsManager.evalute(FileInfo,m_DebugScript),FileInfo);
-    }
-
     QString activity;
 
     switch(appInfo->trackerType){
@@ -408,12 +405,15 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
         case sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT:{
             activity = m_ScriptsManager.getAppInfo(FileInfo,appInfo->predefinedInfo->script());
         };
-            break;
-        case sAppInfo::eTrackerType::TT_CUSTOM_SCRIPT:{
-            activity = m_ScriptsManager.getAppInfo(FileInfo,appInfo->customScript);
-        };
-        break;
+            break;        
     }
+
+    if (!m_DebugScript.isEmpty()){
+        emit debugScriptResult(m_ScriptsManager.evaluteCustomScript(FileInfo,m_DebugScript,activity),FileInfo,activity);
+    }
+
+    if (appInfo->useCustomScript)
+        activity = m_ScriptsManager.processCustomScript(FileInfo,appInfo->customScript,activity);
 
     return getActivityIndexDirect(appIndex,activity);
 }
@@ -444,7 +444,7 @@ int cDataManager::getActivityIndexDirect(int appIndex, QString activityName)
     return m_Applications[appIndex]->activities.size()-1;
 }
 
-const int FILE_FORMAT_VERSION = 3;
+const int FILE_FORMAT_VERSION = 4;
 
 void cDataManager::saveDB()
 {
@@ -477,6 +477,7 @@ void cDataManager::saveDB()
             file.writeInt(m_Applications[i]->visible?1:0);
             file.writeString(m_Applications[i]->path);
             file.writeInt(m_Applications[i]->trackerType);
+            file.writeInt(m_Applications[i]->useCustomScript?1:0);
             file.writeString(m_Applications[i]->customScript);
 
             file.writeInt(m_Applications[i]->activities.size());
@@ -520,7 +521,7 @@ void cDataManager::loadDB()
         delete m_Applications[i];
     m_Applications.resize(0);
 
-    convertToVersion3(m_StorageFileName,m_StorageFileName);
+    convertToVersion4(m_StorageFileName,m_StorageFileName);
     cFileBin file( m_StorageFileName );
     if ( file.open(QIODevice::ReadOnly) )
     {
@@ -552,7 +553,8 @@ void cDataManager::loadDB()
                     m_Applications[i] = new sAppInfo();
                     m_Applications[i]->visible = file.readInt()==1;
                     m_Applications[i]->path = file.readString();
-                    m_Applications[i]->trackerType = (sAppInfo::eTrackerType)file.readInt();
+                    m_Applications[i]->trackerType = (sAppInfo::eTrackerType)file.readInt();                    
+                    m_Applications[i]->useCustomScript = file.readInt()==1;
                     m_Applications[i]->customScript = file.readString();
 
                     m_Applications[i]->activities.resize(file.readInt());

@@ -26,7 +26,9 @@ void App_SettingsWindow::onApply()
 {
     sAppInfo* appInfo = m_DataManager->applications(m_AppIndex);
     appInfo->trackerType = (sAppInfo::eTrackerType)ui->comboBoxTrackingType->currentIndex();
+    appInfo->useCustomScript = ui->checkBoxCustomScript->isChecked();
     appInfo->customScript = ui->plainTextEditScript->toPlainText();
+    m_DataManager->setDebugScript("");
     hide();
 }
 
@@ -35,10 +37,11 @@ void App_SettingsWindow::onSetDebug()
     m_DataManager->setDebugScript(ui->plainTextEditScript->toPlainText());
 }
 
-void App_SettingsWindow::onScriptResult(QString value, const sSysInfo &data)
+void App_SettingsWindow::onScriptResult(QString value, const sSysInfo &data, QString trackingResult)
 {
     ui->labelDebugApp->setText(data.fileName);
     ui->labelDebugTitle->setText(data.title);
+    ui->labelDebugTrackingResult->setText(trackingResult);
     ui->labelDebugResult->setText(value);
 }
 
@@ -48,9 +51,10 @@ void App_SettingsWindow::showApp(int appIndex)
     const sAppInfo* appInfo = m_DataManager->applications(m_AppIndex);
     ui->labelApplication->setText(appInfo->activities[0].name);
     ui->comboBoxTrackingType->setCurrentIndex(appInfo->trackerType);
+    ui->checkBoxCustomScript->setChecked(appInfo->useCustomScript);
     QString script = appInfo->customScript;
     if (script.isEmpty())
-        script = "function parseTitle(appName, appTitle, currentOS){\n  return appTitle;\n}";
+        script = "function parseData(appName, appTitle, trackingResult, currentOS){\n  return trackingResult;\n}";
     ui->plainTextEditScript->setPlainText(script);
     ui->labelAdditionalInfo->setText(appInfo->predefinedInfo->info());
     showNormal();

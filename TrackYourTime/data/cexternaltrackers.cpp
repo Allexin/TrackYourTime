@@ -162,7 +162,7 @@ void cExternalTrackers::onDataReady(QString data)
 
     QString state = pairs["STATE"].trimmed();
     if (state.isEmpty()){
-        qWarning() << "external tracker state is empty";
+        //qWarning() << "external tracker state is empty";
         return;
     }
 

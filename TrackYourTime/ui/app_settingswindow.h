@@ -24,7 +24,7 @@ private:
 private slots:
     void onApply();
     void onSetDebug();
-    void onScriptResult(QString value, const sSysInfo& data);
+    void onScriptResult(QString value, const sSysInfo& data, QString trackingResult);
 public slots:
     void showApp(int appIndex);
 };

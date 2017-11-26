@@ -95,11 +95,6 @@
             <string>By predefined script</string>
            </property>
           </item>
-          <item>
-           <property name="text">
-            <string>By custom script</string>
-           </property>
-          </item>
          </widget>
         </item>
        </layout>
@@ -124,9 +119,12 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
-         <widget class="QLabel" name="label_3">
+         <widget class="QCheckBox" name="checkBoxCustomScript">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Process custom script as last step of tracking&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
           <property name="text">
-           <string>Custom script:</string>
+           <string>Use custom script</string>
           </property>
          </widget>
         </item>
@@ -202,6 +200,27 @@
           </item>
           <item>
            <widget class="QLabel" name="labelDebugTitle">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Tracking result:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelDebugTrackingResult">
             <property name="text">
              <string/>
             </property>
