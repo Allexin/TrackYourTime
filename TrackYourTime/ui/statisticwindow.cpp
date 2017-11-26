@@ -122,6 +122,8 @@ void StatisticWindow::rebuild(QDate from, QDate to)
     ui->widgetDiagram->setTotalTime(m_TotalTime);
     ui->widgetDiagram->update();
 
+    ui->labelTotalTime->setText(DurationToString(m_TotalTime));
+
 
     //fill applications widget
     ui->treeWidgetApplications->setSortingEnabled(false);
@@ -259,6 +261,8 @@ void StatisticWindow::fastUpdate(int application, int activity, int secondsCount
 
     ui->widgetDiagram->setTotalTime(m_TotalTime);
     ui->widgetDiagram->update();
+
+    ui->labelTotalTime->setText(DurationToString(m_TotalTime));
 }
 
 void StatisticWindow::onExportCategoriesCSVPress()

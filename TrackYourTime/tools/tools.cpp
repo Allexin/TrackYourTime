@@ -42,7 +42,7 @@ cSettings::cSettings()
     OSName="Linux";
 #else
     #ifdef Q_OS_WIN
-        OSName="Linux";
+        OSName="Windows";
     #else
         #ifdef Q_OS_MAC
             OSName="MacOSX";

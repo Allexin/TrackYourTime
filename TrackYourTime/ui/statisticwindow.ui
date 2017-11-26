@@ -177,44 +177,73 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <zorder>treeWidgetApplications</zorder>
          </widget>
         </item>
         <item>
-         <widget class="QTreeWidget" name="treeWidgetApplications">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="columnCount">
-           <number>3</number>
-          </property>
-          <attribute name="headerDefaultSectionSize">
-           <number>150</number>
-          </attribute>
-          <attribute name="headerHighlightSections">
-           <bool>true</bool>
-          </attribute>
-          <attribute name="headerShowSortIndicator" stdset="0">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string notr="true">Applications</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Absolute time</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Relative time</string>
-           </property>
-          </column>
-         </widget>
+          <item>
+           <widget class="QTreeWidget" name="treeWidgetApplications">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="columnCount">
+             <number>3</number>
+            </property>
+            <attribute name="headerDefaultSectionSize">
+             <number>150</number>
+            </attribute>
+            <attribute name="headerHighlightSections">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="headerShowSortIndicator" stdset="0">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">Applications</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Absolute time</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Relative time</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Total Time:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelTotalTime">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
