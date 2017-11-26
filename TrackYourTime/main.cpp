@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     qDebug() << "init app settings window\n";
     App_SettingsWindow app_settingsWindow(&datamanager);
     QObject::connect(&applicationsWindow, SIGNAL(showAppSettings(int)), &app_settingsWindow, SLOT(showApp(int)));
-    QObject::connect(&datamanager, SIGNAL(debugScriptResult(QString,sSysInfo)), &app_settingsWindow, SLOT(onScriptResult(QString,sSysInfo)));
+    QObject::connect(&datamanager, SIGNAL(debugScriptResult(QString,sSysInfo, QString)), &app_settingsWindow, SLOT(onScriptResult(QString,sSysInfo, QString)));
 
     qDebug() << "init settings window\n";
     SettingsWindow settingsWindow(&datamanager);

@@ -58,14 +58,14 @@ public:
     enum eTrackerType{
         TT_EXECUTABLE_DETECTOR = 0,
         TT_EXTERNAL_DETECTOR,
-        TT_PREDEFINED_SCRIPT,
-        TT_CUSTOM_SCRIPT
+        TT_PREDEFINED_SCRIPT
     };
 
     QString path;
 
     bool visible;
     eTrackerType trackerType;
+    bool useCustomScript;
     QString customScript;
     cAppPredefinedInfo* predefinedInfo;
 
@@ -208,7 +208,7 @@ signals:
 
     void profilesChanged();
     void applicationsChanged();
-    void debugScriptResult(QString result, const sSysInfo& data);
+    void debugScriptResult(QString result, const sSysInfo& data, QString trackingResult);
     void showNotification();
 };
 

@@ -102,7 +102,7 @@ void ApplicationsWindow::rebuildApplicationsList()
                             if (app->trackerType==sAppInfo::eTrackerType::TT_EXTERNAL_DETECTOR)
                                 item->setIcon(0,m_ExternalDetector);
                             else
-                            if (app->trackerType==sAppInfo::eTrackerType::TT_CUSTOM_SCRIPT || app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
+                            if (app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
                                 item->setIcon(0,m_ScriptDetector);
                             else
                                 item->setIcon(0,createColorIcon(QColor(Qt::gray)));
@@ -124,7 +124,7 @@ void ApplicationsWindow::rebuildApplicationsList()
                             if (app->trackerType==sAppInfo::eTrackerType::TT_EXTERNAL_DETECTOR)
                                 item->setIcon(0,m_ExternalDetector);
                             else
-                            if (app->trackerType==sAppInfo::eTrackerType::TT_CUSTOM_SCRIPT || app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
+                            if (app->trackerType==sAppInfo::eTrackerType::TT_PREDEFINED_SCRIPT)
                                 item->setIcon(0,m_ScriptDetector);
                             else
                                 item->setIcon(0,createColorIcon(category->color));

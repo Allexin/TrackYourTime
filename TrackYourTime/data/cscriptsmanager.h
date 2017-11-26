@@ -13,6 +13,9 @@ public:
 
     QString getAppInfo(const sSysInfo &info, QString script);
     QString evalute(const sSysInfo& info, QString script);
+
+    QString processCustomScript(const sSysInfo &info, QString script, QString prevStepResult);
+    QString evaluteCustomScript(const sSysInfo& info, QString script, QString prevStepResult);
 signals:
 
 public slots:
