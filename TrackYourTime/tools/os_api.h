@@ -30,13 +30,11 @@ struct sSysInfo{
 
 sSysInfo getCurrentApplication();
 
-bool isKeyboardChanged();
-QPoint getMousePos();
-
 QString getUserName();
 
 void setAutorun();
 void removeAutorun();
+int getIdleTime();
 
 #endif // OS_API
 

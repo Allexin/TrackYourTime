@@ -236,19 +236,19 @@ void cDataManager::process()
         return;
     m_UpdateCounter = 0;
 
-    bool isUserActive = false;
+    bool isUserActive = getIdleTime()==0;
 
     //Update keyboard activity
-    if (isKeyboardChanged()){
-        isUserActive = true;
-    }
+    //if (isKeyboardChanged()){
+    //    isUserActive = true;
+   // }
 
     //Update mouse activity
-    QPoint mousePos = getMousePos();
-    if (m_CurrentMousePos!=mousePos){
-        isUserActive = true;
-        m_CurrentMousePos = mousePos;
-    }
+    //QPoint mousePos = getMousePos();
+    //if (m_CurrentMousePos!=mousePos){
+    //    isUserActive = true;
+    //    m_CurrentMousePos = mousePos;
+    //}
 
     if (isUserActive)
         m_LastLocalActivity = 0;
@@ -258,7 +258,6 @@ void cDataManager::process()
     sOverrideTrackerInfo* info = m_ExternalTrackers.getOverrideTracker();
     if (info)
         hostActivity = info->IdleTime-2;
-
 
     //Update application
     bool isAppChanged = false;

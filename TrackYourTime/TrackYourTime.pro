@@ -30,8 +30,8 @@ win32:RC_ICONS = main.ico
 mac:ICON = main.icns
 
 win32:LIBS += -luser32
-unix:!mac:LIBS += -lX11
-
+unix:!mac:LIBS += -lX11 -lXss
+Ы
 INCLUDEPATH += ui data tools
 
 SOURCES += \

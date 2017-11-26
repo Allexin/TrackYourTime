@@ -13,7 +13,7 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-LIBS += -lX11
+LIBS += -lX11 -lXss
 
 
 SOURCES += main.cpp
