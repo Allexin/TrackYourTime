@@ -86,12 +86,12 @@ void StatisticWindow::rebuild(QDate from, QDate to)
     }
 
     //calculation
-    int TotalTime = 0;
+    m_TotalTime = 0;
     for (int i = 0; i<m_Applications.size(); i++){
         const sAppInfo* app = m_DataManager->applications(i);
         for (int activity = 0; activity<app->activities.size(); activity++){
             const sActivityInfo* ainfo = &app->activities[activity];
-            for (int j = 0; j<ainfo->periods.size(); j++){
+            for (int j = ainfo->periods.size()-1; j>=0; --j){
                 QDateTime start = ainfo->periods[j].start;
                 QDateTime end = ainfo->periods[j].start.addSecs(ainfo->periods[j].length);
                 if (end>statStart && start<statEnd){
@@ -100,7 +100,7 @@ void StatisticWindow::rebuild(QDate from, QDate to)
                     if (end>statEnd)
                         end = statEnd;
                     int duration = start.secsTo(end);
-                    TotalTime+=duration;
+                    m_TotalTime+=duration;
                     m_Applications[i].TotalTime+=duration;
                     m_Applications[i].childs[activity].TotalTime+=duration;
                     int cat = ainfo->categories[ainfo->periods[j].profileIndex].category;
@@ -109,28 +109,17 @@ void StatisticWindow::rebuild(QDate from, QDate to)
                     else
                         m_Categories[cat].TotalTime+=duration;
                 }
-                if (start>statEnd || end>statEnd)
+                if (end<statStart)
                     break;
             }
         }
     }
 
-    //calculate normalized values
-    if (TotalTime>0){
-        m_Uncategorized.NormalValue = (float)m_Uncategorized.TotalTime/TotalTime;
-        for (int i = 0; i<m_Categories.size(); i++)
-            m_Categories[i].NormalValue = (float)m_Categories[i].TotalTime/TotalTime;
-
-        for (int i = 0; i<m_Applications.size(); i++){
-            m_Applications[i].NormalValue = (float)m_Applications[i].TotalTime/TotalTime;
-            for (int j = 0; j<m_Applications[i].childs.size(); j++)
-                m_Applications[i].childs[j].NormalValue = (float)m_Applications[i].childs[j].TotalTime/TotalTime;
-        }
-    }
+    calcNormalizedValues();
 
     qSort( m_Categories.begin(), m_Categories.end(), lessThan );
 
-    ui->widgetDiagram->setTotalTime(TotalTime);
+    ui->widgetDiagram->setTotalTime(m_TotalTime);
     ui->widgetDiagram->update();
 
 
@@ -139,30 +128,47 @@ void StatisticWindow::rebuild(QDate from, QDate to)
     ui->treeWidgetApplications->clear();
     for (int i = 0; i<m_Applications.size(); i++){
         if (m_Applications[i].TotalTime>0){
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setText(0,m_Applications[i].Name);
-            item->setData(0,Qt::UserRole,i);
-            item->setText(1,DurationToString(m_Applications[i].TotalTime));
-            item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
-            ui->treeWidgetApplications->addTopLevelItem(item);
+            m_Applications[i].item = new QTreeWidgetItem();
+            m_Applications[i].item->setText(0,m_Applications[i].Name);
+            m_Applications[i].item->setData(0,Qt::UserRole,i);
+            m_Applications[i].item->setText(1,DurationToString(m_Applications[i].TotalTime));
+            m_Applications[i].item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
+            ui->treeWidgetApplications->addTopLevelItem(m_Applications[i].item);
             for (int j = 0; j<m_Applications[i].childs.size(); j++){
                 if (m_Applications[i].childs[j].TotalTime>0){
-                    QTreeWidgetItem* aitem = new QTreeWidgetItem();
+                    m_Applications[i].childs[j].item = new QTreeWidgetItem();
                     QString childName = m_Applications[i].childs[j].Name;
                     if (j==0)
                         childName+=tr("(default)");
-                    aitem->setText(0,childName);
-                    aitem->setData(0,Qt::UserRole,i);
-                    aitem->setData(0,Qt::UserRole+1,j);
-                    aitem->setText(1,DurationToString(m_Applications[i].childs[j].TotalTime));
-                    aitem->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
-                    item->addChild(aitem);
+                    m_Applications[i].childs[j].item->setText(0,childName);
+                    m_Applications[i].childs[j].item->setData(0,Qt::UserRole,i);
+                    m_Applications[i].childs[j].item->setData(0,Qt::UserRole+1,j);
+                    m_Applications[i].childs[j].item->setText(1,DurationToString(m_Applications[i].childs[j].TotalTime));
+                    m_Applications[i].childs[j].item->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
+                    m_Applications[i].item->addChild(m_Applications[i].childs[j].item);
                 }
             }
 
         }
     }
     ui->treeWidgetApplications->setSortingEnabled(true);
+    m_FastUpdateAvailable = true;
+}
+
+void StatisticWindow::calcNormalizedValues()
+{
+    //calculate normalized values
+    if (m_TotalTime>0){
+        m_Uncategorized.NormalValue = (float)m_Uncategorized.TotalTime/m_TotalTime;
+        for (int i = 0; i<m_Categories.size(); i++)
+            m_Categories[i].NormalValue = (float)m_Categories[i].TotalTime/m_TotalTime;
+
+        for (int i = 0; i<m_Applications.size(); i++){
+            m_Applications[i].NormalValue = (float)m_Applications[i].TotalTime/m_TotalTime;
+            for (int j = 0; j<m_Applications[i].childs.size(); j++)
+                m_Applications[i].childs[j].NormalValue = (float)m_Applications[i].childs[j].TotalTime/m_TotalTime;
+        }
+    }
 }
 
 void StatisticWindow::saveToCSV(const QVector<sStatisticItem*> &items,  const QString& FileName)
@@ -196,6 +202,65 @@ void StatisticWindow::onExportApplicationsCSVPress()
     }
 }
 
+void StatisticWindow::showAndUpdate()
+{
+    showNormal();
+    if (ui->dateEditTo->date()==QDateTime::currentDateTime().date())
+        onUpdatePress();
+}
+
+void StatisticWindow::fastUpdate(int application, int activity, int secondsCount, bool fullUpdate)
+{
+    if (!isVisible())
+        return;
+    if (fullUpdate){
+        onUpdatePress();
+        return;
+    }
+    if (!m_FastUpdateAvailable)
+        return;
+    if (ui->dateEditTo->date()!=QDateTime::currentDateTime().date())
+        return;
+
+    if (m_Categories.size()!=m_DataManager->categoriesCount() || m_Applications.size()!=m_DataManager->applicationsCount()){
+        onUpdatePress();
+        return;
+    }
+
+    if (application>=m_Applications.size())
+        return;
+    if (activity>=m_Applications[application].childs.size())
+        return;
+
+    m_TotalTime+=secondsCount;
+    m_Applications[application].TotalTime+=secondsCount;
+    m_Applications[application].childs[activity].TotalTime+=secondsCount;
+    calcNormalizedValues();
+
+    m_Applications[application].item->setText(1,DurationToString(m_Applications[application].TotalTime));
+    m_Applications[application].childs[activity].item->setText(1,DurationToString(m_Applications[application].childs[activity].TotalTime));
+
+    bool needGlobalInvalidate = fixSize(QString::number(m_Applications[application].NormalValue*100,'f',2),5)+"%"!=m_Applications[application].item->text(2) ||
+            fixSize(QString::number(m_Applications[application].childs[activity].NormalValue*100,'f',2),5)+"%"!=m_Applications[application].childs[activity].item->text(2);
+    if (needGlobalInvalidate){
+        for (int i = 0; i<m_Applications.size(); i++){
+            if (m_Applications[i].TotalTime>0){
+                m_Applications[i].item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
+                for (int j = 0; j<m_Applications[i].childs.size(); j++){
+                    if (m_Applications[i].childs[j].TotalTime>0){
+
+                        m_Applications[i].childs[j].item->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
+                    }
+                }
+
+            }
+        }
+    }
+
+    ui->widgetDiagram->setTotalTime(m_TotalTime);
+    ui->widgetDiagram->update();
+}
+
 void StatisticWindow::onExportCategoriesCSVPress()
 {
     QString FileName = QFileDialog::getSaveFileName(0,tr("Select categories file"),"categories.csv","Comma Separated Values(*.csv)");
@@ -211,7 +276,8 @@ void StatisticWindow::onExportCategoriesCSVPress()
 }
 
 StatisticWindow::StatisticWindow(cDataManager *DataManager) :
-    QMainWindow(0),
+    QMainWindow(0),    
+    m_FastUpdateAvailable(false),
     ui(new Ui::StatisticWindow)
 {
     ui->setupUi(this);

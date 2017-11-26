@@ -222,7 +222,7 @@
           <item>
            <widget class="QLabel" name="labelDebugTrackingResult">
             <property name="text">
-             <string>TextLabel</string>
+             <string/>
             </property>
            </widget>
           </item>

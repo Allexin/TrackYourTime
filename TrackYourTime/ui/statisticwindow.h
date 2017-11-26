@@ -24,6 +24,7 @@
 #include <QString>
 #include <QColor>
 #include <QPaintEvent>
+#include <QTreeWidgetItem>
 #include "../data/cdatamanager.h"
 
 namespace Ui {
@@ -35,13 +36,14 @@ struct sStatisticItem{
     QColor Color;
     int TotalTime;
     float NormalValue;
+    QTreeWidgetItem* item;
     QVector<sStatisticItem> childs;
 };
 
 class cStatisticDiagramWidget: public QWidget
 {
     Q_OBJECT
-protected:
+protected:    
     sStatisticItem*          m_Uncategorized;
     QVector<sStatisticItem>* m_Categories;
     int                      m_TotalTime;
@@ -57,12 +59,15 @@ class StatisticWindow : public QMainWindow
 {
     Q_OBJECT
 protected:
-    cDataManager*       m_DataManager;
+    bool                    m_FastUpdateAvailable;
+    int                     m_TotalTime;
+    cDataManager*           m_DataManager;
 
     sStatisticItem          m_Uncategorized;
     QVector<sStatisticItem> m_Categories;
     QVector<sStatisticItem> m_Applications;
     void rebuild(QDate from, QDate to);
+    void calcNormalizedValues();
     void saveToCSV(const QVector<sStatisticItem*> &items,  const QString& FileName);
 public:
     explicit StatisticWindow(cDataManager* DataManager);
@@ -76,6 +81,10 @@ public slots:
     void onUpdatePress();
     void onExportCategoriesCSVPress();
     void onExportApplicationsCSVPress();
+
+    void showAndUpdate();
+
+    void fastUpdate(int application, int activity, int secondsCount, bool fullUpdate);
 };
 
 #endif // STATISTICWINDOW_H

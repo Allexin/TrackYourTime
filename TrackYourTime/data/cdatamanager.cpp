@@ -310,6 +310,7 @@ void cDataManager::process()
 
     if (m_CurrentApplicationIndex>-1 && (!m_Idle || isAppChanged)){
         m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].incTime(isAppChanged,m_CurrentProfile,m_UpdateDelay);
+        emit statisticFastUpdate(m_CurrentApplicationIndex, m_CurrentApplicationActivityIndex, m_UpdateDelay, false);
     }
 
     if (isUserActive){
@@ -410,7 +411,7 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
     if (!m_DebugScript.isEmpty()){
         emit debugScriptResult(m_ScriptsManager.evaluteCustomScript(FileInfo,m_DebugScript,activity),FileInfo,activity);
     }
-    else
+
     if (appInfo->useCustomScript)
         activity = m_ScriptsManager.processCustomScript(FileInfo,appInfo->customScript,activity);
 

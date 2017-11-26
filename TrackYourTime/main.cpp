@@ -122,7 +122,8 @@ int main(int argc, char *argv[])
 
     qDebug() << "init statistic window\n";
     StatisticWindow statisticWindow(&datamanager);
-    QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(showNormal()));
+    QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(showAndUpdate()));
+    QObject::connect(&datamanager, SIGNAL(statisticFastUpdate(int,int,int,bool)), &statisticWindow, SLOT(fastUpdate(int,int,int,bool)));
 
     qDebug() << "init about window\n";
     AboutWindow aboutWindow;

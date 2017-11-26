@@ -210,6 +210,8 @@ signals:
     void applicationsChanged();
     void debugScriptResult(QString result, const sSysInfo& data, QString trackingResult);
     void showNotification();
+
+    void statisticFastUpdate(int application, int activity, int secondsCount, bool fullUpdate);
 };
 
 #endif // CDATAMANAGER_H
