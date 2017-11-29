@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,13 +34,16 @@ const QString cDataManager::CONF_AUTOSAVE_DELAY_ID = "AUTOSAVE_DELAY";
 const QString cDataManager::CONF_STORAGE_FILENAME_ID = "STORAGE_FILENAME";
 const QString cDataManager::CONF_LANGUAGE_ID = "LANGUAGE";
 const QString cDataManager::CONF_FIRST_LAUNCH_ID = "FIRST_LAUNCH";
-const QString cDataManager::CONF_NOTIFICATION_TYPE_ID = "NOTIFICATION_TYPE";
+const QString cDataManager::CONF_NOTIFICATION_SHOW_SYSTEM_ID = "NOTIFICATION_SHOW_SYSTEM";
 const QString cDataManager::CONF_NOTIFICATION_MESSAGE_ID = "NOTIFICATION_MESSAGE";
 const QString cDataManager::CONF_NOTIFICATION_HIDE_SECONDS_ID = "NOTIFICATION_HIDE_SECONDS";
-const QString cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID = "NOTIFICATION_HIDE_MOVES";
 const QString cDataManager::CONF_NOTIFICATION_POSITION_ID = "NOTIFICATION_POSITION";
 const QString cDataManager::CONF_NOTIFICATION_SIZE_ID = "NOTIFICATION_SIZE";
 const QString cDataManager::CONF_NOTIFICATION_OPACITY_ID = "NOTIFICATION_OPACITY";
+const QString cDataManager::CONF_NOTIFICATION_MOUSE_BEHAVIOR_ID = "NOTIFICATION_MOUSE_BEHAVIOR_ID";
+const QString cDataManager::CONF_NOTIFICATION_CAT_SELECT_BEHAVIOR_ID = "NOTIFICATION_CAT_SELECT_BEHAVIOR";
+const QString cDataManager::CONF_NOTIFICATION_VISIBILITY_BEHAVIOR_ID = "NOTIFICATION_VISIBILITY_BEHAVIOR";
+const QString cDataManager::CONF_NOTIFICATION_HIDE_BORDERS_ID = "NOTIFICATION_HIDE_BORDERS";
 const QString cDataManager::CONF_AUTORUN_ID = "AUTORUN_ENABLED";
 const QString cDataManager::CONF_CLIENT_MODE_ID = "CLIENT_MODE";
 const QString cDataManager::CONF_CLIENT_MODE_HOST_ID = "CLIENT_MODE_HOST";
@@ -51,8 +54,7 @@ const QString cDataManager::CONF_BACKUP_DELAY_ID = "BACKUP_DELAY";
 
 cDataManager::cDataManager():QObject()
 {
-    m_NotificationType = NT_SYSTEM;
-
+    m_ShowSystemNotifications = false;
     m_UpdateCounter = 0;
     m_UpdateDelay = DEFAULT_SECONDS_UPDATE_DELAY;
 
@@ -285,31 +287,21 @@ void cDataManager::process()
         if (m_CurrentApplicationIndex>-1){
             m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile].visible = true;
             int activityCategory = m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile].category;
-            if (m_CurrentApplicationActivityCategory!=activityCategory || activityCategory==-1){
-                m_CurrentApplicationActivityCategory = activityCategory;
 
-                switch(m_NotificationType){
-                    case NT_NONE:{
-
-                    };
-                    break;
-                    case NT_SYSTEM:{
-                        QString hint = m_Profiles[m_CurrentProfile].name+":"+(m_CurrentApplicationActivityCategory==-1?tr("Uncategorized"):m_Categories[m_CurrentApplicationActivityCategory].name);
-                        emit trayShowHint(hint);
-                    };
-                    break;
-                    case NT_BUILTIN:{
-                        emit showNotification();
-                    };
-                    break;
+            if (m_ShowSystemNotifications)
+                if (m_CurrentApplicationActivityCategory!=activityCategory || activityCategory==-1){
+                    QString hint = m_Profiles[m_CurrentProfile].name+":"+(m_CurrentApplicationActivityCategory==-1?tr("Uncategorized"):m_Categories[m_CurrentApplicationActivityCategory].name);
+                    emit trayShowHint(hint);
                 }
-            }
+            m_CurrentApplicationActivityCategory = activityCategory;
         }
     }
+    emit showNotification();
 
     if (m_CurrentApplicationIndex>-1 && (!m_Idle || isAppChanged)){
         m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].incTime(isAppChanged,m_CurrentProfile,m_UpdateDelay);
-        emit statisticFastUpdate(m_CurrentApplicationIndex, m_CurrentApplicationActivityIndex, m_UpdateDelay, false);
+        int category = m_Applications[m_CurrentApplicationIndex]->activities[m_CurrentApplicationActivityIndex].categories[m_CurrentProfile].category;
+        emit statisticFastUpdate(m_CurrentApplicationIndex, m_CurrentApplicationActivityIndex, category, m_UpdateDelay, false);
     }
 
     if (isUserActive){
@@ -600,7 +592,7 @@ void cDataManager::loadPreferences()
     m_IdleDelay = settings.db()->value(CONF_IDLE_DELAY_ID,m_IdleDelay).toInt();
     m_AutoSaveDelay = settings.db()->value(CONF_AUTOSAVE_DELAY_ID,m_AutoSaveDelay).toInt();
     m_StorageFileName = settings.db()->value(CONF_STORAGE_FILENAME_ID,m_StorageFileName).toString();
-    m_NotificationType = (eNotificationType)settings.db()->value(CONF_NOTIFICATION_TYPE_ID,m_NotificationType).toInt();
+    m_ShowSystemNotifications = settings.db()->value(CONF_NOTIFICATION_SHOW_SYSTEM_ID,m_ShowSystemNotifications).toBool();
     m_ClientMode = settings.db()->value(CONF_CLIENT_MODE_ID,m_ClientMode).toBool();
     m_ClientModeHost = settings.db()->value(CONF_CLIENT_MODE_HOST_ID,m_ClientModeHost).toString();
 

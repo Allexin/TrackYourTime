@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <QPaintEvent>
 #include <QTreeWidgetItem>
 #include "../data/cdatamanager.h"
+#include "../tools/tools.h"
 
 namespace Ui {
 class StatisticWindow;
@@ -55,7 +56,7 @@ private:
     virtual void paintEvent(QPaintEvent *event) override;
 };
 
-class StatisticWindow : public QMainWindow
+class StatisticWindow : public QMainWindow, public cStatisticResolver
 {
     Q_OBJECT
 protected:
@@ -69,6 +70,12 @@ protected:
     void rebuild(QDate from, QDate to);
     void calcNormalizedValues();
     void saveToCSV(const QVector<sStatisticItem*> &items,  const QString& FileName);
+public:
+    virtual int getTodayTotalTime() override;
+    virtual int getTodayApplicationTime(int application) override;
+    virtual int getTodayActivityTime(int application, int activity) override;
+    virtual int getTodayCategoryTime(int category) override;
+    virtual bool isTodayStatisticAvailable() override;
 public:
     explicit StatisticWindow(cDataManager* DataManager);
     ~StatisticWindow();
@@ -84,7 +91,7 @@ public slots:
 
     void showAndUpdate();
 
-    void fastUpdate(int application, int activity, int secondsCount, bool fullUpdate);
+    void fastUpdate(int application, int activity, int category, int secondsCount, bool fullUpdate);
 };
 
 #endif // STATISTICWINDOW_H

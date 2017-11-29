@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,11 @@ public slots:
     void handleButtonSetDefaultMessage();
 
     void onNotificationSetPosAndSize();
+private slots:
+    void on_comboBoxMouseBehavior_currentIndexChanged(int index);
+    void on_comboBoxCategorySelectionBehavior_currentIndexChanged(int index);
+    void on_checkBoxHideWIndowBorders_clicked();
+    void on_pushButton_clicked();
 };
 
 #endif // SETTINGSWINDOW_H
