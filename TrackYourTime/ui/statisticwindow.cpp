@@ -133,8 +133,16 @@ void StatisticWindow::rebuild(QDate from, QDate to)
                     m_Applications[i].childs[j].item->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
                     m_Applications[i].item->addChild(m_Applications[i].childs[j].item);
                 }
+                else{
+                    m_Applications[i].childs[j].item = NULL;
+                }
             }
-
+        }
+        else{
+            m_Applications[i].item = NULL;
+            for (int j = 0; j<m_Applications[i].childs.size(); j++){
+                m_Applications[i].childs[j].item = NULL;
+            }
         }
     }
     ui->treeWidgetApplications->setSortingEnabled(true);
@@ -293,6 +301,10 @@ void StatisticWindow::fastUpdate(int application, int activity, int category, in
         m_Categories[category].TotalTime+=secondsCount;
     calcNormalizedValues();
 
+    if (m_Applications[application].item==NULL || m_Applications[application].childs[activity].item==NULL){
+        onUpdatePress();
+        return;
+    }
     m_Applications[application].item->setText(1,DurationToString(m_Applications[application].TotalTime));
     m_Applications[application].childs[activity].item->setText(1,DurationToString(m_Applications[application].childs[activity].TotalTime));
 
@@ -301,11 +313,12 @@ void StatisticWindow::fastUpdate(int application, int activity, int category, in
     if (needGlobalInvalidate){
         for (int i = 0; i<m_Applications.size(); i++){
             if (m_Applications[i].TotalTime>0){
-                m_Applications[i].item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
+                if (m_Applications[i].item)
+                    m_Applications[i].item->setText(2,fixSize(QString::number(m_Applications[i].NormalValue*100,'f',2),5)+"%");
                 for (int j = 0; j<m_Applications[i].childs.size(); j++){
                     if (m_Applications[i].childs[j].TotalTime>0){
-
-                        m_Applications[i].childs[j].item->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
+                        if (m_Applications[i].childs[j].item)
+                            m_Applications[i].childs[j].item->setText(2,fixSize(QString::number(m_Applications[i].childs[j].NormalValue*100,'f',2),5)+"%");
                     }
                 }
 
