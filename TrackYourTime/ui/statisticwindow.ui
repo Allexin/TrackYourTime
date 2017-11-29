@@ -177,7 +177,6 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <zorder>treeWidgetApplications</zorder>
          </widget>
         </item>
         <item>

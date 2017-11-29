@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
     qDebug() << "init statistic window\n";
     StatisticWindow statisticWindow(&datamanager);
     QObject::connect(&trIcon, SIGNAL(showStatistic()), &statisticWindow, SLOT(showAndUpdate()));
-    QObject::connect(&datamanager, SIGNAL(statisticFastUpdate(int,int,int,bool)), &statisticWindow, SLOT(fastUpdate(int,int,int,bool)));
+    QObject::connect(&datamanager, SIGNAL(statisticFastUpdate(int,int,int,int,bool)), &statisticWindow, SLOT(fastUpdate(int,int,int,int,bool)));
 
     qDebug() << "init about window\n";
     AboutWindow aboutWindow;
@@ -135,9 +135,10 @@ int main(int argc, char *argv[])
     QObject::connect(&updateAvailableWindow, SIGNAL(ignoreUpdate()), &updater, SLOT(ignoreNewVersion()));
 
     qDebug() << "init notification window\n";
-    NotificationWindow notificationWindow(&datamanager);
+    NotificationWindow notificationWindow(&datamanager,&statisticWindow);
     QObject::connect(&settingsWindow, SIGNAL(preferencesChange()), &notificationWindow, SLOT(onPreferencesChanged()));
     QObject::connect(&datamanager, SIGNAL(showNotification()), &notificationWindow, SLOT(onShow()));
+    QObject::connect(&trIcon, SIGNAL(showNotification()), &notificationWindow, SLOT(show()));
 
     qDebug() << "start schedule\n";
     schedule.start();

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>611</width>
-    <height>384</height>
+    <height>437</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -201,7 +201,7 @@
       <item>
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>© Alexander Basov, 2015-2016</string>
+         <string>© Alexander Basov, 2015-2017</string>
         </property>
        </widget>
       </item>

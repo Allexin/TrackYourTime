@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,20 @@
  */
 
 #include "settingswindow.h"
+#include "notificationwindow.h"
 #include "ui_settingswindow.h"
 #include "../tools/tools.h"
 #include <QFileDialog>
 #include "../tools/cfilebin.h"
 #include <QFileInfo>
+#include <QDesktopServices>
 
 void SettingsWindow::loadPreferences()
 {
     cSettings settings;
 
     int IdleDelay = settings.db()->value(cDataManager::CONF_IDLE_DELAY_ID,cDataManager::DEFAULT_SECONDS_IDLE_DELAY).toInt();
-    int AutoSaveDelay = settings.db()->value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();
-    cDataManager::eNotificationType NotificationType = (cDataManager::eNotificationType)settings.db()->value(cDataManager::CONF_NOTIFICATION_TYPE_ID,1).toInt();
+    int AutoSaveDelay = settings.db()->value(cDataManager::CONF_AUTOSAVE_DELAY_ID,cDataManager::DEFAULT_SECONDS_AUTOSAVE_DELAY).toInt();    
     bool Autorun = settings.db()->value(cDataManager::CONF_AUTORUN_ID,true).toBool();
     QString StorageFileName = settings.db()->value(cDataManager::CONF_STORAGE_FILENAME_ID,m_DataManager->getStorageFileName()).toString();
     QString Language = QLocale::system().name();
@@ -41,8 +42,13 @@ void SettingsWindow::loadPreferences()
     m_NotifPos = settings.db()->value(cDataManager::CONF_NOTIFICATION_POSITION_ID,QPoint(10,10)).toPoint();
     m_NotifSize = settings.db()->value(cDataManager::CONF_NOTIFICATION_SIZE_ID,QPoint(250,100)).toPoint();
     int NotificationDelay = settings.db()->value(cDataManager::CONF_NOTIFICATION_HIDE_SECONDS_ID,4).toInt();
-    int NotificationMoves = settings.db()->value(cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID,3).toInt();
     int NotificationOpacity = settings.db()->value(cDataManager::CONF_NOTIFICATION_OPACITY_ID,100).toInt();
+
+    bool NotificationShowOS = settings.db()->value(cDataManager::CONF_NOTIFICATION_SHOW_SYSTEM_ID,false).toBool();
+    eMouseBehavior NotificationMouse = (eMouseBehavior)settings.db()->value(cDataManager::CONF_NOTIFICATION_MOUSE_BEHAVIOR_ID,1).toInt();
+    eCategorySelectionBehavior NotificationCatSelect = (eCategorySelectionBehavior)settings.db()->value(cDataManager::CONF_NOTIFICATION_CAT_SELECT_BEHAVIOR_ID,2).toInt();
+    eVisibilityBehavior NotificationVisibility = (eVisibilityBehavior)settings.db()->value(cDataManager::CONF_NOTIFICATION_VISIBILITY_BEHAVIOR_ID,0).toInt();
+    bool NotificationNoBorders = settings.db()->value(cDataManager::CONF_NOTIFICATION_HIDE_BORDERS_ID,false).toBool();
 
     QFileInfo info(StorageFileName);
     QString BackupFileName = settings.db()->value(cDataManager::CONF_BACKUP_FILENAME_ID,info.absolutePath()+"/backup/").toString();
@@ -55,15 +61,14 @@ void SettingsWindow::loadPreferences()
     ui->comboBoxBackupDelay->setCurrentIndex(BackupDelay);
 
     ui->lineEditNotif_Message->setText(NotificationMessage);
-    ui->spinBoxNotif_Delay->setValue(NotificationDelay);
-    if (NotificationMoves==0)
-        ui->radioButtonNotif_NerverHideOnMouse->setChecked(true);
-    else
-    if (NotificationMoves==1)
-        ui->radioButtonNotif_HideOnMouse1->setChecked(true);
-    else
-        ui->radioButtonNotif_HideOnMouse3->setChecked(true);
+    ui->spinBoxNotif_Delay->setValue(NotificationDelay);    
     ui->spinBoxNotif_Opacity->setValue(NotificationOpacity);
+
+    ui->checkBoxShowOSNotifications->setChecked(NotificationShowOS);
+    ui->comboBoxMouseBehavior->setCurrentIndex(NotificationMouse);
+    ui->comboBoxCategorySelectionBehavior->setCurrentIndex(NotificationCatSelect);
+    ui->comboBoxVisibilityBehavior->setCurrentIndex(NotificationVisibility);
+    ui->checkBoxHideWIndowBorders->setChecked(NotificationNoBorders);
 
     ui->comboBoxLanguage->setCurrentIndex(-1);
     for (int i = 0; i<ui->comboBoxLanguage->count(); i++)
@@ -75,21 +80,6 @@ void SettingsWindow::loadPreferences()
     ui->spinBoxAutosaveDelay->setValue(AutoSaveDelay);
     ui->lineEditStorageFileName->setText(StorageFileName);
     ui->checkBoxAutorun->setChecked(Autorun);
-
-    switch(NotificationType){
-        case cDataManager::NT_NONE:{
-            ui->radioButtonNotif_Off->setChecked(true);
-        }
-        break;
-        case cDataManager::NT_SYSTEM:{
-            ui->radioButtonNotif_System->setChecked(true);
-        }
-        break;
-        case cDataManager::NT_BUILTIN:{
-            ui->radioButtonNotif_Custom->setChecked(true);
-        }
-        break;
-    }
 
 }
 
@@ -107,18 +97,15 @@ void SettingsWindow::applyPreferences()
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_SIZE_ID,m_NotifSize);
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_SECONDS_ID,ui->spinBoxNotif_Delay->value());
 
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_SHOW_SYSTEM_ID,ui->checkBoxShowOSNotifications->isChecked());
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_MOUSE_BEHAVIOR_ID,ui->comboBoxMouseBehavior->currentIndex());
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_CAT_SELECT_BEHAVIOR_ID,ui->comboBoxCategorySelectionBehavior->currentIndex());
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_VISIBILITY_BEHAVIOR_ID,ui->comboBoxVisibilityBehavior->currentIndex());
+    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_BORDERS_ID,ui->checkBoxHideWIndowBorders->isChecked());
+
+
     settings.db()->setValue(cDataManager::CONF_NOTIFICATION_OPACITY_ID,ui->spinBoxNotif_Opacity->value());
 
-    int movesToHide = 3;
-    if (ui->radioButtonNotif_NerverHideOnMouse->isChecked())
-        movesToHide = 0;
-    else
-    if (ui->radioButtonNotif_HideOnMouse1->isChecked())
-        movesToHide = 1;
-    else
-    if (ui->radioButtonNotif_HideOnMouse3->isChecked())
-        movesToHide = 3;
-    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_HIDE_MOVES_ID,movesToHide);
 
     if (ui->comboBoxLanguage->currentIndex()>-1)
         settings.db()->setValue(cDataManager::CONF_LANGUAGE_ID,ui->comboBoxLanguage->itemData(ui->comboBoxLanguage->currentIndex()).toString());
@@ -126,14 +113,6 @@ void SettingsWindow::applyPreferences()
     settings.db()->setValue(cDataManager::CONF_BACKUP_FILENAME_ID,ui->lineEditBackupFolder->text());
     settings.db()->setValue(cDataManager::CONF_BACKUP_DELAY_ID,ui->comboBoxBackupDelay->currentIndex());
 
-    cDataManager::eNotificationType notificationType = cDataManager::NT_SYSTEM;
-    if (ui->radioButtonNotif_Off->isChecked())
-        notificationType = cDataManager::NT_NONE;
-    if (ui->radioButtonNotif_System->isChecked())
-        notificationType = cDataManager::NT_SYSTEM;
-    if (ui->radioButtonNotif_Custom->isChecked())
-        notificationType = cDataManager::NT_BUILTIN;
-    settings.db()->setValue(cDataManager::CONF_NOTIFICATION_TYPE_ID,notificationType);
     if (ui->checkBoxAutorun->isChecked()){
         setAutorun();
         settings.db()->setValue(cDataManager::CONF_AUTORUN_ID,true);
@@ -150,7 +129,7 @@ void SettingsWindow::applyPreferences()
 
 QString SettingsWindow::getDefaultMessage()
 {
-    return tr("<center>Current profile: %PROFILE%<br>Application: %APP_NAME%<br>State: %APP_STATE%<br>Category: %APP_CATEGORY%</center>");
+    return tr("<center>Current profile: %PROFILE%<br>Application: %APP_NAME% %TODAY_APP_TIME%<br>State: %APP_STATE% %TODAY_STATE_TIME%<br>Category: %APP_CATEGORY% %TODAY_CATEGORY_TIME%</center>");
 }
 
 SettingsWindow::SettingsWindow(cDataManager *DataManager) : QMainWindow(0),
@@ -237,7 +216,7 @@ void SettingsWindow::handleButtonBrowseBackup()
 
 void SettingsWindow::handleButtonSetNotificationWindow()
 {
-    m_NotificationSetupWindow->showWithMessage(ui->lineEditNotif_Message->text(), ui->radioButtonNotif_HideOnMouse1->isChecked());
+    m_NotificationSetupWindow->showWithMessage(ui->lineEditNotif_Message->text(), ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::HIDE_ON_MOVE || ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::ESCAPE);
     m_NotificationSetupWindow->setGeometry(m_NotifPos.x(),m_NotifPos.y(),m_NotifSize.x(),m_NotifSize.y());
     m_NotificationSetupWindow->setWindowOpacity(ui->spinBoxNotif_Opacity->value()/100.f);
 }
@@ -258,4 +237,36 @@ void SettingsWindow::onNotificationSetPosAndSize()
 {
     m_NotifPos = QPoint(m_NotificationSetupWindow->geometry().left(),m_NotificationSetupWindow->geometry().top());
     m_NotifSize = QPoint(m_NotificationSetupWindow->geometry().width(),m_NotificationSetupWindow->geometry().height());
+}
+
+void SettingsWindow::on_comboBoxMouseBehavior_currentIndexChanged(int index)
+{
+    if (index==eMouseBehavior::HIDE_ON_MOVE || index==eMouseBehavior::ESCAPE){
+        ui->comboBoxCategorySelectionBehavior->setCurrentIndex(eCategorySelectionBehavior::ALWAYS_HIDE);
+        ui->checkBoxHideWIndowBorders->setChecked(true);
+    }
+}
+
+void SettingsWindow::on_comboBoxCategorySelectionBehavior_currentIndexChanged(int index)
+{
+    if (index!=eCategorySelectionBehavior::ALWAYS_HIDE){
+        if (ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::HIDE_ON_MOVE || ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::ESCAPE){
+            ui->comboBoxMouseBehavior->setCurrentIndex(eMouseBehavior::NO_ACTIONS);
+        }
+    }
+}
+
+
+void SettingsWindow::on_checkBoxHideWIndowBorders_clicked()
+{
+    if (!ui->checkBoxHideWIndowBorders->isChecked()){
+        if (ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::HIDE_ON_MOVE || ui->comboBoxMouseBehavior->currentIndex()==eMouseBehavior::ESCAPE){
+            ui->comboBoxMouseBehavior->setCurrentIndex(eMouseBehavior::NO_ACTIONS);
+        }
+    }
+}
+
+void SettingsWindow::on_pushButton_clicked()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/Allexin/TrackYourTime/wiki/Notification-message-keys"));
 }

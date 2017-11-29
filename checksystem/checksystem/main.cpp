@@ -69,60 +69,6 @@ eActiveWindowState checkActiveWindow(){
 	}
 }
 
-enum eInputState{
-    UDEV_OK,
-    UDEV_NOTFOUND,
-    UDEV_KEYBOARD_NOT_FOUND,
-    UDEV_NOACCESS
-};
-
-
-eInputState checkUdev(){
-    QDir dir("/dev/input/by-id");
-    if (!dir.exists())
-        return UDEV_NOTFOUND;
-
-    QVector<int> keyboards_fd;
-
-    QString path;
-    QStringList keyboards;
-    
-    path = "/dev/input/by-id";
-    keyboards = QDir(path).entryList(QStringList() << "*keyboard*");
-    for (int i = 0; i<keyboards.size(); i++)
-        keyboards_fd.push_back(open((path+"/"+keyboards[i]).toUtf8().constData(), 0));
-    
-    path = "/dev/input/by-id";
-    keyboards = QDir(path).entryList(QStringList() << "*kbd*");
-    for (int i = 0; i<keyboards.size(); i++)
-        keyboards_fd.push_back(open((path+"/"+keyboards[i]).toUtf8().constData(), 0));
-    
-    path = "/dev/input/by-path";
-    keyboards = QDir(path).entryList(QStringList() << "*keyboard*");
-    for (int i = 0; i<keyboards.size(); i++)
-        keyboards_fd.push_back(open((path+"/"+keyboards[i]).toUtf8().constData(), 0));
-    
-    path = "/dev/input/by-path";
-    keyboards = QDir(path).entryList(QStringList() << "*kbd*");
-    for (int i = 0; i<keyboards.size(); i++)
-        keyboards_fd.push_back(open((path+"/"+keyboards[i]).toUtf8().constData(), 0));
-    
-    if (keyboards_fd.size()==0)
-        return UDEV_KEYBOARD_NOT_FOUND;
-    
-    bool haveActiveKeyboard = false;
-    for (int i = 0; i<keyboards_fd.size(); i++)
-        if (keyboards_fd[i]>-1){
-            close(keyboards_fd[i]);
-            haveActiveKeyboard = true;
-        }
-        
-    if (!haveActiveKeyboard)
-        return  UDEV_NOACCESS;
-    
-    return UDEV_OK;
-}
-
 QTextStream& qStdOut()
 {
     static QTextStream ts( stdout );
@@ -134,7 +80,6 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
     eActiveWindowState av_state = checkActiveWindow();
-    eInputState udev_state = checkUdev();
 
     switch(av_state){
     case ACTIVE_WINDOW_OK:{
@@ -147,7 +92,18 @@ int main(int argc, char *argv[])
         qStdOut() << "How to fix: run X Window System(e.g startx)" << '\n';
     }
         break;
-    case CANT_GET_NET_ACTIVE_WINDOW:{
+    case CANT_GET_NET_ACTIVE_WINDOW:{time_t idle_time;
+        static XScreenSaverInfo *mit_info;
+        Display *display;
+        int screen;
+        mit_info = XScreenSaverAllocInfo();
+        if((display=XOpenDisplay(NULL)) == NULL) { return(-1); }
+        screen = DefaultScreen(display);
+        XScreenSaverQueryInfo(display, RootWindow(display,screen), mit_info);
+        idle_time = (mit_info->idle) / 1000;
+        XFree(mit_info);
+        XCloseDisplay(display);
+        return idle_time;
         qStdOut() << "X Window System - FAILED" << '\n';
         qStdOut() << "_NET_ACTIVE_WINDOW property not available" << '\n';
         qStdOut() << "How to fix: no way to fix it" << '\n';
@@ -162,34 +118,6 @@ int main(int argc, char *argv[])
     }
     if (av_state!=ACTIVE_WINDOW_OK)
         qStdOut() << "X Window System failure is critical. Before you fix it - time tracker can't work" << '\n';
-
-    switch(udev_state){
-    case UDEV_OK:{
-        qStdOut() << "udev - OK" << '\n';
-    }
-        break;
-    case UDEV_NOTFOUND:{
-        qStdOut() << "udev - FAILED" << '\n';
-        qStdOut() << "/dev/input/by-id not found" << '\n';
-        qStdOut() << "How to fix: install udev" << '\n';
-    }
-        break;
-    case UDEV_KEYBOARD_NOT_FOUND:{
-        qStdOut() << "udev - FAILED" << '\n';
-        qStdOut() << "/dev/input/by-id/*keyboard* not found" << '\n';
-        qStdOut() << "keyboard not found" << '\n';
-        qStdOut() << "How to fix: plug keyboard" << '\n';
-    }
-        break;
-    case UDEV_NOACCESS:{
-        qStdOut() << "udev - FAILED" << '\n';
-        qStdOut() << "/dev/input/by-id/*keyboard* no access" << '\n';
-        qStdOut() << "How to fix: under root open udev rules file(create if not exists) '85-pure-data.rules' typical location is /etc/udev/rules.d/ and add string 'SUBSYSTEM==\"input\", MODE=\"666\", GROUP=\"input\"'" << '\n';
-    }
-        break;
-    }
-    if (udev_state!=UDEV_OK)
-        qStdOut() << "udev failure is non critical. Time tracker can work without fix this failure, but sleep mode will not work." << '\n';
 
     return 0;
 }

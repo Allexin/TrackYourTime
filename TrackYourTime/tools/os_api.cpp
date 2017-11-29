@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,6 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QThread>
-
-QPoint getMousePos()
-{
-    return QCursor::pos();
-}
 
 QStringList readFileToStringList(const QString& FileName){
     QStringList stringList;
@@ -174,20 +169,6 @@ sSysInfo getCurrentApplication()
     return appInfo;
 }
 
-static bool KeyboardState[256];
-
-bool isKeyboardChanged()
-{
-    bool stateChanged = false;
-    for (int i = 0; i<256; i++)
-        if (KeyboardState[i]!=((GetAsyncKeyState(i) & 0x8000)==0)){
-            stateChanged = true;
-            KeyboardState[i] = !KeyboardState[i];
-        }
-
-    return stateChanged;
-}
-
 QString getAutoRunLink()
 {
     QString startupFolder = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + "/Startup";
@@ -287,66 +268,6 @@ sSysInfo getCurrentApplication()
     return fileInfo;
 }
 
-// udev version. require access to /dev/input/eventX
-#include <sys/ioctl.h>
-#include <linux/input.h>
-#include <fcntl.h>
-#include <unistd.h>
-
-bool firstKeyboardUpdate = true;
-const int KEYBOARD_STATE_SIZE = KEY_MAX/8 + 1;
-struct sKeyboardState{
-    QString id;
-    unsigned char state[KEYBOARD_STATE_SIZE];
-};
-QVector<sKeyboardState> keyboards;
-
-void initKeyboard(const QString& path, const QString& regexp){
-    QStringList keyboardsList = QDir(path).entryList(QStringList() << regexp);
-    keyboards.resize(keyboardsList.size());
-    for (int i = 0; i<keyboards.size(); i++){
-        sKeyboardState *kb_s = &keyboards[i];
-        kb_s->id = path+keyboardsList[i];
-
-    }
-}
-
-bool isKeyboardChanged()
-{
-    if (firstKeyboardUpdate){
-        firstKeyboardUpdate = false;
-        initKeyboard("/dev/input/by-id/","*keyboard*");
-        initKeyboard("/dev/input/by-id/","*kbd*");
-        initKeyboard("/dev/input/by-path/","*keyboard*");
-        initKeyboard("/dev/input/by-path/","*kbd*");
-    }
-
-    bool noAccesToKeyboard = true;
-
-    for (int i = 0; i<keyboards.size(); i++){
-        int fd = open(keyboards[i].id.toUtf8().constData(), 0);
-        if (fd>-1){
-            noAccesToKeyboard = false;
-            unsigned char key_b[KEY_MAX/8 + 1];
-            memset(key_b, 0, KEYBOARD_STATE_SIZE);
-            ioctl(fd, EVIOCGKEY(sizeof(key_b)), key_b);
-            close(fd);
-
-            if (memcmp(keyboards[i].state,key_b,KEYBOARD_STATE_SIZE)!=0){
-                memcpy(keyboards[i].state,key_b,KEYBOARD_STATE_SIZE);
-                return true;
-            }
-        }
-    }
-
-    //if we have't access to keyboard, we can't fall asleep
-    if (noAccesToKeyboard)
-        return true;
-
-    return false;
-
-}
-
 QString getAutoRunLink()
 {
     QString startupFolder = QDir::homePath()+"/.config/autostart";
@@ -399,7 +320,7 @@ QString uniCFStrToQStr(const CFStringRef cfString)
 {
     QChar qchar;
     QString qString("");
-    int lenCF=(int)CFStringGetLength(cfString);  // возвращает длину строки
+    int lenCF=cfString != nullptr ? (int)CFStringGetLength(cfString): 0;  // возвращает длину строки
     for (int i=0;i<lenCF;i++)
     {
         qchar=((ushort)CFStringGetCharacterAtIndex(cfString,(CFIndex)i));  // получает символ из строки
@@ -459,63 +380,6 @@ sSysInfo getCurrentApplication()
     return fileInfo;
 }
 
-//i know, this is wrong way. but it's simple, and i do not need slot/signals functionaloty in this part of code.
-//also i do not want add synchronization to read/write bool isKeyboardChanged() because any collisions can't break anything
-class cMacOSXKeyboardThread : public QThread
-{
-private:
-    static bool m_KeyboardChanged;
-
-    // The following callback method is invoked on every keypress.
-    static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon) {
-        Q_UNUSED(proxy)
-        Q_UNUSED(refcon)
-        if (type != kCGEventKeyDown && type != kCGEventFlagsChanged && type != kCGEventKeyUp) {
-            return event;
-        }
-
-        m_KeyboardChanged = true;
-
-        return event;
-    }
-
-    virtual void run() override
-    {
-        m_KeyboardChanged = false;
-
-        CGEventMask eventMask = (CGEventMaskBit(kCGEventKeyDown) | CGEventMaskBit(kCGEventFlagsChanged));
-        CFMachPortRef eventTap = CGEventTapCreate(kCGSessionEventTap, kCGHeadInsertEventTap, kCGEventTapOptionDefault, eventMask, CGEventCallback, NULL );
-
-        if(!eventTap) {
-            qCritical() << "ERROR: Unable to create event tap.\n";
-            return;
-        }
-
-        CFRunLoopSourceRef runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0);
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
-        CGEventTapEnable(eventTap, true);
-
-        CFRunLoopRun();
-    }
-public:
-    bool isKeyboardChanged(){
-        bool keyboardChanged = m_KeyboardChanged;
-        m_KeyboardChanged = false;
-        return keyboardChanged;
-    }
-};
-bool cMacOSXKeyboardThread::m_KeyboardChanged;
-
-static cMacOSXKeyboardThread loopThread;
-
-bool isKeyboardChanged()
-{
-    if (!loopThread.isRunning())
-        loopThread.start();
-
-    return loopThread.isFinished() || loopThread.isKeyboardChanged(); //if thread finished - something goes wrong, but application can work even without sleep functionality
-}
-
 QString getAutoRunLink()
 {
     QString appPath = QCoreApplication::applicationFilePath();
@@ -562,4 +426,59 @@ void removeAutorun()
     QFile::remove(getAutoRunLink());
 }
 
+#endif
+
+
+
+
+
+
+
+#ifdef Q_OS_WIN
+#include <windows.h>
+
+int getIdleTime()
+{
+    LASTINPUTINFO li;
+    li.cbSize = sizeof(LASTINPUTINFO);
+    GetLastInputInfo(&li);
+    DWORD te = GetTickCount();
+    int elapsed = (te - li.dwTime)/1000;
+    return elapsed;
+}
+
+#endif
+
+
+#ifdef Q_OS_LINUX
+#include <time.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/scrnsaver.h>
+
+int getIdleTime() {
+        time_t idle_time;
+        static XScreenSaverInfo *mit_info;
+        Display *display;
+        int screen;
+        mit_info = XScreenSaverAllocInfo();
+        if((display=XOpenDisplay(NULL)) == NULL) { return(-1); }
+        screen = DefaultScreen(display);
+        XScreenSaverQueryInfo(display, RootWindow(display,screen), mit_info);
+        idle_time = (mit_info->idle) / 1000;
+        XFree(mit_info);
+        XCloseDisplay(display);
+        return idle_time;
+}
+#endif
+
+#ifdef Q_OS_MAC
+#include <ApplicationServices/ApplicationServices.h>
+
+int getIdleTime() {
+    CFTimeInterval timeSinceLastEvent = CGEventSourceSecondsSinceLastEventType(kCGEventSourceStateHIDSystemState, kCGAnyInputEventType);
+    return timeSinceLastEvent;
+}
 #endif

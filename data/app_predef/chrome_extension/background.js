@@ -1,3 +1,5 @@
+var tabsCounters = {}
+
 function getCurrentTabUrl(callback) {
   var queryInfo = {
     active: true,
@@ -6,10 +8,16 @@ function getCurrentTabUrl(callback) {
 
   chrome.tabs.query(queryInfo, function(tabs) {
     var tab = tabs[0];
-    var url = tab.url;
+	if (tab == null) {
+		var url = "undefined";
+        var id = -1;
+	} else {
+		var url = tab.url;
+        var id = tab.id;
+	}
     console.assert(typeof url == 'string', 'tab.url should be a string');
 
-    callback(url);
+    callback(url,id);
   });
 }
 
@@ -31,16 +39,23 @@ function extractDomain(url) {
 
 var delimeter = ":";
 
-function sendState(url){
-    var TRACKER_INFO='PREFIX=TYTET&VERSION=1&APP_1=chrome.exe&APP_2=chromium.exe&APP_3=Google-chrome-stable&APP_4=google-chrome&APP_5=chromium-browser&APP_6=Google%20Chrome&STATE='+extractDomain(url);
+function sendState(url,id){
+	var TRACKER_INFO='PREFIX=TYTET&VERSION=1&APP_1=chrome.exe&APP_2=chromium.exe&APP_3=Google-chrome-stable&APP_4=google-chrome&APP_5=chromium-browser&APP_6=Google%20Chrome&STATE='+extractDomain(url);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "http://127.0.0.1:25856?"+TRACKER_INFO, true);
     xhr.send();     
-    var currentTime = new Date();
-    var h = currentTime.getHours();
-    var m = currentTime.getMinutes().toString();
-    if (m.length==1) m = "0"+m;
-    var text = h+delimeter+m;
+    
+    if (typeof tabsCounters[id] === 'undefined'){
+        tabsCounters[id] = 0
+    }
+    var tabTime = tabsCounters[id] + 1
+    tabsCounters[id] = tabTime
+    
+    
+    var m = Math.floor(tabTime / 60).toString() ;
+    var s = (tabTime % 60).toString();
+    if (s.length==1) s = "0"+s;
+    var text = m+delimeter+s;
     chrome.browserAction.setBadgeText({text:text});
     if (delimeter==":")
         delimeter = " ";
@@ -52,8 +67,5 @@ function prepareData(){
     getCurrentTabUrl(sendState);
 }
 
-chrome.alarms.onAlarm.addListener(prepareData);
-chrome.alarms.create("TRACK_YOUR_TIME_TIMER", {
-       delayInMinutes: 0.05, periodInMinutes: 0.02}
-              );
+setInterval(prepareData, 1000);
 chrome.browserAction.setBadgeBackgroundColor({color:[0,0,0,255]});

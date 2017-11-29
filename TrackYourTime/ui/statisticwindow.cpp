@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,22 +21,6 @@
 #include <QFileDialog>
 #include <QPainter>
 #include <QDate>
-
-QString DurationToString(quint32 durationSeconds)
-{
-  QString res;
-  int seconds = (int) (durationSeconds % 60);
-  durationSeconds /= 60;
-  int minutes = (int) (durationSeconds % 60);
-  durationSeconds /= 60;
-  int hours = (int) (durationSeconds % 24);
-  int days = (int) (durationSeconds / 24);
-  if((hours == 0)&&(days == 0))
-      return res.sprintf("00:%02d:%02d", minutes, seconds);
-  if (days == 0)
-      return res.sprintf("%02d:%02d:%02d", hours, minutes, seconds);
-  return res.sprintf("%dd%02d:%02d:%02d", days, hours, minutes, seconds);
-}
 
 QString fixSize(const QString& value, int minSize)
 {
@@ -117,7 +101,7 @@ void StatisticWindow::rebuild(QDate from, QDate to)
 
     calcNormalizedValues();
 
-    qSort( m_Categories.begin(), m_Categories.end(), lessThan );
+    //qSort( m_Categories.begin(), m_Categories.end(), lessThan ); disable sorting, fast update need direct access to elements.
 
     ui->widgetDiagram->setTotalTime(m_TotalTime);
     ui->widgetDiagram->update();
@@ -191,6 +175,45 @@ void StatisticWindow::saveToCSV(const QVector<sStatisticItem*> &items,  const QS
     outputFile.close();
 }
 
+int StatisticWindow::getTodayTotalTime()
+{
+    return m_TotalTime;
+}
+
+int StatisticWindow::getTodayApplicationTime(int application)
+{
+    if (application<0 || application>=m_Applications.size())
+        return 0;
+    return m_Applications[application].TotalTime;
+}
+
+int StatisticWindow::getTodayActivityTime(int application, int activity)
+{
+    if (application<0 || application>=m_Applications.size())
+        return 0;
+    if (activity>=m_Applications[application].childs.size())
+        return 0;
+    return m_Applications[application].childs[activity].TotalTime;
+}
+
+int StatisticWindow::getTodayCategoryTime(int category)
+{
+    if (category>=m_Categories.size())
+        return 0;
+    if (category==-1)
+        return m_Uncategorized.TotalTime;
+    return m_Categories[category].TotalTime;
+}
+
+bool StatisticWindow::isTodayStatisticAvailable()
+{
+    if (!isVisible())
+        return true;
+    if (ui->dateEditTo->date()==QDateTime::currentDateTime().date() && ui->dateEditTo->date()==QDateTime::currentDateTime().date())
+        return true;
+    return false;
+}
+
 void StatisticWindow::onExportApplicationsCSVPress()
 {
     QString FileName = QFileDialog::getSaveFileName(0,tr("Select applications file"),"applications.csv","Comma Separated Values(*.csv)");
@@ -211,10 +234,37 @@ void StatisticWindow::showAndUpdate()
         onUpdatePress();
 }
 
-void StatisticWindow::fastUpdate(int application, int activity, int secondsCount, bool fullUpdate)
+void StatisticWindow::fastUpdate(int application, int activity, int category, int secondsCount, bool fullUpdate)
 {
-    if (!isVisible())
+    if (!isVisible()){
+        bool needFullBackgroundUpdate = !m_FastUpdateAvailable;
+        if (m_Categories.size()!=m_DataManager->categoriesCount() || m_Applications.size()!=m_DataManager->applicationsCount()){
+            needFullBackgroundUpdate = true;
+        }
+        if (ui->dateEditFrom->date()!=QDateTime::currentDateTime().date() || ui->dateEditTo->date()!=QDateTime::currentDateTime().date()){
+            needFullBackgroundUpdate = true;
+        }
+        if (needFullBackgroundUpdate){
+            ui->dateEditFrom->setDate(QDateTime::currentDateTime().date());
+            ui->dateEditTo->setDate(QDateTime::currentDateTime().date());
+            onUpdatePress();
+        }
+        else{
+            if (application>=m_Applications.size())
+                return;
+            if (activity>=m_Applications[application].childs.size())
+                return;
+
+            m_TotalTime+=secondsCount;
+            m_Applications[application].TotalTime+=secondsCount;
+            m_Applications[application].childs[activity].TotalTime+=secondsCount;
+            if (category==-1)
+                m_Uncategorized.TotalTime+=secondsCount;
+            else
+                m_Categories[category].TotalTime+=secondsCount;
+        }
         return;
+    }
     if (fullUpdate){
         onUpdatePress();
         return;
@@ -237,6 +287,10 @@ void StatisticWindow::fastUpdate(int application, int activity, int secondsCount
     m_TotalTime+=secondsCount;
     m_Applications[application].TotalTime+=secondsCount;
     m_Applications[application].childs[activity].TotalTime+=secondsCount;
+    if (category==-1)
+        m_Uncategorized.TotalTime+=secondsCount;
+    else
+        m_Categories[category].TotalTime+=secondsCount;
     calcNormalizedValues();
 
     m_Applications[application].item->setText(1,DurationToString(m_Applications[application].TotalTime));

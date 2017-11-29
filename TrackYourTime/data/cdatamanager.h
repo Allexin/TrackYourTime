@@ -1,6 +1,6 @@
 /*
  * TrackYourTime - cross-platform time tracker
- * Copyright (C) 2015-2016  Alexander Basov <basovav@gmail.com>
+ * Copyright (C) 2015-2017  Alexander Basov <basovav@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,11 +84,6 @@ struct sCategory{
 class cDataManager : public QObject {
     Q_OBJECT
 public:
-    enum eNotificationType{
-        NT_NONE,
-        NT_SYSTEM,
-        NT_BUILTIN
-    };
     enum eBackupDelay{
         BD_ONE_DAY = 0,
         BD_ONE_WEEK,
@@ -107,13 +102,16 @@ public:
     static const QString CONF_STORAGE_FILENAME_ID;
     static const QString CONF_LANGUAGE_ID;
     static const QString CONF_FIRST_LAUNCH_ID;
-    static const QString CONF_NOTIFICATION_TYPE_ID;
+    static const QString CONF_NOTIFICATION_SHOW_SYSTEM_ID;
     static const QString CONF_NOTIFICATION_MESSAGE_ID;
     static const QString CONF_NOTIFICATION_HIDE_SECONDS_ID;
-    static const QString CONF_NOTIFICATION_HIDE_MOVES_ID;
     static const QString CONF_NOTIFICATION_POSITION_ID;
     static const QString CONF_NOTIFICATION_SIZE_ID;
-    static const QString CONF_NOTIFICATION_OPACITY_ID;
+    static const QString CONF_NOTIFICATION_OPACITY_ID;    
+    static const QString CONF_NOTIFICATION_MOUSE_BEHAVIOR_ID;
+    static const QString CONF_NOTIFICATION_CAT_SELECT_BEHAVIOR_ID;
+    static const QString CONF_NOTIFICATION_VISIBILITY_BEHAVIOR_ID;
+    static const QString CONF_NOTIFICATION_HIDE_BORDERS_ID;
     static const QString CONF_AUTORUN_ID;
     static const QString CONF_CLIENT_MODE_ID;
     static const QString CONF_CLIENT_MODE_HOST_ID;
@@ -137,7 +135,7 @@ protected:
 
     QString             m_DebugScript;
 
-    eNotificationType   m_NotificationType;
+    bool                m_ShowSystemNotifications;
 
     bool                m_ClientMode;
     QString             m_ClientModeHost;
@@ -211,7 +209,7 @@ signals:
     void debugScriptResult(QString result, const sSysInfo& data, QString trackingResult);
     void showNotification();
 
-    void statisticFastUpdate(int application, int activity, int secondsCount, bool fullUpdate);
+    void statisticFastUpdate(int application, int activity, int category, int secondsCount, bool fullUpdate);
 };
 
 #endif // CDATAMANAGER_H
