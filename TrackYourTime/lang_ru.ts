@@ -65,7 +65,8 @@
     </message>
     <message>
         <location filename="ui/aboutwindow.ui" line="204"/>
-        <source>© Alexander Basov, 2015-2016</source>
+        <source>© Alexander Basov, 2015-2017</source>
+        <oldsource>© Alexander Basov, 2015-2016</oldsource>
         <translation>© Александр Басов, 2015-2016</translation>
     </message>
 </context>
@@ -102,52 +103,65 @@
         <translation>Из предустановленного скрипта</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="100"/>
         <source>By custom script</source>
-        <translation>Из пользовательского скрипта</translation>
+        <translation type="vanished">Из пользовательского скрипта</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="110"/>
+        <location filename="ui/app_settingswindow.ui" line="105"/>
         <source>Warning: do not forget to install external tracker if availble!</source>
         <translation>Внимание: не забывайте установить внешний трэкер, если он доступен!</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="129"/>
         <source>Custom script:</source>
-        <translation>Пользовательский скрипт:</translation>
+        <translation type="vanished">Пользовательский скрипт:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="145"/>
+        <location filename="ui/app_settingswindow.ui" line="124"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Process custom script as last step of tracking&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Использовать свой скрипт в качестве последнего шага трэкинга&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="127"/>
+        <source>Use custom script</source>
+        <translation>Использовать свой скрипт</translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="143"/>
         <source>Apply</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="152"/>
+        <location filename="ui/app_settingswindow.ui" line="150"/>
         <source>Developer tools:</source>
         <translation>Инструменты разработчика:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="165"/>
+        <location filename="ui/app_settingswindow.ui" line="163"/>
         <source>Start debuging current script</source>
         <translation>Начать отладку текущего скрипта</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="172"/>
+        <location filename="ui/app_settingswindow.ui" line="170"/>
         <source>Debug data:</source>
         <translation>Отладочная информация:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="181"/>
+        <location filename="ui/app_settingswindow.ui" line="179"/>
         <source>Application Name or Class:</source>
         <translation>Название или класс приложения:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="199"/>
+        <location filename="ui/app_settingswindow.ui" line="197"/>
         <source>Application title:</source>
         <translation>Заголовок приложения:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="217"/>
+        <location filename="ui/app_settingswindow.ui" line="218"/>
+        <source>Tracking result:</source>
+        <translation>Результат трэкинга:</translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="236"/>
         <source>Script result:</source>
         <translation>Результат работы скрипта:</translation>
     </message>
@@ -189,47 +203,52 @@
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Захватите и зажмите &amp;quot;Control&amp;quot; прежде чем отпустить чтобы переместить приложение в одну и туже категорю во всех профилях.&lt;/p&gt;&lt;p&gt;Захватите и отпустите приложение без &amp;quot;Contol&amp;quot; чтобы переместить приложение в категорию только в текущем профиле.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="69"/>
+        <location filename="ui/applicationswindow.cpp" line="70"/>
         <source>Uncategorized</source>
         <translation>Без категории</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="140"/>
+        <location filename="ui/applicationswindow.cpp" line="141"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="185"/>
+        <location filename="ui/applicationswindow.cpp" line="192"/>
+        <source>Move to category</source>
+        <translation>Переместить в категорию</translation>
+    </message>
+    <message>
+        <location filename="ui/applicationswindow.cpp" line="195"/>
         <source>New category</source>
         <translation>Новая категория</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="186"/>
+        <location filename="ui/applicationswindow.cpp" line="196"/>
         <source>Delete category</source>
         <translation>Удалить категорию</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="187"/>
+        <location filename="ui/applicationswindow.cpp" line="197"/>
         <source>Set category color</source>
         <translation>Установить цвет категории</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="188"/>
+        <location filename="ui/applicationswindow.cpp" line="198"/>
         <source>Hide activity</source>
         <translation>Скрыть активность</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="189"/>
+        <location filename="ui/applicationswindow.cpp" line="199"/>
         <source>Show activity</source>
         <translation>Показать активность</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="190"/>
+        <location filename="ui/applicationswindow.cpp" line="200"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="330"/>
+        <location filename="ui/applicationswindow.cpp" line="345"/>
         <source>New Category</source>
         <translation>Новая категория</translation>
     </message>
@@ -257,23 +276,23 @@
         <translation>Установить для текущего профиля</translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="110"/>
-        <location filename="ui/notificationwindow.cpp" line="111"/>
+        <location filename="ui/notificationwindow.cpp" line="221"/>
+        <location filename="ui/notificationwindow.cpp" line="222"/>
         <source>UNKNOWN</source>
         <translation>НЕИЗВЕСТНО</translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="112"/>
+        <location filename="ui/notificationwindow.cpp" line="223"/>
         <source>NONE</source>
         <translation>НЕТ</translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="121"/>
+        <location filename="ui/notificationwindow.cpp" line="232"/>
         <source>default</source>
         <translation>по умолчанию</translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="126"/>
+        <location filename="ui/notificationwindow.cpp" line="237"/>
         <source>Uncategorized</source>
         <translation>Без категории</translation>
     </message>
@@ -494,81 +513,165 @@
     </message>
     <message>
         <location filename="ui/settingswindow.ui" line="385"/>
-        <source>No notifications</source>
-        <translation>Без уведомлений</translation>
+        <source>Show OS notifications</source>
+        <oldsource>No notifications</oldsource>
+        <translation>Показывать через системные уведомления</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="392"/>
+        <location filename="ui/settingswindow.ui" line="403"/>
+        <source>Custom notification window settings</source>
+        <translation>Настройки собственного окна уведомлений</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="443"/>
+        <source>Hide after(seconds)[0 - disable auto hiding]:</source>
+        <translation>Скрыватьпосле(в секундах)[0 от отключить автоскрытие]:</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="494"/>
+        <source>Mouse behavior</source>
+        <translation>Поведение мыши</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="502"/>
+        <source>No actions</source>
+        <translation>Нет действий</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="507"/>
+        <source>Hide notification on mouse click</source>
+        <translation>Скрывать окно уведомление по клику</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="512"/>
+        <source>Hide notification on mouse move</source>
+        <translation>Скрывать окно уведомление по движению мыши</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="517"/>
+        <source>Escape from mouse</source>
+        <translation>Избегать курсора мыши</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="532"/>
+        <source>Category selection behavior</source>
+        <translation>Поведение меню выбора категории</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="540"/>
+        <source>Always hide</source>
+        <translation>Всегда скрыто</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="545"/>
+        <source>Always visible</source>
+        <translation>Всегда доступно</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="550"/>
+        <source>Visible if categoty not set for current activity</source>
+        <translation>Доступно, если категория не установлена</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="565"/>
+        <source>Visibility behavior</source>
+        <translation>Пока уведомления</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="573"/>
+        <source>Show on category changing</source>
+        <translation>Показывать, если категория сменилась</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="578"/>
+        <source>Show on activity changing</source>
+        <translation>Показывать, если статус сменился</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="583"/>
+        <source>Show on any action</source>
+        <translation>Показывать на любое действие</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="588"/>
+        <source>Show only by menu</source>
+        <translation>Показывать только при клике в меню</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="598"/>
+        <source>Hide window borders and caption</source>
+        <translation>Скрывать оформление окна и заголовок</translation>
+    </message>
+    <message>
         <source>System notification system</source>
-        <translation>Системные уведомления</translation>
+        <translation type="vanished">Системные уведомления</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="399"/>
         <source>Built-in notification system:</source>
-        <translation>Встроенные уведомления:</translation>
+        <translation type="vanished">Встроенные уведомления:</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="432"/>
+        <location filename="ui/settingswindow.ui" line="425"/>
         <source>Set window position and size</source>
         <translation>Установить размер и позицию</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="439"/>
+        <location filename="ui/settingswindow.ui" line="432"/>
         <source>Reset window position</source>
         <translation>Сбросить позицию</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="450"/>
         <source>Hide after(seconds):</source>
-        <translation>Скрывать по таймеру(секунды):</translation>
+        <translation type="vanished">Скрывать по таймеру(секунды):</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="474"/>
+        <location filename="ui/settingswindow.ui" line="467"/>
         <source>Opacity(percents)</source>
-        <translation>Непрозрачность(в процентах):</translation>
+        <translation>Непрозрачность(в процентах)</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="496"/>
         <source>Mouse interactions</source>
-        <translation>Реакция на мышь</translation>
+        <translation type="vanished">Реакция на мышь</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="517"/>
         <source>Hide notification on mouse move and never show category selection menu</source>
-        <translation>Скрывать уведомление при движении мыши и никогда не показывать выбор категории</translation>
+        <translation type="vanished">Скрывать уведомление при движении мыши и никогда не показывать выбор категории</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="524"/>
         <source>Never hide notification on mouse move(hide only by timer) and show category selection menu if category not selected</source>
-        <translation>Не скрывать при движении мыши(скрывать по таймеру) и показывать выбор, если категория не указана</translation>
+        <translation type="vanished">Не скрывать при движении мыши(скрывать по таймеру) и показывать выбор, если категория не указана</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="531"/>
         <source>Hide notification on some mouse moves and show category selection meny if category not selected(recomended)</source>
-        <translation>Скрывать при нескольких движениях мыши и показывать выбор, если категория не указана(Рекомендуется)</translation>
+        <translation type="vanished">Скрывать при нескольких движениях мыши и показывать выбор, если категория не указана(Рекомендуется)</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="541"/>
+        <location filename="ui/settingswindow.ui" line="605"/>
         <source>Message format:</source>
         <translation>Формат сообщения:</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="566"/>
+        <location filename="ui/settingswindow.ui" line="626"/>
+        <source>?</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="633"/>
         <source>Set default message</source>
         <translation>Установить стандартное сообщение</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="617"/>
+        <location filename="ui/settingswindow.ui" line="684"/>
         <source>Apply</source>
         <translation>Применить</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="630"/>
+        <location filename="ui/settingswindow.ui" line="697"/>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="589"/>
+        <location filename="ui/settingswindow.ui" line="656"/>
         <source>Launch on Start up</source>
         <translation>Запускать при старте системы</translation>
     </message>
@@ -577,22 +680,26 @@
         <translation type="vanished">Показывать сообщение в трее, когда меняется категория</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="153"/>
         <source>&lt;center&gt;Current profile: %PROFILE%&lt;br&gt;Application: %APP_NAME%&lt;br&gt;State: %APP_STATE%&lt;br&gt;Category: %APP_CATEGORY%&lt;/center&gt;</source>
-        <translation>&lt;center&gt;Текущий профиль: %PROFILE%&lt;br&gt;Приложение: %APP_NAME%&lt;br&gt;Состояние: %APP_STATE%&lt;br&gt;Категория: %APP_CATEGORY%&lt;/center&gt;</translation>
+        <translation type="vanished">&lt;center&gt;Текущий профиль: %PROFILE%&lt;br&gt;Приложение: %APP_NAME%&lt;br&gt;Состояние: %APP_STATE%&lt;br&gt;Категория: %APP_CATEGORY%&lt;/center&gt;</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="220"/>
+        <location filename="ui/settingswindow.cpp" line="132"/>
+        <source>&lt;center&gt;Current profile: %PROFILE%&lt;br&gt;Application: %APP_NAME% %TODAY_APP_TIME%&lt;br&gt;State: %APP_STATE% %TODAY_STATE_TIME%&lt;br&gt;Category: %APP_CATEGORY% %TODAY_CATEGORY_TIME%&lt;/center&gt;</source>
+        <translation>&lt;center&gt;Текущий профиль: %PROFILE%&lt;br&gt;Приложение: %APP_NAME% %TODAY_APP_TIME%&lt;br&gt;Статус: %APP_STATE% %TODAY_STATE_TIME%&lt;br&gt;Категория: %APP_CATEGORY% %TODAY_CATEGORY_TIME%&lt;/center&gt;</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.cpp" line="199"/>
         <source>Select DB location</source>
         <translation>Выберите местоположение БД</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="222"/>
+        <location filename="ui/settingswindow.cpp" line="201"/>
         <source>Default DB (db.bin);;All files (*.*)</source>
         <translation>Стандартая БД (db.bin);;Все файлы(*.*)</translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="230"/>
+        <location filename="ui/settingswindow.cpp" line="209"/>
         <source>Select backup location</source>
         <translation>Выберите каталог для резервирования</translation>
     </message>
@@ -659,32 +766,37 @@
         <translation>Экспорт приложений в CSV...</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.ui" line="209"/>
+        <location filename="ui/statisticwindow.ui" line="214"/>
         <source>Absolute time</source>
         <translation>Абсолютное время</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.ui" line="214"/>
+        <location filename="ui/statisticwindow.ui" line="219"/>
         <source>Relative time</source>
         <translation>Относительное время</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="62"/>
+        <location filename="ui/statisticwindow.ui" line="232"/>
+        <source>Total Time:</source>
+        <translation>Всего времени:</translation>
+    </message>
+    <message>
+        <location filename="ui/statisticwindow.cpp" line="46"/>
         <source>Uncategorized</source>
         <translation>Без категории</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="153"/>
+        <location filename="ui/statisticwindow.cpp" line="128"/>
         <source>(default)</source>
         <translation>(по умолчанию)</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="188"/>
+        <location filename="ui/statisticwindow.cpp" line="227"/>
         <source>Select applications file</source>
         <translation>Выберите файл приложений</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="201"/>
+        <location filename="ui/statisticwindow.cpp" line="337"/>
         <source>Select categories file</source>
         <translation>Выберите файл категорий</translation>
     </message>
@@ -704,7 +816,7 @@
     <message>
         <location filename="ui/updateavailablewindow.ui" line="93"/>
         <source>New version available: </source>
-        <translation>Доступна новая версия:</translation>
+        <translation>Доступна новая версия: </translation>
     </message>
     <message>
         <location filename="ui/updateavailablewindow.ui" line="124"/>
@@ -730,12 +842,12 @@
 <context>
     <name>cDataManager</name>
     <message>
-        <location filename="data/cdatamanager.cpp" line="85"/>
+        <location filename="data/cdatamanager.cpp" line="87"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="data/cdatamanager.cpp" line="297"/>
+        <location filename="data/cdatamanager.cpp" line="293"/>
         <source>Uncategorized</source>
         <translation>Без категории</translation>
     </message>
@@ -743,17 +855,17 @@
 <context>
     <name>cScheduleItem</name>
     <message>
-        <location filename="data/cschedule.cpp" line="154"/>
+        <location filename="data/cschedule.cpp" line="171"/>
         <source>Set profile</source>
         <translation>Установить профиль</translation>
     </message>
     <message>
-        <location filename="data/cschedule.cpp" line="155"/>
+        <location filename="data/cschedule.cpp" line="172"/>
         <source>Check for updates</source>
         <translation>Проверка обновлений</translation>
     </message>
     <message>
-        <location filename="data/cschedule.cpp" line="156"/>
+        <location filename="data/cschedule.cpp" line="173"/>
         <source>Make backup</source>
         <translation>Резервирование</translation>
     </message>
@@ -761,12 +873,12 @@
 <context>
     <name>cStatisticDiagramWidget</name>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="309"/>
+        <location filename="ui/statisticwindow.cpp" line="446"/>
         <source>NO DATA</source>
         <translation>НЕТ ДАННЫХ</translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="353"/>
+        <location filename="ui/statisticwindow.cpp" line="490"/>
         <source>Other categories</source>
         <translation>Остальные категории</translation>
     </message>
@@ -800,21 +912,26 @@
     </message>
     <message>
         <location filename="ui/ctrayicon.cpp" line="63"/>
+        <source>Notification...</source>
+        <translation>Уведомление...</translation>
+    </message>
+    <message>
+        <location filename="ui/ctrayicon.cpp" line="64"/>
         <source>About...</source>
         <translation>О приложении...</translation>
     </message>
     <message>
-        <location filename="ui/ctrayicon.cpp" line="64"/>
+        <location filename="ui/ctrayicon.cpp" line="65"/>
         <source>Help...</source>
         <translation>Помощь...</translation>
     </message>
     <message>
-        <location filename="ui/ctrayicon.cpp" line="66"/>
+        <location filename="ui/ctrayicon.cpp" line="67"/>
         <source>Exit</source>
         <translation>Выход</translation>
     </message>
     <message>
-        <location filename="ui/ctrayicon.cpp" line="148"/>
+        <location filename="ui/ctrayicon.cpp" line="154"/>
         <source>https://github.com/Allexin/TrackYourTime/wiki/User-Manual</source>
         <translation>https://github.com/Allexin/TrackYourTime/wiki/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F</translation>
     </message>

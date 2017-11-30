@@ -60,7 +60,8 @@
     </message>
     <message>
         <location filename="ui/aboutwindow.ui" line="204"/>
-        <source>© Alexander Basov, 2015-2016</source>
+        <source>© Alexander Basov, 2015-2017</source>
+        <oldsource>© Alexander Basov, 2015-2016</oldsource>
         <translation></translation>
     </message>
 </context>
@@ -97,52 +98,65 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="100"/>
         <source>By custom script</source>
-        <translation>By user script</translation>
+        <translation type="vanished">By user script</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="110"/>
+        <location filename="ui/app_settingswindow.ui" line="105"/>
         <source>Warning: do not forget to install external tracker if availble!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="129"/>
         <source>Custom script:</source>
-        <translation>User script:</translation>
+        <translation type="vanished">User script:</translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="145"/>
+        <location filename="ui/app_settingswindow.ui" line="124"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Process custom script as last step of tracking&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="127"/>
+        <source>Use custom script</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="143"/>
         <source>Apply</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="152"/>
+        <location filename="ui/app_settingswindow.ui" line="150"/>
         <source>Developer tools:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="165"/>
+        <location filename="ui/app_settingswindow.ui" line="163"/>
         <source>Start debuging current script</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="172"/>
+        <location filename="ui/app_settingswindow.ui" line="170"/>
         <source>Debug data:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="181"/>
+        <location filename="ui/app_settingswindow.ui" line="179"/>
         <source>Application Name or Class:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="199"/>
+        <location filename="ui/app_settingswindow.ui" line="197"/>
         <source>Application title:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/app_settingswindow.ui" line="217"/>
+        <location filename="ui/app_settingswindow.ui" line="218"/>
+        <source>Tracking result:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/app_settingswindow.ui" line="236"/>
         <source>Script result:</source>
         <translation></translation>
     </message>
@@ -180,47 +194,52 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="69"/>
+        <location filename="ui/applicationswindow.cpp" line="70"/>
         <source>Uncategorized</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="140"/>
+        <location filename="ui/applicationswindow.cpp" line="141"/>
         <source>(default)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="185"/>
+        <location filename="ui/applicationswindow.cpp" line="192"/>
+        <source>Move to category</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/applicationswindow.cpp" line="195"/>
         <source>New category</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="186"/>
+        <location filename="ui/applicationswindow.cpp" line="196"/>
         <source>Delete category</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="187"/>
+        <location filename="ui/applicationswindow.cpp" line="197"/>
         <source>Set category color</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="188"/>
+        <location filename="ui/applicationswindow.cpp" line="198"/>
         <source>Hide activity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="189"/>
+        <location filename="ui/applicationswindow.cpp" line="199"/>
         <source>Show activity</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="190"/>
+        <location filename="ui/applicationswindow.cpp" line="200"/>
         <source>Settings...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/applicationswindow.cpp" line="330"/>
+        <location filename="ui/applicationswindow.cpp" line="345"/>
         <source>New Category</source>
         <translation></translation>
     </message>
@@ -248,23 +267,23 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="110"/>
-        <location filename="ui/notificationwindow.cpp" line="111"/>
+        <location filename="ui/notificationwindow.cpp" line="221"/>
+        <location filename="ui/notificationwindow.cpp" line="222"/>
         <source>UNKNOWN</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="112"/>
+        <location filename="ui/notificationwindow.cpp" line="223"/>
         <source>NONE</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="121"/>
+        <location filename="ui/notificationwindow.cpp" line="232"/>
         <source>default</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/notificationwindow.cpp" line="126"/>
+        <location filename="ui/notificationwindow.cpp" line="237"/>
         <source>Uncategorized</source>
         <translation></translation>
     </message>
@@ -477,101 +496,157 @@
     </message>
     <message>
         <location filename="ui/settingswindow.ui" line="385"/>
-        <source>No notifications</source>
+        <source>Show OS notifications</source>
+        <oldsource>No notifications</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="392"/>
-        <source>System notification system</source>
+        <location filename="ui/settingswindow.ui" line="403"/>
+        <source>Custom notification window settings</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="399"/>
-        <source>Built-in notification system:</source>
+        <location filename="ui/settingswindow.ui" line="443"/>
+        <source>Hide after(seconds)[0 - disable auto hiding]:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="432"/>
-        <source>Set window position and size</source>
+        <location filename="ui/settingswindow.ui" line="494"/>
+        <source>Mouse behavior</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="439"/>
-        <source>Reset window position</source>
+        <location filename="ui/settingswindow.ui" line="502"/>
+        <source>No actions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="450"/>
-        <source>Hide after(seconds):</source>
+        <location filename="ui/settingswindow.ui" line="507"/>
+        <source>Hide notification on mouse click</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="474"/>
-        <source>Opacity(percents)</source>
-        <translation>Opacity(percents):</translation>
-    </message>
-    <message>
-        <location filename="ui/settingswindow.ui" line="496"/>
-        <source>Mouse interactions</source>
+        <location filename="ui/settingswindow.ui" line="512"/>
+        <source>Hide notification on mouse move</source>
         <translation></translation>
     </message>
     <message>
         <location filename="ui/settingswindow.ui" line="517"/>
-        <source>Hide notification on mouse move and never show category selection menu</source>
+        <source>Escape from mouse</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="524"/>
-        <source>Never hide notification on mouse move(hide only by timer) and show category selection menu if category not selected</source>
+        <location filename="ui/settingswindow.ui" line="532"/>
+        <source>Category selection behavior</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="531"/>
-        <source>Hide notification on some mouse moves and show category selection meny if category not selected(recomended)</source>
+        <location filename="ui/settingswindow.ui" line="540"/>
+        <source>Always hide</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="541"/>
+        <location filename="ui/settingswindow.ui" line="545"/>
+        <source>Always visible</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="550"/>
+        <source>Visible if categoty not set for current activity</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="565"/>
+        <source>Visibility behavior</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="573"/>
+        <source>Show on category changing</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="578"/>
+        <source>Show on activity changing</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="583"/>
+        <source>Show on any action</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="588"/>
+        <source>Show only by menu</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="598"/>
+        <source>Hide window borders and caption</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="425"/>
+        <source>Set window position and size</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="432"/>
+        <source>Reset window position</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="467"/>
+        <source>Opacity(percents)</source>
+        <translation>Opacity(percents)</translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="605"/>
         <source>Message format:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="566"/>
+        <location filename="ui/settingswindow.ui" line="626"/>
+        <source>?</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/settingswindow.ui" line="633"/>
         <source>Set default message</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="617"/>
+        <location filename="ui/settingswindow.ui" line="684"/>
         <source>Apply</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="630"/>
+        <location filename="ui/settingswindow.ui" line="697"/>
         <source>Cancel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.ui" line="589"/>
+        <location filename="ui/settingswindow.ui" line="656"/>
         <source>Launch on Start up</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="153"/>
-        <source>&lt;center&gt;Current profile: %PROFILE%&lt;br&gt;Application: %APP_NAME%&lt;br&gt;State: %APP_STATE%&lt;br&gt;Category: %APP_CATEGORY%&lt;/center&gt;</source>
+        <location filename="ui/settingswindow.cpp" line="132"/>
+        <source>&lt;center&gt;Current profile: %PROFILE%&lt;br&gt;Application: %APP_NAME% %TODAY_APP_TIME%&lt;br&gt;State: %APP_STATE% %TODAY_STATE_TIME%&lt;br&gt;Category: %APP_CATEGORY% %TODAY_CATEGORY_TIME%&lt;/center&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="220"/>
+        <location filename="ui/settingswindow.cpp" line="199"/>
         <source>Select DB location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="222"/>
+        <location filename="ui/settingswindow.cpp" line="201"/>
         <source>Default DB (db.bin);;All files (*.*)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/settingswindow.cpp" line="230"/>
+        <location filename="ui/settingswindow.cpp" line="209"/>
         <source>Select backup location</source>
         <translation></translation>
     </message>
@@ -634,32 +709,37 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.ui" line="209"/>
+        <location filename="ui/statisticwindow.ui" line="214"/>
         <source>Absolute time</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.ui" line="214"/>
+        <location filename="ui/statisticwindow.ui" line="219"/>
         <source>Relative time</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="62"/>
+        <location filename="ui/statisticwindow.ui" line="232"/>
+        <source>Total Time:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/statisticwindow.cpp" line="46"/>
         <source>Uncategorized</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="153"/>
+        <location filename="ui/statisticwindow.cpp" line="128"/>
         <source>(default)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="188"/>
+        <location filename="ui/statisticwindow.cpp" line="227"/>
         <source>Select applications file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="201"/>
+        <location filename="ui/statisticwindow.cpp" line="337"/>
         <source>Select categories file</source>
         <translation></translation>
     </message>
@@ -705,12 +785,12 @@
 <context>
     <name>cDataManager</name>
     <message>
-        <location filename="data/cdatamanager.cpp" line="85"/>
+        <location filename="data/cdatamanager.cpp" line="87"/>
         <source>Default</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="data/cdatamanager.cpp" line="297"/>
+        <location filename="data/cdatamanager.cpp" line="293"/>
         <source>Uncategorized</source>
         <translation></translation>
     </message>
@@ -718,17 +798,17 @@
 <context>
     <name>cScheduleItem</name>
     <message>
-        <location filename="data/cschedule.cpp" line="154"/>
+        <location filename="data/cschedule.cpp" line="171"/>
         <source>Set profile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="data/cschedule.cpp" line="155"/>
+        <location filename="data/cschedule.cpp" line="172"/>
         <source>Check for updates</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="data/cschedule.cpp" line="156"/>
+        <location filename="data/cschedule.cpp" line="173"/>
         <source>Make backup</source>
         <translation></translation>
     </message>
@@ -736,12 +816,12 @@
 <context>
     <name>cStatisticDiagramWidget</name>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="309"/>
+        <location filename="ui/statisticwindow.cpp" line="446"/>
         <source>NO DATA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/statisticwindow.cpp" line="353"/>
+        <location filename="ui/statisticwindow.cpp" line="490"/>
         <source>Other categories</source>
         <translation></translation>
     </message>
@@ -775,21 +855,26 @@
     </message>
     <message>
         <location filename="ui/ctrayicon.cpp" line="63"/>
-        <source>About...</source>
+        <source>Notification...</source>
         <translation></translation>
     </message>
     <message>
         <location filename="ui/ctrayicon.cpp" line="64"/>
+        <source>About...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui/ctrayicon.cpp" line="65"/>
         <source>Help...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/ctrayicon.cpp" line="66"/>
+        <location filename="ui/ctrayicon.cpp" line="67"/>
         <source>Exit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/ctrayicon.cpp" line="148"/>
+        <location filename="ui/ctrayicon.cpp" line="154"/>
         <source>https://github.com/Allexin/TrackYourTime/wiki/User-Manual</source>
         <translation></translation>
     </message>
