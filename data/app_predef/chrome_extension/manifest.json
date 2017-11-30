@@ -3,12 +3,14 @@
 
   "name": "TrackYourTime Chrome Tracker",
   "description": "This extension collect information about visited sites and send it to TrackYourTime",
-  "version": "1.0",
+  "version": "2.3",
   "background": {
     "persistent": true,
     "scripts": ["background.js"]
   },
-
+  "icons": {
+    "128": "main.png"
+  },
   "browser_action": {
     "default_icon": "main.png"
   },

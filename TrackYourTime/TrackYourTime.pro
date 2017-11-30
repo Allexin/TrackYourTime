@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network script
+QT       += core gui network widgets qml
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# QT += script - for old scriptsmanager
 
 mac:LIBS += -framework CoreGraphics
 mac:LIBS += -framework AppKit

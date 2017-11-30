@@ -400,7 +400,7 @@ int cDataManager::getActivityIndex(int appIndex,const sSysInfo &FileInfo)
     }
 
     if (!m_DebugScript.isEmpty()){
-        emit debugScriptResult(m_ScriptsManager.evaluteCustomScript(FileInfo,m_DebugScript,activity),FileInfo,activity);
+        emit debugScriptResult(m_ScriptsManager.evaluteCustomScript(FileInfo,m_DebugScript,activity).toString(),FileInfo,activity);
     }
 
     if (appInfo->useCustomScript)

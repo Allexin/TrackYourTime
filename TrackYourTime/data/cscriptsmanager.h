@@ -19,9 +19,10 @@
 #define CSCRIPTSMANAGER_H
 
 #include <QObject>
-#include <QScriptEngine>
 #include "../tools/os_api.h"
 
+/* Qt Script realisation
+#include <QScriptEngine>
 class cScriptsManager : public QScriptEngine
 {
     Q_OBJECT
@@ -33,6 +34,25 @@ public:
 
     QString processCustomScript(const sSysInfo &info, QString script, QString prevStepResult);
     QString evaluteCustomScript(const sSysInfo& info, QString script, QString prevStepResult);
+signals:
+
+public slots:
+};
+*/
+
+#include <QJSEngine>
+#include <QJSValue>
+class cScriptsManager : public QJSEngine
+{
+    Q_OBJECT
+public:
+    explicit cScriptsManager(QObject *parent = 0);
+
+    QString getAppInfo(const sSysInfo &info, QString script);
+    QJSValue evalute(const sSysInfo& info, QString script);
+
+    QString processCustomScript(const sSysInfo &info, QString script, QString prevStepResult);
+    QJSValue evaluteCustomScript(const sSysInfo& info, QString script, QString prevStepResult);
 signals:
 
 public slots:

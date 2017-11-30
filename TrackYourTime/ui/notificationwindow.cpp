@@ -175,6 +175,7 @@ void NotificationWindow::onShow()
     if (m_ClosingInterrupted && isVisible())
         return;
 
+    bool needResetTimer = !m_Timer.isActive();
     bool canShow = isVisible();
     switch(m_VisibilityBehavior){
         case eVisibilityBehavior::ON_CATEGORY:{
@@ -183,10 +184,11 @@ void NotificationWindow::onShow()
                 int activityIndex = m_DataManager->getCurrentApplictionActivity();
                 if (activityIndex>-1){
                     int profile = m_DataManager->getCurrentProfileIndex();
-                    sAppInfo* info = m_DataManager->applications(m_AppIndex);
+                    sAppInfo* info = m_DataManager->applications(appIndex);
                     int category = info->activities[activityIndex].categories[profile].category;
-                    if (category!=m_Category || category==-1){
+                    if (category!=m_Category || category==-1 && (m_AppIndex!=appIndex || m_ActivityIndex!=activityIndex)){
                         canShow = true;
+                        needResetTimer = needResetTimer || category!=m_Category ;
                     }
                 }
             }
@@ -195,11 +197,15 @@ void NotificationWindow::onShow()
             int appIndex = m_DataManager->getCurrentAppliction();
             if (m_AppIndex != appIndex){
                 canShow = true;
+                needResetTimer = true;
             }
             else{
                 if (appIndex>-1){
                     int activityIndex = m_DataManager->getCurrentApplictionActivity();
-                    canShow = activityIndex!=m_ActivityIndex;
+                    if (activityIndex!=m_ActivityIndex){
+                        canShow = true;
+                        needResetTimer = true;
+                    }
                 }
             }
         };break;
@@ -299,9 +305,11 @@ void NotificationWindow::onShow()
     setAutoFillBackground(true);
     setPalette(Pal);
 
-    m_TimerCounter = 0;
-    m_ClosingInterrupted = false;
-    m_Timer.start(1000);
+    if (needResetTimer){
+        m_TimerCounter = 0;
+        m_ClosingInterrupted = false;
+        m_Timer.start(1000);
+    }
 
     if (!isVisible()){
         m_EscapePos = m_ConfPosition;

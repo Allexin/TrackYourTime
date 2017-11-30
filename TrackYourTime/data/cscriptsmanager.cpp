@@ -18,6 +18,8 @@
 #include "cscriptsmanager.h"
 #include <QDebug>
 
+
+/* Qt Script realisation
 cScriptsManager::cScriptsManager(QObject *parent) : QScriptEngine(parent)
 {
 
@@ -99,4 +101,89 @@ QString cScriptsManager::evaluteCustomScript(const sSysInfo &info, QString scrip
     QScriptValue result = evaluate(script+"\nparseData(application,title,prevStepResult,OS)");
     return result.toString().trimmed();
 }
+*/
 
+
+cScriptsManager::cScriptsManager(QObject *parent) : QJSEngine(parent)
+{
+
+}
+
+QString cScriptsManager::getAppInfo(const sSysInfo &info,QString script)
+{
+    QJSValue result = evalute(info, script);
+    if (result.isError()){
+        qCritical() << "script execution for app " << info.fileName << "failed with exception: " << result.toString();
+        return "";
+    }
+    if (result.toString()=="undefined"){
+        qCritical() << "script execution for app " << info.fileName << "failed. no result returned";
+        return "";
+    }
+    return result.toString().trimmed();
+}
+
+QJSValue cScriptsManager::evalute(const sSysInfo &info, QString script)
+{
+    QString OS = "UNKNOWN";
+#ifdef Q_OS_LINUX
+    OS = "LINUX";
+#else
+    #ifdef Q_OS_WIN32
+        OS = "WINDOWS";
+    #else
+        #ifdef Q_OS_MAC
+            OS = "MAC_OS_X";
+        #endif
+    #endif
+#endif
+
+
+    QJSValue fun = evaluate(script);
+    if (fun.isError())
+        return fun;
+    QJSValueList args;
+    args << info.fileName << info.title << OS;
+    QJSValue result = globalObject().property("parseTitle").call(args);
+    return result;
+}
+
+QString cScriptsManager::processCustomScript(const sSysInfo &info,QString script, QString prevStepResult)
+{
+    QJSValue result = evaluteCustomScript(info, script,prevStepResult);
+    if (result.isError()){
+        qCritical() << "script execution for app " << info.fileName << "failed with exception: " << result.toString();
+        return "";
+    }
+    if (result.toString()=="undefined"){
+        qCritical() << "script execution for app " << info.fileName << "failed. no result returned";
+        return "";
+    }
+    return result.toString().trimmed();
+}
+
+QJSValue cScriptsManager::evaluteCustomScript(const sSysInfo &info, QString script, QString prevStepResult)
+{
+    QString OS = "UNKNOWN";
+#ifdef Q_OS_LINUX
+    OS = "LINUX";
+#else
+    #ifdef Q_OS_WIN32
+        OS = "WINDOWS";
+    #else
+        #ifdef Q_OS_MAC
+            OS = "MAC_OS_X";
+        #endif
+    #endif
+#endif
+
+
+    QJSValue fun = evaluate(script);
+    if (fun.isError())
+        return fun;
+    QJSValueList args;
+    args << info.fileName << info.title << prevStepResult << OS;
+    QJSValue result = globalObject().property("parseData").call(args);
+
+    return result;
+}
