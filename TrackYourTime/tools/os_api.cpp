@@ -286,7 +286,7 @@ void setAutorun()
 
     QStringList desktopLink;
     desktopLink.push_back("[Desktop Entry]");
-    desktopLink.push_back("Exec=cd "+QCoreApplication::applicationDirPath()+" &&  "+QCoreApplication::applicationFilePath());
+    desktopLink.push_back("Exec="+QCoreApplication::applicationDirPath()+"/data/TrackYourTime.sh");
     desktopLink.push_back("Icon="+QCoreApplication::applicationDirPath()+"/data/icons/main.ico");
     desktopLink.push_back("Type=Application");
     desktopLink.push_back("Terminal=false");
@@ -294,6 +294,10 @@ void setAutorun()
     desktopLink.push_back("GenericName=Cross-platform time tracker");
     desktopLink.push_back("Categories=Office");
     desktopLink.push_back("InitialPreference=9");
+
+    desktopLink.push_back("X-LXQt-Need-Tray=true");
+    desktopLink.push_back("X-GNOME-Autostart-enabled=true");
+
     writeStringListToFile(desktopLink,getAutoRunLink(),"\n");
 }
 

@@ -135,7 +135,7 @@ void NotificationWindow::onEscapeTimer()
     }
 
     int center = m_ConfPosition.y() + height()/2;
-    if (abs(cursorPos.y()<center)){
+    if (cursorPos.y()<center){
         m_EscapePos.setY(cursorPos.y()+1);
     }
     else{
@@ -186,7 +186,7 @@ void NotificationWindow::onShow()
                     int profile = m_DataManager->getCurrentProfileIndex();
                     sAppInfo* info = m_DataManager->applications(appIndex);
                     int category = info->activities[activityIndex].categories[profile].category;
-                    if (category!=m_Category || category==-1 && (m_AppIndex!=appIndex || m_ActivityIndex!=activityIndex)){
+                    if ((category!=m_Category || category==-1) && (m_AppIndex!=appIndex || m_ActivityIndex!=activityIndex)){
                         canShow = true;
                         needResetTimer = needResetTimer || category!=m_Category ;
                     }
