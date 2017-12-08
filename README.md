@@ -5,7 +5,7 @@
 # [Documentation](https://github.com/Allexin/TrackYourTime/wiki/User-Manual) [[en](https://github.com/Allexin/TrackYourTime/wiki/User-Manual)|[ru](https://github.com/Allexin/TrackYourTime/wiki/%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F)]  
 
 # Downloads
-[Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/0.9.2)
+[Latest Stable Version](https://github.com/Allexin/TrackYourTime/releases/tag/0.9.2.5)
 
 # Roadmap
 
@@ -26,8 +26,7 @@ Extract archive with Mac OS X app, move TrackYourTime.app to Applications and la
 Prerequisites:
 
 * Windows Manager with `_NET_ACTIVE_WINDOW` property supported
-* udev input system
-* application access to `/dev/input/by-id/*`
+* XScreenSaver installed
 
 Extract archive with Linux app in any folder and launch `checksystem` from app folder. Follow `checksystem` instructions to resolve problems. After that launch TrackYourTime app.
 
