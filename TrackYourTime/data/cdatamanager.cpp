@@ -103,7 +103,7 @@ cDataManager::~cDataManager()
 const sProfile *cDataManager::profiles(int index)
 {
     if (index<0 || index>=m_Profiles.size())
-        return NULL;
+        return nullptr;
     return &m_Profiles[index];
 }
 
@@ -459,7 +459,7 @@ void cDataManager::saveDB()
         file.writeInt(m_Categories.size());
         for (int i = 0; i<m_Categories.size(); i++){
             file.writeString(m_Categories[i].name);
-            file.writeInt(m_Categories[i].color.rgba());
+            file.writeUint(m_Categories[i].color.rgba());
         }
 
         //applications
@@ -535,7 +535,7 @@ void cDataManager::loadDB()
                 m_Categories.resize(file.readInt());
                 for (int i = 0; i<m_Categories.size(); i++){
                     m_Categories[i].name = file.readString();
-                    m_Categories[i].color = QColor::fromRgba(file.readInt());
+                    m_Categories[i].color = QColor::fromRgba(file.readUint());
                 }
 
                 //applications
@@ -544,7 +544,7 @@ void cDataManager::loadDB()
                     m_Applications[i] = new sAppInfo();
                     m_Applications[i]->visible = file.readInt()==1;
                     m_Applications[i]->path = file.readString();
-                    m_Applications[i]->trackerType = (sAppInfo::eTrackerType)file.readInt();                    
+                    m_Applications[i]->trackerType = static_cast<sAppInfo::eTrackerType>(file.readInt());
                     m_Applications[i]->useCustomScript = file.readInt()==1;
                     m_Applications[i]->customScript = file.readString();
 
@@ -596,7 +596,7 @@ void cDataManager::loadPreferences()
     m_ClientMode = settings.db()->value(CONF_CLIENT_MODE_ID,m_ClientMode).toBool();
     m_ClientModeHost = settings.db()->value(CONF_CLIENT_MODE_HOST_ID,m_ClientModeHost).toString();
 
-    m_BackupDelay = (eBackupDelay)settings.db()->value(CONF_BACKUP_DELAY_ID,BD_ONE_WEEK).toInt();
+    m_BackupDelay = static_cast<eBackupDelay>(settings.db()->value(CONF_BACKUP_DELAY_ID,BD_ONE_WEEK).toInt());
     m_BackupFolder = settings.db()->value(CONF_BACKUP_FILENAME_ID,m_BackupFolder).toString();
 
     if (!m_StorageFileName.isEmpty()){
@@ -646,7 +646,7 @@ sAppInfo::sAppInfo(QString name, int profilesCount)
 
 sAppInfo::sAppInfo()
 {
-    predefinedInfo = NULL;
+    predefinedInfo = nullptr;
 }
 
 sAppInfo::~sAppInfo()

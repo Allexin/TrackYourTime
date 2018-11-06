@@ -40,7 +40,7 @@ protected:
     QString getDefaultMessage();
 public:
     explicit SettingsWindow(cDataManager* DataManager);
-    ~SettingsWindow();
+    ~SettingsWindow() override;
 
 private:
     Ui::SettingsWindow *ui;
