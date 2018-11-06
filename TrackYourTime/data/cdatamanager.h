@@ -159,6 +159,9 @@ protected:
     int getActivityIndexDirect(int appIndex, QString activityName);
     void saveDB();
     void loadDB();
+    void saveJSON();
+    void loadJSON();
+
     void loadPreferences();
 public:
     cDataManager();

@@ -27,6 +27,9 @@
 #include "cdbversionconverter.h"
 #include "capppredefinedinfo.h"
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 const QString cDataManager::CONF_UPDATE_DELAY_ID = "UPDATE_DELAY";
 const QString cDataManager::CONF_IDLE_DELAY_ID = "IDLE_DELAY";
@@ -581,6 +584,199 @@ void cDataManager::loadDB()
 
         file.close();
     }
+    qDebug() << "cDataManager: end DB loading\n";
+}
+
+void cDataManager::saveJSON()
+{
+    if (m_StorageFileName.isEmpty())
+        return;
+    QFile file(m_StorageFileName+".new" );
+    if ( ! file.open(QIODevice::WriteOnly) )
+        return;
+
+    QJsonObject jobj;
+    //header
+    jobj["magic"] = FILE_FORMAT_PREFIX;
+    jobj["version"] = FILE_FORMAT_VERSION;
+
+    //profiles
+    QJsonArray all_profiles;
+    for (const auto& prof: m_Profiles)
+      all_profiles.append(prof.name);
+
+    QJsonObject profiles;
+    profiles["current"] = m_CurrentProfile;
+    profiles["list"] = all_profiles;
+    jobj["profiles"] = profiles;
+
+    //categories
+    QJsonArray categories;
+    for (const auto& cat: m_Categories) {
+      QJsonObject jobj;
+      jobj["name"] = cat.name;
+      jobj["color"] = cat.color.name();
+    }
+    jobj["categories"] = categories;
+
+    //applications
+    QJsonArray applications;
+    for (const auto& app: m_Applications) {
+
+      QJsonObject jobj;
+      jobj["visible"] = app->visible;
+      jobj["path"] = app->path;
+      jobj["trackerType"] = app->trackerType;
+      jobj["useCustomScript"] = app->useCustomScript;
+      jobj["customScript"] = app->customScript;
+
+      QJsonArray activities;
+      for (const auto& info: app->activities) {
+        QJsonObject jobj;
+        jobj["name"] = info.name;
+
+        //app category for every profile
+        QJsonArray categories;
+        for (const auto& cat: info.categories) {
+          QJsonObject jobj;
+          jobj["category"] = cat.category;
+          jobj["visible"] = cat.visible;
+          categories.append(jobj);
+        }
+        jobj["categories"] = categories;
+
+        //total use time
+        QJsonArray periods;
+        for (const auto& per: info.periods) {
+          QJsonObject jobj;
+          jobj["start"] = per.start.toString("yyyy-mm-dd hh:mm:ss");
+          jobj["length"] = per.length;
+          jobj["profileIndex"] = per.profileIndex;
+          periods.append(jobj);
+        }
+        jobj["periods"] = periods;
+
+        activities.append(jobj);
+      }
+
+      jobj["activities"] = activities;
+    }
+    jobj["applications"] = applications;
+
+    QJsonDocument jdoc(jobj);
+    file.write(jdoc.toJson());
+
+    file.close();
+
+    //if at any step of saving app fail proceed - old db will not damaged and can be restored
+    QFile::rename(m_StorageFileName, m_StorageFileName+".old");
+    QFile::rename(m_StorageFileName+".new", m_StorageFileName);
+    QFile::remove(m_StorageFileName+".old");
+}
+
+void cDataManager::loadJSON()
+{
+    if (m_StorageFileName.isEmpty())
+        return;
+    if (!QFile(m_StorageFileName).exists())
+        return;
+    qDebug() << "cDataManager: start DB loading\n";
+
+//    convertToVersion4(m_StorageFileName,m_StorageFileName);
+    QFile file(m_StorageFileName);
+    if ( !file.open(QIODevice::ReadOnly) )
+      return;
+
+    QJsonDocument jdoc = QJsonDocument::fromJson(file.readAll());
+    file.close();
+
+    QJsonObject jobj = jdoc.object();
+    //check header
+    const QString magic = jobj["magic"].toString();
+    if (magic != FILE_FORMAT_PREFIX) {
+        qCritical() << "Error loading db. Incorrect file format prefix " << magic;
+    }
+    const int version = jobj["version"].toInt();
+    if (version != FILE_FORMAT_VERSION) {
+        qCritical() << "Error loading db. Incorrect file format version " << version << " only " << FILE_FORMAT_VERSION << " supported";
+        return;
+    }
+
+    for (const auto& app: m_Applications)
+        delete app;
+    m_Applications.resize(0);
+
+    //profiles
+    QJsonObject profiles = jobj["profiles"].toObject();
+    m_CurrentProfile = profiles["current"].toInt();
+    QJsonArray all_profiles = profiles["list"].toArray();
+    m_Profiles.reserve(all_profiles.count());
+    for (const auto prof: all_profiles)
+        m_Profiles.append({prof.toString()});
+
+    //categories
+    QJsonArray categories = jobj["categories"].toArray();
+    m_Categories.reserve(categories.count());
+    for (const auto cat: categories) {
+      QJsonObject jobj = cat.toObject();
+      const QString name = jobj["name"].toString();
+      const QColor color(jobj["color"].toString());
+      m_Categories.append({name, color});
+    }
+
+    //applications
+    QJsonArray applications = jobj["applications"].toArray();
+    m_Applications.reserve(applications.count());
+    for (const auto japp: applications) {
+      QJsonObject jobj = japp.toObject();
+
+      sAppInfo* app = new sAppInfo();
+      m_Applications.append(app);
+      app->visible = jobj["visible"].toBool();
+      app->path = jobj["path"].toString();
+      app->trackerType = static_cast<sAppInfo::eTrackerType>(jobj["trackerType"].toInt());
+      app->useCustomScript = jobj["useCustomScript"].toBool();
+      app->customScript = jobj["customScript"].toString();
+
+      QJsonArray jactivities = jobj["activities"].toArray();
+      auto& activities = app->activities;
+      activities.reserve(jactivities.count());
+      for (const auto jinfo: jactivities) {
+        QJsonObject jobj = jinfo.toObject();
+
+        const QString name = jobj["name"].toString();
+        activities.append(sActivityInfo{});
+        sActivityInfo& info = activities.last();
+        info.name = name;
+        info.nameUpcase = name.toUpper();
+
+        //app category for every profile
+        QJsonArray jcategories = jobj["categories"].toArray();
+        auto& categories = info.categories;
+        categories.reserve(jcategories.count());
+        for (const auto jcat: jcategories) {
+          QJsonObject jobj = jcat.toObject();
+          int category = jobj["category"].toInt();
+          bool visible = jobj["visible"].toBool();
+          categories.append({category, visible});
+        }
+
+        //total use time
+        QJsonArray jperiods = jobj["periods"].toArray();
+        auto& periods = info.periods;
+        periods.reserve(jperiods.count());
+        for (const auto jper: jperiods) {
+          QJsonObject jobj = jper.toObject();
+          QDateTime start = QDateTime::fromString(jobj["start"].toString(), "yyyy-mm-dd hh:mm:ss");
+          int length = jobj["length"].toInt();
+          int profileIndex = jobj["profileIndex"].toInt();
+          periods.append({start, length, profileIndex});
+        }
+
+      }
+      app->predefinedInfo = new cAppPredefinedInfo(activities[0].name);
+    }
+
     qDebug() << "cDataManager: end DB loading\n";
 }
 
