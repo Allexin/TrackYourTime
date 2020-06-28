@@ -21,14 +21,14 @@
 int cFileBin::readInt()
 {
     int value;
-    read((char*)&value,sizeof(int));
+    read(reinterpret_cast<char*>(&value), sizeof(int));
     return value;
 }
 
 uint cFileBin::readUint()
 {
     uint value;
-    read((char*)&value,sizeof(uint));
+    read(reinterpret_cast<char*>(&value), sizeof(uint));
     return value;
 }
 
@@ -61,12 +61,12 @@ QString cFileBin::readUtf8Line()
 
 void cFileBin::writeInt(int value)
 {
-    write((char*)&value,sizeof(int));
+    write(reinterpret_cast<char*>(&value), sizeof(int));
 }
 
 void cFileBin::writeUint(uint value)
 {
-    write((char*)&value,sizeof(uint));
+    write(reinterpret_cast<char*>(&value), sizeof(uint));
 }
 
 void cFileBin::writeString(const QString &value)
